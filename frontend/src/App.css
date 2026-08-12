@@ -415,8 +415,7 @@ mask-composite: exclude;
   transition: width 280ms var(--ag-ease);
 }
 
-.nav-underline:hover::after,
-.nav-underline.active::after {
+.nav-underline:hover::after {
   width: 70%;
 }
 
