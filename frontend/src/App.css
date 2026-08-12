@@ -1,0 +1,1127 @@
+/* =========================================================
+   AeroGuard - Premium Global Animation System
+   ========================================================= */
+
+/* -----------------------------
+   Root animation variables
+------------------------------ */
+
+:root {
+  --ag-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ag-ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ag-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --ag-duration-fast: 180ms;
+  --ag-duration-normal: 420ms;
+  --ag-duration-slow: 700ms;
+
+  --ag-lift: -5px;
+  --ag-scale: 1.015;
+
+  --ag-glow: rgba(53, 214, 176, 0.22);
+  --ag-glow-strong: rgba(53, 214, 176, 0.34);
+
+  --ag-border: rgba(255, 255, 255, 0.08);
+  --ag-surface: rgba(255, 255, 255, 0.045);
+  --ag-surface-hover: rgba(255, 255, 255, 0.07);
+}
+
+/* =========================================================
+   Page / Section Reveal
+   ========================================================= */
+
+.page-enter {
+  animation: agPageEnter 650ms var(--ag-ease) both;
+}
+
+.fade-in {
+  animation: agFadeIn 500ms var(--ag-ease) both;
+}
+
+.fade-up {
+  animation: agFadeUp 650ms var(--ag-ease) both;
+}
+
+.fade-down {
+  animation: agFadeDown 650ms var(--ag-ease) both;
+}
+
+.fade-left {
+  animation: agFadeLeft 650ms var(--ag-ease) both;
+}
+
+.fade-right {
+  animation: agFadeRight 650ms var(--ag-ease) both;
+}
+
+.scale-in {
+  animation: agScaleIn 550ms var(--ag-ease-spring) both;
+}
+
+.blur-in {
+  animation: agBlurIn 700ms var(--ag-ease) both;
+}
+
+/* =========================================================
+   Stagger animation helpers
+   Add the class to parent / children
+   ========================================================= */
+
+.stagger-children > * {
+  animation: agFadeUp 650ms var(--ag-ease) both;
+}
+
+.stagger-children > *:nth-child(1) {
+  animation-delay: 60ms;
+}
+
+.stagger-children > *:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.stagger-children > *:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+.stagger-children > *:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.stagger-children > *:nth-child(5) {
+  animation-delay: 300ms;
+}
+
+.stagger-children > *:nth-child(6) {
+  animation-delay: 360ms;
+}
+
+.stagger-children > *:nth-child(7) {
+  animation-delay: 420ms;
+}
+
+.stagger-children > *:nth-child(8) {
+  animation-delay: 480ms;
+}
+
+.stagger-children > *:nth-child(9) {
+  animation-delay: 540ms;
+}
+
+.stagger-children > *:nth-child(10) {
+  animation-delay: 600ms;
+}
+
+/* =========================================================
+   Premium Card Interactions
+   ========================================================= */
+
+.card-hover {
+  position: relative;
+  transition:
+    transform var(--ag-duration-normal) var(--ag-ease),
+    box-shadow var(--ag-duration-normal) var(--ag-ease),
+    border-color var(--ag-duration-normal) var(--ag-ease),
+    background-color var(--ag-duration-normal) var(--ag-ease);
+  will-change: transform;
+}
+
+.card-hover:hover {
+  transform: translateY(var(--ag-lift)) scale(var(--ag-scale));
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(53, 214, 176, 0.05);
+}
+
+/* Soft premium border animation */
+
+.card-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(53, 214, 176, 0.25) 50%,
+    transparent 80%
+  );
+  opacity: 0;
+  transition:
+    opacity 450ms ease,
+    transform 700ms ease;
+  transform: translateX(-30%);
+  pointer-events: none;
+
+  mask:
+  linear-gradient(#000 0 0) content-box,
+  linear-gradient(#000 0 0);
+
+-webkit-mask:
+  linear-gradient(#000 0 0) content-box,
+  linear-gradient(#000 0 0);
+
+-webkit-mask-composite: xor;
+mask-composite: exclude;
+}
+
+.card-glow:hover::before {
+  opacity: 1;
+  transform: translateX(30%);
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform var(--ag-duration-fast) var(--ag-ease),
+    box-shadow var(--ag-duration-normal) var(--ag-ease),
+    background-color var(--ag-duration-normal) var(--ag-ease);
+}
+
+.btn-premium::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 650ms var(--ag-ease);
+  pointer-events: none;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.btn-premium:hover::after {
+  left: 135%;
+}
+
+.btn-premium:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* =========================================================
+   Floating Motion
+   ========================================================= */
+
+.float-soft {
+  animation: agFloatSoft 5s ease-in-out infinite;
+}
+
+.float-slow {
+  animation: agFloatSlow 8s ease-in-out infinite;
+}
+
+.float-gentle {
+  animation: agFloatGentle 10s ease-in-out infinite;
+}
+
+/* =========================================================
+   AQI / Risk Animations
+   ========================================================= */
+
+.aqi-pulse {
+  animation: agAqiPulse 3s ease-in-out infinite;
+}
+
+.risk-pulse {
+  animation: agRiskPulse 2.8s ease-in-out infinite;
+}
+
+.risk-glow {
+  animation: agRiskGlow 2.8s ease-in-out infinite;
+}
+
+.live-dot {
+  animation: agLiveDot 1.8s ease-in-out infinite;
+}
+
+/* Circular gauge support */
+
+.aqi-ring {
+  animation: agRingReveal 1100ms var(--ag-ease) both;
+  transform-origin: center;
+}
+
+.aqi-number {
+  animation: agNumberReveal 800ms var(--ag-ease-spring) both;
+}
+
+.aqi-label {
+  animation: agFadeUp 700ms 150ms var(--ag-ease) both;
+}
+
+/* =========================================================
+   Progress / Bars
+   ========================================================= */
+
+.progress-fill {
+  transform-origin: left center;
+  animation: agProgressReveal 900ms 120ms var(--ag-ease) both;
+}
+
+.progress-fill-slow {
+  transform-origin: left center;
+  animation: agProgressReveal 1300ms 150ms var(--ag-ease) both;
+}
+
+/* =========================================================
+   Shimmer / Loading
+   ========================================================= */
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: agShimmer 1.8s linear infinite;
+  pointer-events: none;
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    transparent
+  );
+  animation: agShimmer 1.7s linear infinite;
+}
+
+/* =========================================================
+   Charts
+   ========================================================= */
+
+.chart-enter {
+  animation: agChartEnter 850ms var(--ag-ease) both;
+}
+
+.chart-line {
+  animation:
+    agChartLine 1200ms var(--ag-ease) both,
+    agFadeIn 500ms ease both;
+}
+
+/* =========================================================
+   Alert / Notification
+   ========================================================= */
+
+.alert-enter {
+  animation: agAlertEnter 650ms var(--ag-ease) both;
+}
+
+.alert-pulse {
+  animation: agAlertPulse 2.4s ease-in-out infinite;
+}
+
+.notification-enter {
+  animation: agNotificationEnter 500ms var(--ag-ease-spring) both;
+}
+
+/* =========================================================
+   Modal / Drawer
+   ========================================================= */
+
+.modal-backdrop {
+  animation: agBackdropIn 220ms ease both;
+}
+
+.modal-panel {
+  animation: agModalIn 420ms var(--ag-ease-spring) both;
+}
+
+.drawer-left {
+  animation: agDrawerLeft 420ms var(--ag-ease) both;
+}
+
+.drawer-right {
+  animation: agDrawerRight 420ms var(--ag-ease) both;
+}
+
+/* =========================================================
+   Navbar / Navigation
+   ========================================================= */
+
+.nav-enter {
+  animation: agNavEnter 650ms var(--ag-ease) both;
+}
+
+.nav-item {
+  position: relative;
+  transition:
+    color var(--ag-duration-fast) ease,
+    transform var(--ag-duration-fast) var(--ag-ease);
+}
+
+.nav-item:hover {
+  transform: translateY(-1px);
+}
+
+.nav-underline {
+  position: relative;
+}
+
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translateX(-50%);
+  transition: width 280ms var(--ag-ease);
+}
+
+.nav-underline:hover::after,
+.nav-underline.active::after {
+  width: 70%;
+}
+
+/* =========================================================
+   Search interaction
+   ========================================================= */
+
+.search-premium {
+  transition:
+    transform 250ms var(--ag-ease),
+    border-color 250ms ease,
+    box-shadow 250ms ease,
+    background-color 250ms ease;
+}
+
+.search-premium:focus-within {
+  transform: translateY(-1px);
+  border-color: rgba(53, 214, 176, 0.38);
+  box-shadow:
+    0 0 0 4px rgba(53, 214, 176, 0.07),
+    0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================================================
+   Map markers / map controls
+   ========================================================= */
+
+.map-marker-pulse {
+  animation: agMarkerPulse 2.3s ease-in-out infinite;
+}
+
+.map-control {
+  transition:
+    transform 180ms var(--ag-ease),
+    box-shadow 220ms ease;
+}
+
+.map-control:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+}
+
+/* =========================================================
+   Image / gradient reveal
+   ========================================================= */
+
+.image-reveal {
+  overflow: hidden;
+}
+
+.image-reveal img {
+  transform: scale(1.06);
+  transition:
+    transform 900ms var(--ag-ease),
+    filter 700ms ease;
+}
+
+.image-reveal:hover img {
+  transform: scale(1);
+  filter: saturate(1.05);
+}
+
+/* =========================================================
+   Background ambient effects
+   ========================================================= */
+
+.ambient-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.ambient-glow::before,
+.ambient-glow::after {
+  content: '';
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(53, 214, 176, 0.12) 0%,
+    rgba(53, 214, 176, 0.03) 45%,
+    transparent 72%
+  );
+  filter: blur(12px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ambient-glow::before {
+  top: -80px;
+  left: -60px;
+  animation: agAmbientOne 9s ease-in-out infinite;
+}
+
+.ambient-glow::after {
+  right: -70px;
+  bottom: -90px;
+  animation: agAmbientTwo 12s ease-in-out infinite;
+}
+
+/* =========================================================
+   Utility interactions
+   ========================================================= */
+
+.hover-lift {
+  transition: transform 220ms var(--ag-ease);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-scale {
+  transition: transform 260ms var(--ag-ease);
+}
+
+.hover-scale:hover {
+  transform: scale(1.025);
+}
+
+.hover-rotate {
+  transition: transform 320ms var(--ag-ease);
+}
+
+.hover-rotate:hover {
+  transform: rotate(3deg);
+}
+
+.icon-hover {
+  transition:
+    transform 220ms var(--ag-ease),
+    opacity 220ms ease;
+}
+
+.icon-hover:hover {
+  transform: scale(1.09) rotate(-3deg);
+}
+
+/* =========================================================
+   Page background decorative grid
+   ========================================================= */
+
+.environment-grid {
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    );
+  background-size: 32px 32px;
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    rgba(0, 0, 0, 0.8) 55%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    rgba(0, 0, 0, 0.8) 55%,
+    transparent 100%
+  );
+}
+
+/* =========================================================
+   Text entrance helpers
+   ========================================================= */
+
+.text-reveal {
+  animation: agTextReveal 800ms var(--ag-ease) both;
+}
+
+.text-reveal-delay {
+  animation: agTextReveal 800ms 180ms var(--ag-ease) both;
+}
+
+.text-gradient {
+  background: linear-gradient(
+    110deg,
+    #ffffff 10%,
+    #dffaf2 45%,
+    #35d6b0 90%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =========================================================
+   Scroll reveal helper
+   Use with JS/IntersectionObserver later if desired.
+   Default hidden state is disabled intentionally to avoid
+   permanently hiding content when JS is not attached.
+   ========================================================= */
+
+.reveal-on-scroll {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-on-scroll.is-hidden {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal-on-scroll.is-visible {
+  animation: agFadeUp 700ms var(--ag-ease) both;
+}
+
+/* =========================================================
+   Keyframes
+   ========================================================= */
+
+@keyframes agPageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes agFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agFadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agFadeLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-26px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes agFadeRight {
+  0% {
+    opacity: 0;
+    transform: translateX(26px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes agScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.93);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes agBlurIn {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(16px);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes agFloatSoft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes agFloatSlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  33% {
+    transform: translate3d(0, -7px, 0);
+  }
+
+  66% {
+    transform: translate3d(5px, -3px, 0);
+  }
+}
+
+@keyframes agFloatGentle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-7px, -5px, 0);
+  }
+}
+
+@keyframes agAqiPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(53, 214, 176, 0),
+      0 0 0 0 rgba(53, 214, 176, 0);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 10px rgba(53, 214, 176, 0.03),
+      0 0 35px rgba(53, 214, 176, 0.12);
+  }
+}
+
+@keyframes agRiskPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.018);
+    opacity: 0.93;
+  }
+}
+
+@keyframes agRiskGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(53, 214, 176, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 26px rgba(53, 214, 176, 0.12);
+  }
+}
+
+@keyframes agLiveDot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.35);
+    opacity: 0.55;
+  }
+}
+
+@keyframes agRingReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.78) rotate(-24deg);
+  }
+
+  70% {
+    opacity: 1;
+    transform: scale(1.035) rotate(4deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes agNumberReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.62);
+  }
+
+  65% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes agProgressReveal {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes agShimmer {
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes agChartEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.985);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes agChartLine {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes agAlertEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(28px) scale(0.97);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes agAlertPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(255, 106, 92, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 22px rgba(255, 106, 92, 0.12);
+  }
+}
+
+@keyframes agNotificationEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.94);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.01);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes agBackdropIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes agModalIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.94);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes agDrawerLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes agDrawerRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes agNavEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agMarkerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.16);
+    opacity: 0.72;
+  }
+}
+
+@keyframes agAmbientOne {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(22px, 12px, 0) scale(1.08);
+  }
+}
+
+@keyframes agAmbientTwo {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-20px, -16px, 0) scale(1.1);
+  }
+}
+
+@keyframes agTextReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    clip-path: inset(100% 0 0 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* =========================================================
+   Mobile adjustments
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .card-hover:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-premium:hover {
+    transform: translateY(-1px);
+  }
+
+  .ambient-glow::before,
+  .ambient-glow::after {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+/* =========================================================
+   Reduced motion support
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .fade-in,
+  .fade-up,
+  .fade-down,
+  .fade-left,
+  .fade-right,
+  .scale-in,
+  .blur-in,
+  .float-soft,
+  .float-slow,
+  .float-gentle,
+  .aqi-pulse,
+  .risk-pulse,
+  .risk-glow,
+  .live-dot,
+  .aqi-ring,
+  .aqi-number,
+  .aqi-label,
+  .progress-fill,
+  .progress-fill-slow,
+  .shimmer::after,
+  .skeleton::after,
+  .chart-enter,
+  .chart-line,
+  .alert-enter,
+  .alert-pulse,
+  .notification-enter,
+  .modal-backdrop,
+  .modal-panel,
+  .drawer-left,
+  .drawer-right,
+  .nav-enter,
+  .map-marker-pulse,
+  .ambient-glow::before,
+  .ambient-glow::after,
+  .text-reveal,
+  .text-reveal-delay,
+  .stagger-children > * {
+    animation: none !important;
+  }
+
+  .card-hover,
+  .btn-premium,
+  .nav-item,
+  .search-premium,
+  .map-control,
+  .image-reveal img,
+  .hover-lift,
+  .hover-scale,
+  .hover-rotate,
+  .icon-hover {
+    transition: none !important;
+  }
+}
