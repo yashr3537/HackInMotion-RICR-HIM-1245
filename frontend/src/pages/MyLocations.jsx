@@ -1,312 +1,732 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
-  Plus,
-  SlidersHorizontal,
-  MapPinned,
-  BellRing,
-  Activity,
-  ShieldCheck,
+  MapPin,
   Search,
+  Loader2,
+  Navigation,
 } from 'lucide-react'
 
 import SearchBar from '../components/SearchBar'
-import LocationCard from '../components/LocationCard'
+import RiskBadge from '../components/RiskBadge'
 import { EmptyState } from '../components/EmptyState'
-import { savedLocations as initialLocations } from '../data/demoData'
+
+import { searchLocation } from '../data/locationApi'
+import { getAirQuality } from '../data/airQualityApi'
+import { currentLocation } from '../data/demoData'
 
 export default function MyLocations() {
-  const [locations, setLocations] = useState(initialLocations)
+  const navigate = useNavigate()
+
+  // =========================================================
+  // CURRENT LOCATION
+  // =========================================================
+
+  const [currentLiveLocation, setCurrentLiveLocation] = useState({
+    ...currentLocation,
+    loading: true,
+    error: null,
+  })
+
+  // =========================================================
+  // SEARCH
+  // =========================================================
+
   const [query, setQuery] = useState('')
-  const [threshold, setThreshold] = useState(100)
+  const [searchResults, setSearchResults] = useState([])
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [searchError, setSearchError] = useState('')
 
-  const filtered = useMemo(() => {
-    const search = query.trim().toLowerCase()
+  // =========================================================
+  // CURRENT LOCATION AQI
+  // =========================================================
 
-    if (!search) return locations
+  useEffect(() => {
+    let cancelled = false
 
-    return locations.filter(
-      (location) =>
-        location.name.toLowerCase().includes(search) ||
-        location.type.toLowerCase().includes(search) ||
-        location.region.toLowerCase().includes(search),
+    const loadCurrentAQI = async (latitude, longitude) => {
+      try {
+        const airQuality = await getAirQuality(
+          latitude,
+          longitude
+        )
+
+        if (cancelled) return
+
+        setCurrentLiveLocation((prev) => ({
+          ...prev,
+          latitude,
+          longitude,
+          aqi: airQuality.aqi,
+          pm25: airQuality.pm25,
+          pm10: airQuality.pm10,
+          no2: airQuality.no2,
+          o3: airQuality.o3,
+          so2: airQuality.so2,
+          co: airQuality.co,
+          lastUpdated: 'Just now',
+          loading: false,
+          error: null,
+        }))
+      } catch (error) {
+        console.error(
+          'Current location AQI error:',
+          error
+        )
+
+        if (!cancelled) {
+          setCurrentLiveLocation((prev) => ({
+            ...prev,
+            loading: false,
+            error:
+              'Unable to fetch current air quality.',
+          }))
+        }
+      }
+    }
+
+    if (!navigator.geolocation) {
+      setCurrentLiveLocation((prev) => ({
+        ...prev,
+        loading: false,
+        error:
+          'Location is not supported by your browser.',
+      }))
+
+      return () => {
+        cancelled = true
+      }
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        if (cancelled) return
+
+        const { latitude, longitude } = position.coords
+
+        loadCurrentAQI(
+          latitude,
+          longitude
+        )
+      },
+
+      (error) => {
+        console.error(
+          'Current location error:',
+          error
+        )
+
+        if (!cancelled) {
+          setCurrentLiveLocation((prev) => ({
+            ...prev,
+            loading: false,
+            error:
+              'Location permission is required.',
+          }))
+        }
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000,
+      }
     )
-  }, [locations, query])
 
-  function handleRemove(id) {
-    setLocations((prev) =>
-      prev.filter((location) => location.id !== id),
-    )
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // =========================================================
+  // SEARCH LOCATION + LIVE AQI
+  // =========================================================
+
+  useEffect(() => {
+    const trimmedQuery = query.trim()
+
+    if (!trimmedQuery) {
+      setSearchResults([])
+      setSearchError('')
+      setSearchLoading(false)
+      return
+    }
+
+    let cancelled = false
+
+    const timer = setTimeout(async () => {
+      try {
+        setSearchLoading(true)
+        setSearchError('')
+        setSearchResults([])
+
+        // Search locations
+        const locations =
+          await searchLocation(trimmedQuery)
+
+        if (cancelled) return
+
+        if (
+          !locations ||
+          locations.length === 0
+        ) {
+          setSearchResults([])
+          return
+        }
+
+        // Fetch live AQI
+        const liveResults = []
+
+        for (const location of locations) {
+          if (cancelled) return
+
+          try {
+            const latitude =
+              Number(location.latitude)
+
+            const longitude =
+              Number(location.longitude)
+
+            if (
+              !Number.isFinite(latitude) ||
+              !Number.isFinite(longitude)
+            ) {
+              liveResults.push({
+                ...location,
+                aqi: null,
+                pm25: null,
+                pm10: null,
+                no2: null,
+                o3: null,
+                so2: null,
+                co: null,
+              })
+
+              continue
+            }
+
+            const airQuality =
+              await getAirQuality(
+                latitude,
+                longitude
+              )
+
+            liveResults.push({
+              ...location,
+
+              latitude,
+              longitude,
+
+              aqi: airQuality.aqi,
+              pm25: airQuality.pm25,
+              pm10: airQuality.pm10,
+              no2: airQuality.no2,
+              o3: airQuality.o3,
+              so2: airQuality.so2,
+              co: airQuality.co,
+
+              lastUpdated:
+                airQuality.time || 'Just now',
+            })
+          } catch (aqiError) {
+            console.error(
+              `AQI error for ${location.name}:`,
+              aqiError
+            )
+
+            liveResults.push({
+              ...location,
+              aqi: null,
+              pm25: null,
+              pm10: null,
+              no2: null,
+              o3: null,
+              so2: null,
+              co: null,
+            })
+          }
+        }
+
+        if (cancelled) return
+
+        setSearchResults(liveResults)
+      } catch (error) {
+        console.error(
+          'Location search error:',
+          error
+        )
+
+        if (!cancelled) {
+          setSearchResults([])
+          setSearchError(
+            'Unable to search locations right now.'
+          )
+        }
+      } finally {
+        if (!cancelled) {
+          setSearchLoading(false)
+        }
+      }
+    }, 500)
+
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [query])
+
+  // =========================================================
+  // OPEN LOCATION DETAILS
+  // =========================================================
+
+  const handleViewDetails = (location) => {
+    navigate('/location-details', {
+      state: {
+        location,
+      },
+    })
   }
 
+  // =========================================================
+  // UI
+  // =========================================================
+
   return (
-    <div className="page-enter flex flex-col gap-7 pb-8 sm:gap-9">
+    <div className="page-enter flex flex-col gap-8 pb-8 sm:gap-10">
+
       {/* =====================================================
           HEADER
-      ====================================================== */}
+      ===================================================== */}
+
       <section className="fade-down">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-forest-100 bg-forest-50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-800">
-              <MapPinned size={12} />
-              Personal monitoring
+        <div>
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-forest-100 bg-forest-50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-800">
+            <MapPin size={12} />
+            Location monitoring
+          </div>
+
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
+            My Locations
+          </h1>
+
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
+            Check your current location or search any
+            city to see its live air quality.
+          </p>
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          CURRENT LOCATION
+      ===================================================== */}
+
+      <section>
+        <div className="mb-4">
+          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest-700">
+            Your location
+          </p>
+
+          <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
+            Current Location
+          </h2>
+        </div>
+
+        <div className="rounded-2xl border border-ink-100 bg-surface p-5 shadow-soft sm:p-6">
+
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+            {/* LOCATION */}
+
+            <div className="flex items-start gap-4">
+
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
+                <Navigation size={20} />
+              </div>
+
+              <div>
+
+                <div className="flex items-center gap-2">
+
+                  <h3 className="font-display text-lg font-semibold text-ink-900">
+                    {currentLiveLocation.name}
+                  </h3>
+
+                  <span className="flex items-center gap-1 text-[10px] font-medium text-forest-600">
+                    <span className="live-dot h-1.5 w-1.5 rounded-full bg-forest-600" />
+                    Live
+                  </span>
+
+                </div>
+
+                <p className="mt-1 text-sm text-ink-500">
+                  {currentLiveLocation.region}
+                </p>
+
+              </div>
+
             </div>
 
-            <h1 className="font-display text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
-              My Locations
-            </h1>
 
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-              Manage the places you care about and keep their air quality
-              close at hand.
-            </p>
+            {/* AQI */}
+
+            <div className="flex items-center gap-5">
+
+              {currentLiveLocation.loading ? (
+
+                <div className="flex items-center gap-2 text-sm text-ink-500">
+
+                  <Loader2
+                    size={17}
+                    className="animate-spin"
+                  />
+
+                  Getting live AQI...
+
+                </div>
+
+              ) : currentLiveLocation.error ? (
+
+                <p className="text-sm text-red-500">
+                  {currentLiveLocation.error}
+                </p>
+
+              ) : (
+
+                <>
+                  <div className="text-right">
+
+                    <p className="text-[10px] uppercase tracking-wider text-ink-400">
+                      Current AQI
+                    </p>
+
+                    <p className="mt-1 font-mono text-3xl font-bold text-ink-900">
+                      {currentLiveLocation.aqi ?? '—'}
+                    </p>
+
+                  </div>
+
+                  {currentLiveLocation.aqi !== null &&
+                    currentLiveLocation.aqi !== undefined && (
+                      <RiskBadge
+                        aqi={currentLiveLocation.aqi}
+                        size="sm"
+                      />
+                    )}
+
+                </>
+
+              )}
+
+            </div>
+
           </div>
 
-          <button
-            type="button"
-            className="btn-premium inline-flex w-fit items-center gap-2 rounded-xl bg-forest-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forest-800"
-          >
-            <Plus size={16} />
-            Add Location
-          </button>
-        </div>
-      </section>
 
-      {/* =====================================================
-          SUMMARY
-      ====================================================== */}
-      <section className="stagger-children grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-            <MapPinned size={12} />
-            Saved
-          </div>
+          {/* CURRENT POLLUTANTS */}
 
-          <div className="mt-2 font-mono text-2xl font-bold text-ink-900">
-            {locations.length}
-          </div>
+          {!currentLiveLocation.loading &&
+            !currentLiveLocation.error && (
 
-          <p className="mt-1 text-[10px] text-ink-500">
-            Monitored locations
-          </p>
-        </div>
+              <div className="mt-5 grid grid-cols-2 gap-3 border-t border-ink-100 pt-5 sm:grid-cols-4">
 
-        <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-            <BellRing size={12} />
-            Alerts
-          </div>
+                <div>
+                  <p className="text-[10px] text-ink-400">
+                    PM2.5
+                  </p>
 
-          <div className="mt-2 font-mono text-2xl font-bold text-ink-900">
-            {locations.filter(
-              (location) => Number(location.aqi) >= threshold,
-            ).length}
-          </div>
-
-          <p className="mt-1 text-[10px] text-ink-500">
-            Above threshold
-          </p>
-        </div>
-
-        <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-            <Activity size={12} />
-            Average AQI
-          </div>
-
-          <div className="mt-2 font-mono text-2xl font-bold text-ink-900">
-            {locations.length
-              ? Math.round(
-                  locations.reduce(
-                    (sum, location) =>
-                      sum + Number(location.aqi || 0),
-                    0,
-                  ) / locations.length,
-                )
-              : 0}
-          </div>
-
-          <p className="mt-1 text-[10px] text-ink-500">
-            Across saved places
-          </p>
-        </div>
-
-        <div className="card-hover rounded-xl border border-forest-100 bg-forest-50 p-4 shadow-soft">
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.13em] text-forest-700">
-            <ShieldCheck size={12} />
-            Monitoring
-          </div>
-
-          <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-forest-800">
-            <span className="live-dot h-2 w-2 rounded-full bg-forest-600" />
-            Active
-          </div>
-
-          <p className="mt-1 text-[10px] text-forest-700/70">
-            Alerts enabled
-          </p>
-        </div>
-      </section>
-
-      {/* =====================================================
-          CONTROLS
-      ====================================================== */}
-      <section className="fade-up">
-        <div className="flex flex-col gap-4 rounded-2xl border border-ink-100 bg-surface p-4 shadow-soft sm:p-5 lg:flex-row lg:items-center lg:justify-between">
-          {/* Search */}
-          <div className="w-full lg:max-w-md">
-            <SearchBar
-              value={query}
-              onChange={setQuery}
-              placeholder="Search saved locations…"
-            />
-
-            {query && (
-              <div className="mt-2 flex items-center gap-1.5 px-1 text-[10px] text-ink-400">
-                <Search size={11} />
-                Showing {filtered.length} result
-                {filtered.length !== 1 ? 's' : ''}
-              </div>
-            )}
-          </div>
-
-          {/* Threshold */}
-          <div className="w-full rounded-xl border border-ink-100 bg-ink-50/70 p-4 lg:max-w-md">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-forest-700 shadow-sm">
-                  <SlidersHorizontal size={15} />
+                  <p className="mt-1 font-mono text-sm font-semibold text-ink-800">
+                    {currentLiveLocation.pm25 ?? '—'}
+                  </p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-ink-800">
-                    Alert Threshold
+                  <p className="text-[10px] text-ink-400">
+                    PM10
                   </p>
 
-                  <p className="mt-0.5 text-[10px] text-ink-400">
-                    Notify me when AQI reaches this level
+                  <p className="mt-1 font-mono text-sm font-semibold text-ink-800">
+                    {currentLiveLocation.pm10 ?? '—'}
                   </p>
                 </div>
+
+                <div>
+                  <p className="text-[10px] text-ink-400">
+                    NO₂
+                  </p>
+
+                  <p className="mt-1 font-mono text-sm font-semibold text-ink-800">
+                    {currentLiveLocation.no2 ?? '—'}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] text-ink-400">
+                    O₃
+                  </p>
+
+                  <p className="mt-1 font-mono text-sm font-semibold text-ink-800">
+                    {currentLiveLocation.o3 ?? '—'}
+                  </p>
+                </div>
+
               </div>
 
-              <div className="rounded-lg border border-forest-100 bg-white px-3 py-1.5 font-mono text-sm font-bold text-forest-800 shadow-sm">
-                {threshold}
-              </div>
-            </div>
+            )}
 
-            <div className="mt-4">
-              <input
-                type="range"
-                min="50"
-                max="300"
-                step="10"
-                value={threshold}
-                onChange={(event) =>
-                  setThreshold(Number(event.target.value))
-                }
-                className="w-full accent-forest-700"
-                aria-label="Air quality alert threshold"
-              />
-
-              <div className="mt-1.5 flex justify-between text-[9px] text-ink-400">
-                <span>50</span>
-                <span>150</span>
-                <span>250</span>
-                <span>300</span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
+
       {/* =====================================================
-          LOCATION LIST
-      ====================================================== */}
+          SEARCH LOCATION
+      ===================================================== */}
+
       <section>
-        <div className="fade-up mb-4 flex items-end justify-between gap-4">
-          <div>
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest-700">
-              Saved places
-            </p>
 
-            <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
-              Your monitored locations
-            </h2>
-          </div>
+        <div className="mb-4">
 
-          <span className="text-xs text-ink-400">
-            {filtered.length} shown
-          </span>
+          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest-700">
+            Explore air quality
+          </p>
+
+          <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
+            Search Location
+          </h2>
+
+          <p className="mt-1 text-xs text-ink-500">
+            Search any city or region to check its current AQI.
+          </p>
+
         </div>
 
-        {filtered.length === 0 ? (
-          <div className="fade-up rounded-2xl border border-ink-100 bg-surface p-3">
-            <EmptyState
-              variant="no-locations"
-              title={
-                query
-                  ? 'No matching locations'
-                  : 'No saved locations'
-              }
-              description={
-                query
-                  ? 'Try searching with a different location name or type.'
-                  : 'You have not saved any locations yet. Add one to start tracking air quality and receiving alerts.'
-              }
-              action={
-                <button
-                  type="button"
-                  className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-forest-800"
-                >
-                  <Plus size={16} />
-                  Add Location
-                </button>
-              }
+
+        <div className="rounded-2xl border border-ink-100 bg-surface p-4 shadow-soft sm:p-5">
+
+          {/* SEARCH BAR */}
+
+          <div className="max-w-xl">
+
+            <SearchBar
+              value={query}
+              onChange={setQuery}
+              placeholder="Search city or region..."
             />
+
           </div>
-        ) : (
-          <div className="stagger-children grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((location) => (
-              <LocationCard
-                key={location.id}
-                location={location}
-                onRemove={handleRemove}
+
+
+          {/* LOADING */}
+
+          {searchLoading && (
+
+            <div className="mt-5 flex items-center gap-2 text-sm text-ink-500">
+
+              <Loader2
+                size={16}
+                className="animate-spin"
               />
-            ))}
-          </div>
-        )}
-      </section>
 
-      {/* =====================================================
-          BOTTOM INFO
-      ====================================================== */}
-      <section className="fade-up">
-        <div className="relative overflow-hidden rounded-2xl border border-forest-100 bg-forest-50 p-5 sm:p-6">
-          <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-forest-400/10 blur-3xl float-soft" />
+              Searching live air quality...
 
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-700">
-                <ShieldCheck size={12} />
-                Monitoring preference
+            </div>
+
+          )}
+
+
+          {/* ERROR */}
+
+          {!searchLoading &&
+            searchError && (
+
+              <p className="mt-5 text-sm text-red-500">
+                {searchError}
+              </p>
+
+            )}
+
+
+          {/* RESULTS */}
+
+          {!searchLoading &&
+            !searchError &&
+            searchResults.length > 0 && (
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+                {searchResults.map(
+                  (location, index) => (
+
+                    <div
+                      key={`${location.id || location.name}-${location.latitude}-${location.longitude}-${index}`}
+                      className="rounded-xl border border-ink-100 bg-white p-4 transition-all hover:-translate-y-0.5 hover:shadow-card"
+                    >
+
+                      {/* LOCATION */}
+
+                      <div className="flex items-start gap-3">
+
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-forest-50 text-forest-700">
+                          <MapPin size={16} />
+                        </div>
+
+                        <div className="min-w-0">
+
+                          <p className="font-display font-semibold text-ink-900">
+                            {location.name}
+                          </p>
+
+                          <p className="mt-0.5 truncate text-xs text-ink-500">
+                            {location.region}
+
+                            {location.country
+                              ? `, ${location.country}`
+                              : ''}
+                          </p>
+
+                        </div>
+
+                      </div>
+
+
+                      {/* AQI */}
+
+                      <div className="mt-4 flex items-end justify-between">
+
+                        <div>
+
+                          <p className="text-[10px] uppercase tracking-wider text-ink-400">
+                            Current AQI
+                          </p>
+
+                          <p className="mt-1 font-mono text-2xl font-bold text-ink-900">
+                            {location.aqi ?? '—'}
+                          </p>
+
+                        </div>
+
+                        {location.aqi !== null &&
+                          location.aqi !== undefined && (
+
+                            <RiskBadge
+                              aqi={location.aqi}
+                              size="sm"
+                            />
+
+                          )}
+
+                      </div>
+
+
+                      {/* POLLUTANTS */}
+
+                      <div className="mt-4 grid grid-cols-2 gap-2">
+
+                        <div className="rounded-lg bg-ink-50 p-2">
+
+                          <p className="text-[10px] text-ink-400">
+                            PM2.5
+                          </p>
+
+                          <p className="mt-1 text-xs font-semibold text-ink-700">
+                            {location.pm25 ?? '—'}
+                          </p>
+
+                        </div>
+
+
+                        <div className="rounded-lg bg-ink-50 p-2">
+
+                          <p className="text-[10px] text-ink-400">
+                            PM10
+                          </p>
+
+                          <p className="mt-1 text-xs font-semibold text-ink-700">
+                            {location.pm10 ?? '—'}
+                          </p>
+
+                        </div>
+
+                      </div>
+
+
+                      {/* VIEW DETAILS */}
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleViewDetails(location)
+                        }
+                        className="mt-4 w-full rounded-lg bg-forest-50 px-3 py-2.5 text-xs font-semibold text-forest-700 transition-colors hover:bg-forest-100"
+                      >
+                        View Live Details
+                      </button>
+
+
+                      {/* SOURCE */}
+
+                      <p className="mt-3 text-center text-[9px] text-ink-400">
+                        Live data from Open-Meteo
+                      </p>
+
+                    </div>
+
+                  )
+                )}
+
               </div>
 
-              <p className="mt-1.5 text-sm font-semibold text-ink-900">
-                Alerts will trigger when a location reaches AQI {threshold}.
-              </p>
+            )}
 
-              <p className="mt-1 text-xs leading-5 text-ink-500">
-                You can change this threshold anytime from your location
-                monitoring settings.
-              </p>
-            </div>
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-forest-200 bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-forest-800">
-              <span className="live-dot h-1.5 w-1.5 rounded-full bg-forest-600" />
-              Monitoring active
-            </div>
-          </div>
+          {/* NO RESULTS */}
+
+          {!searchLoading &&
+            !searchError &&
+            query.trim() &&
+            searchResults.length === 0 && (
+
+              <div className="mt-5">
+
+                <EmptyState
+                  variant="location-not-found"
+                  title="Location not found"
+                  description={`We couldn't find a location matching "${query}". Try another city or region.`}
+                />
+
+              </div>
+
+            )}
+
+
+          {/* BEFORE SEARCH */}
+
+          {!query.trim() &&
+            !searchLoading && (
+
+              <div className="mt-5 rounded-xl border border-dashed border-ink-200 bg-ink-50/50 p-6 text-center">
+
+                <Search
+                  size={24}
+                  className="mx-auto text-forest-600"
+                />
+
+                <p className="mt-2 text-sm font-semibold text-ink-800">
+                  Search for a location
+                </p>
+
+                <p className="mt-1 text-xs text-ink-500">
+                  Enter a city name to see its live air quality.
+                </p>
+
+              </div>
+
+            )}
+
         </div>
+
       </section>
+
     </div>
   )
 }
