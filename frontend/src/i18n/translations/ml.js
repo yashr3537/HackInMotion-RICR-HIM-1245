@@ -167,5 +167,39 @@ export default {
 
   sidebar: {
     footerNotice: 'ഗాలి ഗുണനിലവാരം ഡാറ്റ സ്വയം പുതുക്കും. ഡെമോ ബിൽഡ് — ബാക്ക്‌എൻഡ് ഇനിയും ബന്ധിപ്പിച്ചിട്ടില്ല.'
+  },
+
+  auth: {
+    login: 'Login',
+    signup: 'Sign up',
+    forgotPassword: 'Forgot your password?',
+    forgotPasswordDescription: 'Enter the email associated with your AirGuard account.',
+    sendResetLink: 'Send reset link',
+    resetPassword: 'Reset password',
+    resetPasswordDescription: 'Choose a new password for your account.',
+    newPassword: 'New password',
+    confirmNewPassword: 'Confirm new password',
+    passwordUpdated: 'Password updated successfully',
+    passwordResetSuccess: 'Your AirGuard password has been changed.',
+    invalidResetToken: 'Invalid or missing reset token.',
+    resetTokenExpired: 'Reset token has expired.',
+    backToSignIn: 'Back to Sign In',
+    emailRequired: 'Email is required.',
+    invalidEmail: 'Please enter a valid email address.',
+    passwordsDoNotMatch: 'Passwords do not match.',
+    emailAddress: 'Email address',
+    emailPlaceholder: 'you@example.com',
+    sending: 'Sending…',
+    demoResetCreated: 'Demo reset created',
+    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    openResetLink: 'Open reset link',
+    resetRequestFailed: 'Unable to create reset request. Please try again.',
+    passwordRequired: 'Password is required.',
+    passwordTooShort: 'Password must be at least 6 characters.',
+    resetFailed: 'Unable to reset password. The token may be invalid or expired.',
+    newPasswordPlaceholder: 'Enter a new password',
+    confirmNewPasswordPlaceholder: 'Confirm new password',
+    userNotFound: 'No account found with that email address.',
+    resetTokenUsed: 'This reset token has already been used.'
   }
 }

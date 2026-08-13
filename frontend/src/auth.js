@@ -201,17 +201,109 @@ export function AuthProvider({ children }) {
       setCurrentUser(null)
       saveStoredSessionUser(null)
     },
+    // Password reset demo helpers
+    requestPasswordReset: async (email) => {
+      const normalizedEmail = normalizeEmail(email)
+      const users = getStoredUsers()
+      const user = users.find((u) => normalizeEmail(u.email) === normalizedEmail)
+
+      // Do not disclose whether the user exists. For demo/local flows:
+      // - If the user exists, create a short-lived reset token and return it.
+      // - If the user does not exist, return a generic ok response but do not provide a token.
+      // This preserves a production-like security posture while still enabling a demo experience.
+
+      if (!user) {
+        return { ok: true, demo: true }
+      }
+
+      const tokens = getStoredResetTokens()
+      // Use crypto.randomUUID when available. Provide a secure fallback to crypto.getRandomValues.
+      let token
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        token = crypto.randomUUID()
+      } else if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+        const array = new Uint8Array(16)
+        crypto.getRandomValues(array)
+        token = Array.from(array).map((b) => b.toString(16).padStart(2, '0')).join('')
+      } else {
+        // Last resort: Date-based with random — still better than Math.random alone.
+        token = `t-${Date.now()}-${Math.random().toString(36).slice(2)}`
+      }
+
+      const expiresAt = Date.now() + 15 * 60 * 1000 // 15 minutes
+
+      tokens.push({ email: normalizedEmail, token, expiresAt })
+      saveStoredResetTokens(tokens)
+
+      return { ok: true, token, expiresAt }
+    },
+    resetPassword: async (token, newPassword) => {
+      const tokens = getStoredResetTokens()
+      const entryIndex = tokens.findIndex((t) => t.token === token)
+
+      if (entryIndex === -1) {
+        throw new Error('Invalid reset token')
+      }
+
+      const entry = tokens[entryIndex]
+
+      if (Date.now() > entry.expiresAt) {
+        // remove expired token
+        tokens.splice(entryIndex, 1)
+        saveStoredResetTokens(tokens)
+        throw new Error('Reset token has expired')
+      }
+
+      const users = getStoredUsers()
+      const normalizedEmail = normalizeEmail(entry.email)
+      const userIndex = users.findIndex((u) => normalizeEmail(u.email) === normalizedEmail)
+
+      if (userIndex === -1) {
+        // remove token
+        tokens.splice(entryIndex, 1)
+        saveStoredResetTokens(tokens)
+        throw new Error('No account found for this reset request')
+      }
+
+      const passwordHash = await hashPassword(String(newPassword || ''))
+      users[userIndex] = { ...users[userIndex], passwordHash }
+      saveStoredUsers(users)
+
+      // remove token after use
+      tokens.splice(entryIndex, 1)
+      saveStoredResetTokens(tokens)
+
+      return { ok: true }
+    },
   }), [currentUser])
 
-  return React.createElement(AuthContext.Provider, { value }, children)
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    return React.createElement(AuthContext.Provider, { value }, children)
   }
 
-  return context
-}
+  export function useAuth() {
+    const context = useContext(AuthContext)
+
+    if (!context) {
+      throw new Error('useAuth must be used within an AuthProvider')
+    }
+
+    return context
+  }
+
+  // Helpers for reset tokens stored in localStorage
+  function getStoredResetTokens() {
+    if (typeof window === 'undefined') return []
+
+    try {
+      const raw = window.localStorage.getItem('airguard_reset_tokens')
+      const parsed = raw ? JSON.parse(raw) : []
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return []
+    }
+  }
+
+  function saveStoredResetTokens(tokens) {
+    if (typeof window === 'undefined') return
+    window.localStorage.setItem('airguard_reset_tokens', JSON.stringify(tokens))
+  }
