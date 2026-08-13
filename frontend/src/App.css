@@ -1124,3 +1124,351 @@ mask-composite: exclude;
     transition: none !important;
   }
 }
+
+/* =========================================================
+   AeroGuard - Global Dark Mode
+   ========================================================= */
+
+html.dark {
+  background: #07111a;
+  color-scheme: dark;
+}
+
+html.dark body {
+  background: #07111a;
+  color: #e6f0eb;
+  html.dark,
+html.dark body,
+html.dark #root {
+  min-height: 100%;
+  background: #07111A !important;
+  html.dark body {
+  color: #eaf5f1 !important;
+}
+}
+
+}
+
+
+
+/* Main custom backgrounds */
+html.dark .bg-canvas {
+  background-color: #07111a !important;
+}
+
+html.dark .bg-surface {
+  background-color: #0d1a23 !important;
+}
+
+html.dark .bg-forest-50,
+html.dark .bg-forest-100 {
+  background-color: #10241f !important;
+}
+
+/* Common white surfaces */
+html.dark .bg-white {
+  background-color: #111f29 !important;
+}
+
+/* Text system */
+html.dark .text-ink-900 {
+  color: #eef7f3 !important;
+}
+
+html.dark .text-ink-800 {
+  color: #dceae4 !important;
+}
+
+html.dark .text-ink-700 {
+  color: #bdcbc5 !important;
+}
+
+html.dark .text-ink-600 {
+  color: #aebdb7 !important;
+}
+
+html.dark .text-ink-500 {
+  color: #8e9e98 !important;
+}
+
+html.dark .text-ink-400 {
+  color: #72847d !important;
+}
+
+html.dark .text-ink-300 {
+  color: #60716b !important;
+}
+
+/* Borders */
+html.dark .border-ink-100 {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+html.dark .border-ink-200 {
+  border-color: rgba(255, 255, 255, 0.11) !important;
+}
+
+html.dark .border-forest-100 {
+  border-color: rgba(53, 214, 176, 0.12) !important;
+}
+
+html.dark .border-forest-200 {
+  border-color: rgba(53, 214, 176, 0.18) !important;
+}
+
+/* Light gray surfaces */
+html.dark .bg-ink-50 {
+  background-color: #101f28 !important;
+}
+
+html.dark .bg-ink-100 {
+  background-color: #14242e !important;
+}
+
+html.dark .bg-ink-100\/70 {
+  background-color: rgba(20, 36, 46, 0.72) !important;
+}
+
+/* Green text */
+html.dark .text-forest-700 {
+  color: #5de4c1 !important;
+}
+
+html.dark .text-forest-800 {
+  color: #76efd0 !important;
+}
+
+html.dark .text-forest-900 {
+  color: #b1f5e2 !important;
+}
+
+/* Green backgrounds */
+html.dark .bg-forest-700 {
+  background-color: #167258 !important;
+}
+
+html.dark .bg-forest-800 {
+  background-color: #126049 !important;
+}
+
+html.dark .bg-forest-900 {
+  background-color: #0d392d !important;
+}
+
+html.dark .bg-forest-950 {
+  background-color: #061c17 !important;
+}
+
+/* Existing white/transparent combinations */
+html.dark .bg-white\/70 {
+  background-color: rgba(17, 31, 41, 0.72) !important;
+}
+
+html.dark .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+html.dark .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Dividers */
+html.dark .divide-ink-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Form inputs */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  color: #eef7f3;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #657770;
+}
+
+html.dark select {
+  background-color: #0d1a23;
+}
+
+html.dark option {
+  background-color: #0d1a23;
+  color: #eef7f3;
+}
+
+/* Range slider */
+html.dark input[type='range'] {
+  filter: brightness(0.95);
+}
+
+/* Shadow adjustments */
+html.dark .shadow-soft {
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.28) !important;
+}
+
+html.dark .shadow-card {
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.34) !important;
+}
+
+html.dark .shadow-lift {
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.32) !important;
+}
+
+/* Premium hover surfaces */
+html.dark .hover\:bg-ink-50:hover {
+  background-color: #14242e !important;
+}
+
+html.dark .hover\:bg-white\/5:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Search / common light controls */
+html.dark .search-premium {
+  color: #eaf5f1;
+}
+
+html.dark .search-premium input {
+  background-color: transparent !important;
+}
+
+/* Glass cards */
+html.dark .card-glow {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.22);
+}
+
+/* Footer */
+html.dark footer {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Charts */
+html.dark .recharts-cartesian-grid-horizontal line,
+html.dark .recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.07) !important;
+}
+
+html.dark .recharts-text {
+  fill: #81918b !important;
+}
+
+/* Leaflet */
+html.dark .leaflet-container {
+  background: #09151d;
+}
+
+html.dark .leaflet-control-zoom a,
+html.dark .leaflet-control-attribution {
+  background: #0d1a23 !important;
+  color: #9baba5 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .leaflet-popup-content-wrapper,
+html.dark .leaflet-popup-tip {
+  background: #0d1a23;
+  color: #eaf5f1;
+}
+
+/* Smooth global theme transition */
+html.dark body,
+html.dark .bg-canvas,
+html.dark .bg-surface,
+html.dark .bg-white,
+html.dark header,
+html.dark footer,
+html.dark button,
+html.dark input,
+html.dark select,
+html.dark textarea,
+html.dark .card-hover {
+  transition:
+    background-color 280ms ease,
+    color 280ms ease,
+    border-color 280ms ease,
+    box-shadow 280ms ease;
+}
+
+/* =========================================================
+   AeroGuard - Navbar Dark Mode
+   ========================================================= */
+
+html.dark header {
+  background-color: rgba(7, 17, 26, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #eaf5f1;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.28);
+}
+
+html.dark header.backdrop-blur-xl,
+html.dark header.backdrop-blur-md {
+  background-color: rgba(7, 17, 26, 0.88) !important;
+}
+
+html.dark header .text-ink-900 {
+  color: #eef7f3 !important;
+}
+
+html.dark header .text-ink-700 {
+  color: #b9c9c2 !important;
+}
+
+html.dark header .text-ink-500 {
+  color: #81918a !important;
+}
+
+html.dark header .text-forest-700 {
+  color: #67e7c5 !important;
+}
+
+html.dark header .bg-surface {
+  background-color: #0d1a23 !important;
+}
+
+html.dark header .border-ink-200 {
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+
+html.dark header .border-ink-100 {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+html.dark header .hover\:bg-ink-50:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html.dark header .hover\:text-forest-700:hover {
+  color: #67e7c5 !important;
+}
+
+/* Mobile navbar button */
+html.dark header button {
+  background-color: #0d1a23;
+  color: #c7d6d0;
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+html.dark header button:hover {
+  background-color: #13242e;
+}
+
+/* Mobile navigation panel */
+html.dark header .bg-canvas\/95 {
+  background-color: rgba(7, 17, 26, 0.97) !important;
+}
+
+/* Navbar CTA */
+html.dark header .bg-forest-700 {
+  background-color: #167258 !important;
+  color: #ffffff !important;
+}
+
+html.dark header .hover\:bg-forest-800:hover {
+  background-color: #126049 !important;
+}
