@@ -1,22 +1,15 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import {
-  ArrowRight,
-  Activity,
-  Gauge,
-  Compass as CompassIcon,
-  TrendingUp,
-  Bell,
-  Footprints,
-  ShieldCheck,
-  MapPin,
-  Sparkles,
+  ArrowRight, Activity, Gauge, Compass as CompassIcon, TrendingUp, Bell, Footprints,
+  ShieldCheck, MapPin, Loader2,
 } from 'lucide-react'
-
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import RiskBadge from '../components/RiskBadge'
 import AQIGauge from '../components/AQIGauge'
-import { features, howItWorks, currentLocation } from '../data/demoData'
+import { features, howItWorks } from '../data/demoData'
+import { getAirQuality } from '../data/airQualityApi'
 
 const FEATURE_ICONS = {
   activity: Activity,
@@ -27,85 +20,118 @@ const FEATURE_ICONS = {
   footprints: Footprints,
 }
 
-const delayStyles = {
-  delay1: { animationDelay: '80ms' },
-  delay2: { animationDelay: '160ms' },
-  delay3: { animationDelay: '240ms' },
-  delay4: { animationDelay: '320ms' },
-  delay5: { animationDelay: '400ms' },
-}
-
 export default function Landing() {
+  const [liveAQI, setLiveAQI] = useState(null)
+  const [livePM25, setLivePM25] = useState(null)
+  const [livePM10, setLivePM10] = useState(null)
+  const [locationName, setLocationName] = useState('Your current location')
+  const [loadingAQI, setLoadingAQI] = useState(true)
+  const [aqiError, setAqiError] = useState('')
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setAqiError('Location is not supported by your browser.')
+      setLoadingAQI(false)
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords
+
+          const airQuality = await getAirQuality(latitude, longitude)
+
+          setLiveAQI(airQuality.aqi)
+          setLivePM25(airQuality.pm25)
+          setLivePM10(airQuality.pm10)
+
+          // Try to get the current city name
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
+            )
+
+            if (response.ok) {
+              const locationData = await response.json()
+
+              const address = locationData.address || {}
+
+              const city =
+                address.city ||
+                address.town ||
+                address.village ||
+                address.municipality ||
+                'Your current location'
+
+              setLocationName(city)
+            }
+          } catch (locationError) {
+            console.warn('Could not determine city name:', locationError)
+          }
+
+          setAqiError('')
+        } catch (error) {
+          console.error('Live AQI error:', error)
+          setAqiError('Unable to fetch live air quality.')
+        } finally {
+          setLoadingAQI(false)
+        }
+      },
+      (error) => {
+        console.error('Location permission error:', error)
+        setAqiError('Please allow location access to see live AQI.')
+        setLoadingAQI(false)
+      }
+    )
+  }, [])
+
   return (
-    <div className="bg-canvas min-h-screen overflow-x-hidden">
+    <div className="bg-canvas">
       <Navbar />
 
-      {/* =====================================================
-          HERO
-      ====================================================== */}
+      {/* HERO */}
       <section className="relative overflow-hidden">
-        {/* Ambient background */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="ambient-glow absolute inset-0" />
-
-          <div className="absolute left-[7%] top-16 h-2 w-2 rounded-full bg-forest-400/60 float-soft" />
-
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-10 left-[8%] w-2 h-2 rounded-full bg-forest-400/60 animate-drift" />
           <div
-            className="absolute left-[20%] top-32 h-1.5 w-1.5 rounded-full bg-mist-500/50 float-gentle"
-            style={delayStyles.delay2}
+            className="absolute top-32 left-[22%] w-1.5 h-1.5 rounded-full bg-mist-500/50 animate-drift"
+            style={{ animationDelay: '1.2s' }}
           />
-
           <div
-            className="absolute right-[18%] top-20 h-2.5 w-2.5 rounded-full bg-forest-300/50 float-slow"
-            style={delayStyles.delay3}
+            className="absolute top-20 right-[18%] w-2.5 h-2.5 rounded-full bg-forest-300/50 animate-drift"
+            style={{ animationDelay: '2.1s' }}
           />
-
           <div
-            className="absolute right-[29%] top-56 h-1.5 w-1.5 rounded-full bg-forest-400/40 float-soft"
-            style={delayStyles.delay1}
+            className="absolute top-56 right-[30%] w-1.5 h-1.5 rounded-full bg-forest-400/40 animate-drift"
+            style={{ animationDelay: '0.6s' }}
           />
-
           <div
-            className="absolute bottom-24 left-[38%] h-2 w-2 rounded-full bg-mist-500/40 float-gentle"
-            style={delayStyles.delay4}
+            className="absolute bottom-24 left-[38%] w-2 h-2 rounded-full bg-mist-500/40 animate-drift"
+            style={{ animationDelay: '1.8s' }}
           />
-
-          <div className="absolute left-1/2 top-0 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-forest-400/5 blur-[120px]" />
         </div>
 
-        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pb-16 pt-14 sm:px-8 sm:pb-20 sm:pt-20 lg:grid-cols-2 lg:pb-28 lg:pt-24">
-          {/* Hero content */}
-          <div className="max-w-2xl">
-            <div className="fade-down mb-6 inline-flex items-center gap-2 rounded-full border border-forest-200/70 bg-forest-50 px-3.5 py-1.5 text-xs font-semibold text-forest-800 shadow-sm">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-16 grid lg:grid-cols-2 gap-14 items-center">
+
+          <div className="animate-rise">
+            <div className="inline-flex items-center gap-2 bg-forest-100 text-forest-800 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               <ShieldCheck size={13} />
               Real-time environmental intelligence
-              <Sparkles size={12} className="text-forest-600" />
             </div>
 
-            <h1
-              className="text-reveal font-display text-4xl font-semibold leading-[1.06] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.6rem]"
-            >
-              Know the air
-              <br />
-              <span className="text-forest-700">around you.</span>
+            <h1 className="font-display font-semibold text-4xl sm:text-5xl lg:text-[3.4rem] leading-[1.08] text-ink-900 tracking-tight">
+              Know the air<br />around you.
             </h1>
 
-            <p
-              className="fade-up mt-5 max-w-md text-base leading-relaxed text-ink-700 sm:text-lg"
-              style={{ animationDelay: '160ms' }}
-            >
-              Turn complex environmental data into clear, personalized
-              actions. Understand your air quality, your risk, and what to do
-              next.
+            <p className="text-ink-700 text-base sm:text-lg leading-relaxed mt-5 max-w-md">
+              Turn complex environmental data into clear, personalized actions.
             </p>
 
-            <div
-              className="stagger-children mt-8 flex flex-wrap gap-3"
-              style={{ animationDelay: '240ms' }}
-            >
+            <div className="flex flex-wrap gap-3 mt-8">
               <Link
                 to="/dashboard"
-                className="btn-premium inline-flex items-center gap-2 rounded-lg bg-forest-700 px-5 py-3.5 text-sm font-semibold text-white shadow-lift hover:bg-forest-800"
+                className="inline-flex items-center gap-2 bg-forest-700 hover:bg-forest-800 text-white font-semibold text-sm px-5 py-3.5 rounded-lg transition-colors shadow-lift"
               >
                 Check Air Quality
                 <ArrowRight size={16} />
@@ -113,255 +139,217 @@ export default function Landing() {
 
               <a
                 href="#features"
-                className="btn-premium inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-surface px-5 py-3.5 text-sm font-semibold text-ink-900 hover:border-forest-400"
+                className="inline-flex items-center gap-2 bg-surface border border-ink-200 hover:border-forest-400 text-ink-900 font-semibold text-sm px-5 py-3.5 rounded-lg transition-colors"
               >
                 Explore Features
-                <CompassIcon size={16} />
               </a>
-            </div>
-
-            <div
-              className="fade-up mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-ink-500"
-              style={{ animationDelay: '360ms' }}
-            >
-              <span className="inline-flex items-center gap-2">
-                <span className="live-dot h-1.5 w-1.5 rounded-full bg-forest-600" />
-                Live environmental data
-              </span>
-
-              <span className="inline-flex items-center gap-2">
-                <ShieldCheck size={13} className="text-forest-600" />
-                Clear risk guidance
-              </span>
-
-              <span className="inline-flex items-center gap-2">
-                <Bell size={13} className="text-forest-600" />
-                Location alerts
-              </span>
             </div>
           </div>
 
-          {/* Hero AQI Card */}
-          <div
-            className="scale-in relative mx-auto w-full max-w-md"
-            style={{ animationDelay: '120ms' }}
-          >
-            <div className="pointer-events-none absolute -inset-8 rounded-[40px] bg-forest-400/8 blur-3xl" />
+          {/* LIVE AQI CARD */}
+          <div className="animate-rise" style={{ animationDelay: '0.1s' }}>
+            <div className="bg-surface rounded-xl2 shadow-lift border border-ink-100 p-6 sm:p-8 max-w-md mx-auto relative">
 
-            <div className="card-hover card-glow relative rounded-xl2 border border-ink-100 bg-surface p-6 shadow-lift sm:p-8">
-              {/* Card top */}
-              <div className="mb-4 flex items-start justify-between gap-4">
-                <div>
-                  <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-500">
-                    Live air quality
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-sm text-ink-700">
-                    <MapPin size={15} className="text-forest-600" />
-                    {currentLocation.name}
-                  </div>
+              {!loadingAQI && liveAQI !== null && (
+                <div className="absolute top-6 right-6">
+                  <RiskBadge aqi={liveAQI} size="sm" />
                 </div>
+              )}
 
-                <RiskBadge
-                  aqi={currentLocation.aqi}
-                  size="sm"
-                />
+              <div className="flex items-center gap-1.5 text-sm text-ink-700 mb-4">
+                <MapPin size={15} className="text-forest-600" />
+                {locationName}
               </div>
 
-              {/* AQI gauge */}
-              <div className="flex justify-center py-2 float-soft">
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-4 rounded-full bg-forest-400/8 blur-2xl aqi-pulse" />
+              {loadingAQI ? (
+                <div className="flex flex-col items-center justify-center py-16">
+                  <Loader2
+                    size={32}
+                    className="text-forest-600 animate-spin"
+                  />
+                  <p className="text-sm text-ink-500 mt-3">
+                    Getting live air quality...
+                  </p>
+                </div>
+              ) : aqiError ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <MapPin
+                    size={30}
+                    className="text-forest-600 mb-3"
+                  />
 
-                  <div className="relative">
+                  <p className="font-semibold text-ink-800">
+                    Location required
+                  </p>
+
+                  <p className="text-sm text-ink-500 mt-1 max-w-xs">
+                    {aqiError}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-center py-2">
                     <AQIGauge
-                      aqi={currentLocation.aqi}
+                      aqi={liveAQI}
                       size={220}
                     />
                   </div>
-                </div>
-              </div>
 
-              {/* Pollutants */}
-              <div className="stagger-children mt-4 grid grid-cols-2 gap-3">
-                <div className="card-hover rounded-lg border border-forest-100 bg-forest-50 px-4 py-3">
-                  <p className="text-xs font-medium text-ink-500">
-                    PM2.5
-                  </p>
+                  <div className="grid grid-cols-2 gap-3 mt-4">
 
-                  <p className="mt-0.5 font-mono text-lg font-semibold text-ink-900">
-                    {currentLocation.pm25}{' '}
-                    <span className="text-xs font-normal text-ink-500">
-                      µg/m³
-                    </span>
-                  </p>
-                </div>
+                    <div className="bg-forest-50 rounded-lg px-4 py-3">
+                      <p className="text-xs text-ink-500 font-medium">
+                        PM2.5
+                      </p>
 
-                <div className="card-hover rounded-lg border border-forest-100 bg-forest-50 px-4 py-3">
-                  <p className="text-xs font-medium text-ink-500">
-                    PM10
-                  </p>
+                      <p className="font-mono font-semibold text-lg text-ink-900">
+                        {livePM25 ?? '—'}{' '}
+                        <span className="text-xs font-normal text-ink-500">
+                          µg/m³
+                        </span>
+                      </p>
+                    </div>
 
-                  <p className="mt-0.5 font-mono text-lg font-semibold text-ink-900">
-                    {currentLocation.pm10}{' '}
-                    <span className="text-xs font-normal text-ink-500">
-                      µg/m³
-                    </span>
-                  </p>
-                </div>
-              </div>
+                    <div className="bg-forest-50 rounded-lg px-4 py-3">
+                      <p className="text-xs text-ink-500 font-medium">
+                        PM10
+                      </p>
 
-              {/* Card footer */}
-              <div className="mt-5 flex items-center justify-between border-t border-ink-100 pt-4">
-                <span className="text-xs text-ink-500">
-                  Environmental status
-                </span>
+                      <p className="font-mono font-semibold text-lg text-ink-900">
+                        {livePM10 ?? '—'}{' '}
+                        <span className="text-xs font-normal text-ink-500">
+                          µg/m³
+                        </span>
+                      </p>
+                    </div>
 
-                <span className="inline-flex items-center gap-2 text-xs font-medium text-forest-700">
-                  <span className="live-dot h-1.5 w-1.5 rounded-full bg-forest-600" />
-                  Live monitoring
-                </span>
-              </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-forest-700 mt-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-forest-600" />
+                    Live air quality data
+                  </div>
+                </>
+              )}
+
             </div>
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          FEATURES
-      ====================================================== */}
+      {/* FEATURES */}
       <section
         id="features"
-        className="scroll-mt-16 mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24"
+        className="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24 scroll-mt-16"
       >
-        <div className="fade-up mb-12 max-w-xl">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-forest-700">
+        <div className="max-w-xl mb-12">
+          <p className="text-xs font-semibold uppercase tracking-wider text-forest-700 mb-3">
             Features
           </p>
 
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
+          <h2 className="font-display font-semibold text-3xl sm:text-4xl text-ink-900 tracking-tight">
             Everything you need to understand your air
           </h2>
-
-          <p className="mt-4 text-sm leading-6 text-ink-600 sm:text-base">
-            From live environmental conditions to historical trends and
-            personalized guidance, AeroGuard keeps the information simple and
-            useful.
-          </p>
         </div>
 
-        <div className="stagger-children grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f) => {
             const Icon = FEATURE_ICONS[f.icon] || Activity
 
             return (
               <div
                 key={f.key}
-                className="card-hover card-glow group rounded-xl2 border border-ink-100 bg-surface p-6"
+                className="bg-surface rounded-xl2 border border-ink-100 p-6 hover:shadow-card hover:-translate-y-0.5 transition-all"
               >
-                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-lg bg-forest-100 transition-transform duration-300 group-hover:scale-105">
-                  <Icon
-                    size={20}
-                    className="text-forest-700 transition-transform duration-300 group-hover:rotate-[-4deg]"
-                  />
+                <div className="w-11 h-11 rounded-lg bg-forest-100 flex items-center justify-center mb-4">
+                  <Icon size={20} className="text-forest-700" />
                 </div>
 
-                <h3 className="font-display mb-1.5 font-semibold text-ink-900">
+                <h3 className="font-display font-semibold text-ink-900 mb-1.5">
                   {f.title}
                 </h3>
 
-                <p className="text-sm leading-relaxed text-ink-700">
+                <p className="text-sm text-ink-700 leading-relaxed">
                   {f.description}
                 </p>
-
-                <div className="mt-5 flex items-center gap-2 text-xs font-medium text-forest-700 opacity-70 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
-                  Explore capability
-                  <ArrowRight size={13} />
-                </div>
               </div>
             )
           })}
         </div>
       </section>
 
-      {/* =====================================================
-          HOW IT WORKS
-      ====================================================== */}
+      {/* HOW IT WORKS */}
       <section
         id="how-it-works"
-        className="scroll-mt-16 bg-forest-50/60 py-20 sm:py-24"
+        className="bg-forest-50/60 py-20 sm:py-24 scroll-mt-16"
       >
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="fade-up mb-14 max-w-xl">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-forest-700">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8">
+
+          <div className="max-w-xl mb-14">
+            <p className="text-xs font-semibold uppercase tracking-wider text-forest-700 mb-3">
               How It Works
             </p>
 
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
+            <h2 className="font-display font-semibold text-3xl sm:text-4xl text-ink-900 tracking-tight">
               From location to action, in four steps
             </h2>
           </div>
 
-          <div className="stagger-children relative grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             {howItWorks.map((s, i) => (
               <div key={s.step} className="relative">
-                <div className="flex items-center gap-3">
-                  <div className="card-hover flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-700 font-display font-semibold text-white shadow-sm">
+
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-11 h-11 rounded-full bg-forest-700 text-white font-display font-semibold flex items-center justify-center shrink-0">
                     {s.step}
                   </div>
 
                   {i < howItWorks.length - 1 && (
-                    <div className="hidden h-px flex-1 bg-forest-200 lg:block" />
+                    <div className="hidden lg:block flex-1 h-px bg-forest-200" />
                   )}
                 </div>
 
-                <h3 className="font-display mb-1.5 mt-4 font-semibold text-ink-900">
+                <h3 className="font-display font-semibold text-ink-900 mb-1.5">
                   {s.title}
                 </h3>
 
-                <p className="text-sm leading-relaxed text-ink-700">
+                <p className="text-sm text-ink-700 leading-relaxed">
                   {s.description}
                 </p>
+
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* =====================================================
-          PREMIUM ABOUT / CTA
-      ====================================================== */}
+      {/* ABOUT / CTA */}
       <section
         id="about"
-        className="scroll-mt-16 mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24"
+        className="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24 scroll-mt-16"
       >
-        <div className="card-glow relative overflow-hidden rounded-xl2 bg-gradient-to-br from-forest-900 to-forest-700 px-6 py-14 text-center sm:px-14 sm:py-16">
-          <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-forest-500/20 blur-3xl float-slow" />
+        <div className="bg-gradient-to-br from-forest-900 to-forest-700 rounded-xl2 px-6 sm:px-14 py-14 sm:py-16 text-center relative overflow-hidden">
 
-          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-mist-300/10 blur-3xl float-gentle" />
+          <div className="absolute -left-16 -bottom-16 w-56 h-56 rounded-full bg-forest-500/20 blur-3xl" />
 
           <div className="relative">
-            <div className="fade-up mx-auto mb-5 flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-forest-100">
-              <ShieldCheck size={13} />
-              Environmental awareness, made personal
-            </div>
 
-            <h2 className="text-reveal mx-auto max-w-xl font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            <h2 className="font-display font-semibold text-3xl sm:text-4xl text-white tracking-tight max-w-xl mx-auto">
               Built for people who breathe the same air every day.
             </h2>
 
-            <p className="fade-up mx-auto mt-4 max-w-md leading-relaxed text-forest-100/90">
-              AeroGuard was built as a hackathon project to make environmental
-              risk personal, clear, and actionable.
+            <p className="text-forest-100/90 mt-4 max-w-md mx-auto leading-relaxed">
+              AirGuard was built as a hackathon project to make environmental risk personal, clear, and actionable.
             </p>
 
             <Link
               to="/dashboard"
-              className="btn-premium mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3.5 text-sm font-semibold text-forest-800 hover:bg-forest-50"
+              className="inline-flex items-center gap-2 bg-white text-forest-800 font-semibold text-sm px-5 py-3.5 rounded-lg mt-8 hover:bg-forest-50 transition-colors"
             >
               Check Air Quality
               <ArrowRight size={16} />
             </Link>
+
           </div>
         </div>
       </section>
@@ -369,4 +357,4 @@ export default function Landing() {
       <Footer />
     </div>
   )
-} 
+}
