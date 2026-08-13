@@ -26,8 +26,15 @@ import {
 } from '../data/demoData'
 
 import { useAuth } from '../auth'
+import { getAirQuality } from '../data/airQualityApi'
+import { useEffect, useState } from 'react'
+
 
 export default function Dashboard() {
+  const [liveLocation, setLiveLocation] = useState(currentLocation)
+const [livePollutants, setLivePollutants] = useState(pollutants)
+const [loadingAQI, setLoadingAQI] = useState(true)
+const [aqiError, setAqiError] = useState(null)
   const { currentUser } = useAuth()
 
   const hour = new Date().getHours()
@@ -41,7 +48,60 @@ export default function Dashboard() {
 
   const userName = currentUser?.name || 'there'
 
+useEffect(() => {
+  if (!navigator.geolocation) {
+    setAqiError('Location is not supported by your browser.')
+    setLoadingAQI(false)
+    return
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      try {
+        const { latitude, longitude } = position.coords
+
+        const airQuality = await getAirQuality(latitude, longitude)
+
+        setLiveLocation((prev) => ({
+          ...prev,
+          aqi: airQuality.aqi,
+          pm25: airQuality.pm25,
+          pm10: airQuality.pm10,
+          lastUpdated: 'Just now',
+        }))
+
+        setLivePollutants((prev) =>
+          prev.map((pollutant) => ({
+            ...pollutant,
+            value:
+              pollutant.key === 'pm25' ? airQuality.pm25 :
+              pollutant.key === 'pm10' ? airQuality.pm10 :
+              pollutant.key === 'no2' ? airQuality.no2 :
+              pollutant.key === 'o3' ? airQuality.o3 :
+              pollutant.key === 'so2' ? airQuality.so2 :
+              pollutant.key === 'co' ? airQuality.co :
+              pollutant.value,
+          }))
+        )
+
+        setAqiError(null)
+      } catch (error) {
+        console.error('AQI error:', error)
+        setAqiError('Unable to fetch live air quality.')
+      } finally {
+        setLoadingAQI(false)
+      }
+    },
+    (error) => {
+      console.error('Location error:', error)
+      setAqiError('Location permission is required for live AQI.')
+      setLoadingAQI(false)
+    }
+  )
+}, [])
+
   return (
+<<<<<<< HEAD
     <div className="page-enter flex flex-col gap-8 pb-8 sm:gap-10">
       {/* =====================================================
           HEADER
@@ -96,9 +156,20 @@ export default function Dashboard() {
               My Locations
             </Link>
           </div>
+=======
+    <div className="flex flex-col gap-6 sm:gap-8">
+      <div>
+        <h1 className="font-display font-semibold text-2xl sm:text-3xl text-ink-900">
+          {greeting}, {currentUser.name}
+        </h1>
+        <div className="flex items-center gap-1.5 text-ink-500 text-sm mt-1.5">
+          <MapPin size={14} className="text-forest-600" />
+          {liveLocation.name}, {liveLocation.region}
+>>>>>>> 9caca5f (aqi real time working)
         </div>
       </section>
 
+<<<<<<< HEAD
       {/* =====================================================
           CURRENT AIR QUALITY HERO
       ====================================================== */}
@@ -206,6 +277,15 @@ export default function Dashboard() {
               key={pollutant.key}
               pollutant={pollutant}
             />
+=======
+     <AQICard location={liveLocation} />
+
+      <div>
+        <h2 className="font-display font-semibold text-lg text-ink-900 mb-4">Pollutant Breakdown</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          {livePollutants.map((p) => (
+            <PollutantCard key={p.key} pollutant={p} />
+>>>>>>> 9caca5f (aqi real time working)
           ))}
         </div>
       </section>
