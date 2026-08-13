@@ -13,6 +13,8 @@ import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
 import { AuthProvider, useAuth } from './auth'
+import RouteRisk from './pages/RouteRisk'
+
 
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth()
@@ -26,7 +28,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
-
+        <Route path="/route-risk" element={<RouteRisk />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/explore" element={<Explore />} />

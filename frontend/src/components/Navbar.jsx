@@ -1,77 +1,227 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { Menu, X, Leaf } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  Menu,
+  X,
+  Leaf,
+  ArrowRight,
+  LogIn,
+  Sparkles,
+} from 'lucide-react'
 
 const LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/#features', label: 'Features' },
-  { to: '/#how-it-works', label: 'How It Works' },
-  { to: '/#about', label: 'About' },
+  { href: '#features', label: 'Features' },
+  { href: '#how-it-works', label: 'How It Works' },
+  { href: '#about', label: 'About' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 12)
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll)
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleEscape)
+
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
+  const handleMobileLink = (href) => {
+    setOpen(false)
+
+    window.setTimeout(() => {
+      const target = document.querySelector(href)
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      }
+    }, 50)
+  }
 
   return (
-    <header className="sticky top-0 z-40 bg-canvas/85 backdrop-blur-md border-b border-ink-100">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="w-8 h-8 rounded-lg bg-forest-800 flex items-center justify-center">
-            <Leaf size={16} className="text-forest-300" />
-          </span>
-          <span className="font-display font-semibold text-lg text-ink-900">AirGuard</span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-8">
-          {LINKS.map((l) => (
-            <a key={l.label} href={l.to} className="text-sm font-medium text-ink-700 hover:text-forest-700 transition-colors">
-              {l.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="hidden md:flex items-center gap-3">
-          <Link to="/login" className="text-sm font-medium text-ink-700 hover:text-forest-700 px-3 py-2 transition-colors">
-            Login
-          </Link>
+    <>
+      <header
+        className={`nav-enter fixed left-0 right-0 top-0 z-[100] border-b transition-all duration-300 ${
+          scrolled
+            ? 'border-ink-200/80 bg-canvas/92 shadow-[0_10px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl'
+            : 'border-ink-100 bg-canvas/80 backdrop-blur-md'
+        }`}
+      >
+        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
+          {/* BRAND */}
           <Link
-            to="/dashboard"
-            className="bg-forest-700 hover:bg-forest-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            to="/"
+            className="group flex shrink-0 items-center gap-3"
+            aria-label="AirGuard home"
           >
-            Check Air Quality
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-forest-700/10 bg-forest-800 shadow-sm transition-all duration-300 group-hover:-rotate-3 group-hover:scale-105 group-hover:shadow-md">
+              <span className="absolute inset-0 rounded-xl bg-forest-400/10 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+
+              <Leaf
+                size={18}
+                className="relative z-10 text-forest-300 transition-transform duration-300 group-hover:scale-110"
+              />
+            </span>
+
+            <span className="hidden sm:block">
+              <span className="block font-display text-lg font-semibold tracking-tight text-ink-900">
+                AirGuard
+              </span>
+
+              <span className="block text-[9px] font-medium uppercase tracking-[0.2em] text-ink-500">
+                Environmental Safety
+              </span>
+            </span>
           </Link>
-        </div>
 
-        <button className="md:hidden p-2 text-ink-700" onClick={() => setOpen((o) => !o)} aria-label="Toggle menu">
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </div>
-
-      {open && (
-        <div className="md:hidden border-t border-ink-100 bg-canvas px-5 py-4 flex flex-col gap-1">
-          {LINKS.map((l) => (
-            <a
-              key={l.label}
-              href={l.to}
-              onClick={() => setOpen(false)}
-              className="text-sm font-medium text-ink-700 py-2.5"
+          {/* DESKTOP NAVIGATION */}
+          <nav className="hidden items-center gap-7 md:flex">
+            <Link
+              to="/"
+              className="nav-item nav-underline text-sm font-medium text-ink-700 hover:text-forest-700"
             >
-              {l.label}
-            </a>
-          ))}
-          <div className="flex gap-3 mt-2">
-            <Link to="/login" className="flex-1 text-center text-sm font-medium border border-ink-200 rounded-lg py-2.5">
+              Home
+            </Link>
+
+            {LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="nav-item nav-underline text-sm font-medium text-ink-700 hover:text-forest-700"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* DESKTOP ACTIONS */}
+          <div className="hidden items-center gap-2.5 md:flex">
+            <Link
+              to="/login"
+              className="btn-premium inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-700 hover:bg-ink-50 hover:text-forest-700"
+            >
+              <LogIn size={15} />
               Login
             </Link>
+
             <Link
               to="/dashboard"
-              className="flex-1 text-center bg-forest-700 text-white text-sm font-semibold rounded-lg py-2.5"
+              className="btn-premium group inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forest-800"
             >
+              <Sparkles
+                size={14}
+                className="transition-transform duration-300 group-hover:rotate-12"
+              />
+
               Check Air Quality
+
+              <ArrowRight
+                size={15}
+                className="transition-transform duration-300 group-hover:translate-x-0.5"
+              />
             </Link>
           </div>
+
+          {/* MOBILE BUTTON */}
+          <button
+            type="button"
+            className="icon-hover flex h-10 w-10 items-center justify-center rounded-xl border border-ink-200 bg-surface text-ink-700 md:hidden"
+            onClick={() => setOpen((value) => !value)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+          >
+            {open ? <X size={21} /> : <Menu size={21} />}
+          </button>
         </div>
-      )}
-    </header>
+
+        {/* MOBILE MENU */}
+        <div
+          className={`md:hidden overflow-hidden border-t border-ink-100 bg-canvas/95 backdrop-blur-xl transition-all duration-300 ${
+            open ? 'max-h-[420px] opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
+            <div className="stagger-children flex flex-col gap-1.5">
+              <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                className="rounded-xl border border-forest-100 bg-forest-50 px-4 py-3 text-sm font-semibold text-forest-800"
+              >
+                Home
+              </Link>
+
+              {LINKS.map((link) => (
+                <button
+                  key={link.label}
+                  type="button"
+                  onClick={() => handleMobileLink(link.href)}
+                  className="rounded-xl px-4 py-3 text-left text-sm font-medium text-ink-700 transition-colors hover:bg-ink-50 hover:text-forest-700"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <Link
+                to="/login"
+                onClick={() => setOpen(false)}
+                className="btn-premium inline-flex items-center justify-center gap-2 rounded-xl border border-ink-200 px-4 py-3 text-sm font-semibold text-ink-800"
+              >
+                <LogIn size={15} />
+                Login
+              </Link>
+
+              <Link
+                to="/dashboard"
+                onClick={() => setOpen(false)}
+                className="btn-premium inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 px-4 py-3 text-sm font-semibold text-white"
+              >
+                Open
+                <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE MENU BACKDROP */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
+          open
+            ? 'pointer-events-auto opacity-100'
+            : 'pointer-events-none opacity-0'
+        }`}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+    </>
   )
 }
