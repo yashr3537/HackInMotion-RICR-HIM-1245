@@ -8,8 +8,13 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import RiskBadge from '../components/RiskBadge'
 import AQIGauge from '../components/AQIGauge'
+<<<<<<< HEAD
 import { features, howItWorks } from '../data/demoData'
 import { getAirQuality } from '../data/airQualityApi'
+=======
+import { features, howItWorks, currentLocation } from '../data/demoData'
+import { useLanguage } from '../i18n/index.jsx'
+>>>>>>> feature/frontend
 
 const FEATURE_ICONS = {
   activity: Activity,
@@ -21,6 +26,7 @@ const FEATURE_ICONS = {
 }
 
 export default function Landing() {
+<<<<<<< HEAD
   const [liveAQI, setLiveAQI] = useState(null)
   const [livePM25, setLivePM25] = useState(null)
   const [livePM10, setLivePM10] = useState(null)
@@ -85,6 +91,9 @@ export default function Landing() {
       }
     )
   }, [])
+=======
+  const { t } = useLanguage()
+>>>>>>> feature/frontend
 
   return (
     <div className="bg-canvas">
@@ -117,6 +126,7 @@ export default function Landing() {
           <div className="animate-rise">
             <div className="inline-flex items-center gap-2 bg-forest-100 text-forest-800 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               <ShieldCheck size={13} />
+<<<<<<< HEAD
               Real-time environmental intelligence
             </div>
 
@@ -126,6 +136,25 @@ export default function Landing() {
 
             <p className="text-ink-700 text-base sm:text-lg leading-relaxed mt-5 max-w-md">
               Turn complex environmental data into clear, personalized actions.
+=======
+              {t('landing.realtimeIntelligence')}
+              <Sparkles size={12} className="text-forest-600" />
+            </div>
+ 
+            <h1
+              className="text-reveal font-display text-4xl font-semibold leading-[1.06] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.6rem]"
+            >
+              {t('landing.heroTitlePart1')}
+              <br />
+              <span className="text-forest-700">{t('landing.heroTitlePart2')}</span>
+            </h1>
+ 
+            <p
+              className="fade-up mt-5 max-w-md text-base leading-relaxed text-ink-700 sm:text-lg"
+              style={{ animationDelay: '160ms' }}
+            >
+              {t('landing.heroDescription')}
+>>>>>>> feature/frontend
             </p>
 
             <div className="flex flex-wrap gap-3 mt-8">
@@ -133,7 +162,7 @@ export default function Landing() {
                 to="/dashboard"
                 className="inline-flex items-center gap-2 bg-forest-700 hover:bg-forest-800 text-white font-semibold text-sm px-5 py-3.5 rounded-lg transition-colors shadow-lift"
               >
-                Check Air Quality
+                {t('landing.checkAirQuality')}
                 <ArrowRight size={16} />
               </Link>
 
@@ -141,9 +170,36 @@ export default function Landing() {
                 href="#features"
                 className="inline-flex items-center gap-2 bg-surface border border-ink-200 hover:border-forest-400 text-ink-900 font-semibold text-sm px-5 py-3.5 rounded-lg transition-colors"
               >
+<<<<<<< HEAD
                 Explore Features
               </a>
             </div>
+=======
+                {t('landing.exploreFeatures')}
+                <CompassIcon size={16} />
+              </a>
+            </div>
+
+            <div
+              className="fade-up mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-ink-500"
+              style={{ animationDelay: '360ms' }}
+            >
+              <span className="inline-flex items-center gap-2">
+                <span className="live-dot h-1.5 w-1.5 rounded-full bg-forest-600" />
+                              {t('landing.liveEnvironmentalData')}
+              </span>
+
+              <span className="inline-flex items-center gap-2">
+                <ShieldCheck size={13} className="text-forest-600" />
+                              {t('landing.clearRiskGuidance')}
+              </span>
+
+              <span className="inline-flex items-center gap-2">
+                <Bell size={13} className="text-forest-600" />
+                              {t('landing.locationAlerts')}
+              </span>
+            </div>
+>>>>>>> feature/frontend
           </div>
 
           {/* LIVE AQI CARD */}
@@ -265,12 +321,21 @@ export default function Landing() {
                   <Icon size={20} className="text-forest-700" />
                 </div>
 
+<<<<<<< HEAD
                 <h3 className="font-display font-semibold text-ink-900 mb-1.5">
                   {f.title}
                 </h3>
 
                 <p className="text-sm text-ink-700 leading-relaxed">
                   {f.description}
+=======
+                <h3 className="font-display mb-1.5 font-semibold text-ink-900">
+                {t(f.titleKey || 'features.' + f.key + '.title', { defaultValue: f.title })}
+                </h3>
+
+                <p className="text-sm leading-relaxed text-ink-700">
+                {t(f.descriptionKey || 'features.' + f.key + '.description', { defaultValue: f.description })}
+>>>>>>> feature/frontend
                 </p>
               </div>
             )
@@ -309,12 +374,21 @@ export default function Landing() {
                   )}
                 </div>
 
+<<<<<<< HEAD
                 <h3 className="font-display font-semibold text-ink-900 mb-1.5">
                   {s.title}
                 </h3>
 
                 <p className="text-sm text-ink-700 leading-relaxed">
                   {s.description}
+=======
+                <h3 className="font-display mb-1.5 mt-4 font-semibold text-ink-900">
+                {t(s.titleKey || ('howItWorks.step' + s.step + '.title'), { defaultValue: s.title })}
+                </h3>
+
+                <p className="text-sm leading-relaxed text-ink-700">
+                {t(s.descriptionKey || ('howItWorks.step' + s.step + '.description'), { defaultValue: s.description })}
+>>>>>>> feature/frontend
                 </p>
 
               </div>

@@ -424,12 +424,12 @@ export default function Login() {
                     </label>
 
                     {mode === 'signin' && (
-                      <button
-                        type="button"
+                      <Link
+                        to="/forgot-password"
                         className="text-[10px] font-semibold text-forest-700 hover:text-forest-800"
                       >
                         Forgot password?
-                      </button>
+                      </Link>
                     )}
                   </div>
 

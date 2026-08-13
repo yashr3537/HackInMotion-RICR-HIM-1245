@@ -4,6 +4,8 @@ import AppLayout from './components/AppLayout'
 
 import Landing from './pages/Landing'
 import Login from './pages/Login'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 import Dashboard from './pages/Dashboard'
 import Explore from './pages/Explore'
 import MyLocations from './pages/MyLocations'
@@ -20,7 +22,6 @@ import RouteRisk from './pages/RouteRisk'
 
 import { AuthProvider, useAuth } from './auth'
 
-
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth()
 
@@ -29,26 +30,21 @@ function ProtectedRoute() {
     : <Navigate to="/login" replace />
 }
 
-
 export default function App() {
   return (
     <AuthProvider>
-
       <Routes>
 
         {/* Public Pages */}
         <Route path="/" element={<Landing />} />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/route-risk"
-          element={<RouteRisk />}
-        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        <Route path="/route-risk" element={<RouteRisk />} />
 
         {/* Protected Pages */}
         <Route element={<ProtectedRoute />}>
@@ -65,7 +61,7 @@ export default function App() {
             element={<MyLocations />}
           />
 
-          {/* NEW: Location Details */}
+          {/* Location Details */}
           <Route
             path="/location-details"
             element={<LocationDetails />}
@@ -109,7 +105,6 @@ export default function App() {
 
         </Route>
 
-
         {/* 404 */}
         <Route
           path="*"
@@ -117,7 +112,6 @@ export default function App() {
         />
 
       </Routes>
-
     </AuthProvider>
   )
 }

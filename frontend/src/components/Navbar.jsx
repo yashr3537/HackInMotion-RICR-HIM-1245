@@ -8,11 +8,13 @@ import {
   LogIn,
   Sparkles,
 } from 'lucide-react'
+import LanguageSelector from './LanguageSelector.jsx'
+import { useLanguage } from '../i18n/index.jsx'
 
 const LINKS = [
-  { href: '#features', label: 'Features' },
-  { href: '#how-it-works', label: 'How It Works' },
-  { href: '#about', label: 'About' },
+  { href: '#features', key: 'features', label: 'Features' },
+  { href: '#how-it-works', key: 'howItWorks', label: 'How It Works' },
+  { href: '#about', key: 'about', label: 'About' },
 ]
 
 export default function Navbar() {
@@ -65,6 +67,8 @@ export default function Navbar() {
     }, 50)
   }
 
+  const { t } = useLanguage()
+
   return (
     <>
       <header
@@ -107,7 +111,7 @@ export default function Navbar() {
               to="/"
               className="nav-item nav-underline text-sm font-medium text-ink-700 hover:text-forest-700"
             >
-              Home
+              {t('nav.home')}
             </Link>
 
             {LINKS.map((link) => (
@@ -116,19 +120,21 @@ export default function Navbar() {
                 href={link.href}
                 className="nav-item nav-underline text-sm font-medium text-ink-700 hover:text-forest-700"
               >
-                {link.label}
+                {t(`nav.${link.key}`) || link.label}
               </a>
             ))}
           </nav>
 
           {/* DESKTOP ACTIONS */}
           <div className="hidden items-center gap-2.5 md:flex">
+            <LanguageSelector compact />
+
             <Link
               to="/login"
               className="btn-premium inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-700 hover:bg-ink-50 hover:text-forest-700"
             >
               <LogIn size={15} />
-              Login
+              {t('auth.login')}
             </Link>
 
             <Link
@@ -140,7 +146,7 @@ export default function Navbar() {
                 className="transition-transform duration-300 group-hover:rotate-12"
               />
 
-              Check Air Quality
+              {t('common.checkAirQuality')}
 
               <ArrowRight
                 size={15}
@@ -174,7 +180,7 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className="rounded-xl border border-forest-100 bg-forest-50 px-4 py-3 text-sm font-semibold text-forest-800"
               >
-                Home
+                {t('nav.home')}
               </Link>
 
               {LINKS.map((link) => (
@@ -184,7 +190,7 @@ export default function Navbar() {
                   onClick={() => handleMobileLink(link.href)}
                   className="rounded-xl px-4 py-3 text-left text-sm font-medium text-ink-700 transition-colors hover:bg-ink-50 hover:text-forest-700"
                 >
-                  {link.label}
+                  {t(`nav.${link.key}`) || link.label}
                 </button>
               ))}
             </div>
@@ -196,7 +202,7 @@ export default function Navbar() {
                 className="btn-premium inline-flex items-center justify-center gap-2 rounded-xl border border-ink-200 px-4 py-3 text-sm font-semibold text-ink-800"
               >
                 <LogIn size={15} />
-                Login
+                {t('auth.login')}
               </Link>
 
               <Link
@@ -204,7 +210,7 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className="btn-premium inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 px-4 py-3 text-sm font-semibold text-white"
               >
-                Open
+                {t('common.checkAirQuality')}
                 <ArrowRight size={15} />
               </Link>
             </div>
