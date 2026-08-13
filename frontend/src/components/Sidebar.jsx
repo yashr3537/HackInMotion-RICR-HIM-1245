@@ -2,6 +2,7 @@ import { useLanguage } from '../i18n/index.jsx'
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Compass, MapPin, History, Bell, User, Settings, Leaf, GitCompare, Footprints } from 'lucide-react'
 import { alerts } from '../data/demoData'
+import LanguageSelector from './LanguageSelector.jsx'
 
 const NAV = [
   { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
@@ -52,7 +53,11 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="mt-auto pt-6 border-t border-forest-900/80 px-2">
+      <div className="mt-auto pt-6 border-t border-forest-900/80 px-2 space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-forest-200/70">{t('common.language')}</span>
+          <LanguageSelector compact />
+        </div>
         <p className="text-xs text-forest-300/70 leading-relaxed">
           {t('sidebar.footerNotice')}
         </p>
@@ -60,3 +65,4 @@ export default function Sidebar() {
     </aside>
   )
 }
+

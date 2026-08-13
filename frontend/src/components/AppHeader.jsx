@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Leaf } from 'lucide-react'
 import { alerts } from '../data/demoData'
 import { useAuth } from '../auth'
+import LanguageSelector from './LanguageSelector'
 
 export default function AppHeader() {
   const { currentUser, signOut } = useAuth()
@@ -23,6 +24,8 @@ export default function AppHeader() {
         </div>
 
         <div className="flex items-center gap-3 ml-auto">
+          <LanguageSelector compact />
+
           <Link
             to="/alerts"
             className="relative w-9 h-9 rounded-lg bg-surface border border-ink-100 flex items-center justify-center text-ink-600 hover:text-forest-700 hover:border-forest-300 transition-colors"
@@ -49,3 +52,4 @@ export default function AppHeader() {
     </header>
   )
 }
+

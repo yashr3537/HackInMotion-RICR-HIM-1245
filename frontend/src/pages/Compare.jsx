@@ -14,11 +14,12 @@ import {
 
 import RiskBadge from '../components/RiskBadge'
 import { compareLocations } from '../data/demoData'
+import { useLanguage } from '../i18n/index.jsx'
 
-const getRiskMeta = (aqi) => {
+const getRiskMeta = (aqi, t) => {
   if (aqi <= 50) {
     return {
-      label: 'Good',
+      label: t ? t('aqi.good', { defaultValue: 'Good' }) : 'Good',
       color: '#22A85F',
       bg: '#E6F7EC',
     }
@@ -26,7 +27,7 @@ const getRiskMeta = (aqi) => {
 
   if (aqi <= 100) {
     return {
-      label: 'Moderate',
+      label: t ? t('aqi.moderate', { defaultValue: 'Moderate' }) : 'Moderate',
       color: '#D6A70C',
       bg: '#FBF3D9',
     }
@@ -34,7 +35,7 @@ const getRiskMeta = (aqi) => {
 
   if (aqi <= 150) {
     return {
-      label: 'Sensitive',
+      label: t ? t('aqi.sensitive', { defaultValue: 'Sensitive' }) : 'Sensitive',
       color: '#E5822A',
       bg: '#FCEADA',
     }
@@ -42,14 +43,14 @@ const getRiskMeta = (aqi) => {
 
   if (aqi <= 200) {
     return {
-      label: 'Unhealthy',
+      label: t ? t('aqi.unhealthy', { defaultValue: 'Unhealthy' }) : 'Unhealthy',
       color: '#D8492E',
       bg: '#FBE2DC',
     }
   }
 
   return {
-    label: 'Hazardous',
+    label: t ? t('aqi.hazardous', { defaultValue: 'Hazardous' }) : 'Hazardous',
     color: '#B92E3D',
     bg: '#F8DDE1',
   }
@@ -112,6 +113,7 @@ const METRICS = [
 ]
 
 export default function Compare() {
+  const { t } = useLanguage()
   const [selected, setSelected] = useState(
     compareLocations.map((location) => location.id),
   )
@@ -166,28 +168,23 @@ export default function Compare() {
 
   return (
     <div className="page-enter flex flex-col gap-7 pb-8 sm:gap-9">
-      {/* =====================================================
-          HEADER
-      ====================================================== */}
+      {/* HEADER */}
       <section className="fade-down">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-forest-100 bg-forest-50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-800">
           <BarChart3 size={12} />
-          Environmental comparison
+          {t('compare.tag', { defaultValue: 'Environmental comparison' })}
         </div>
 
         <h1 className="max-w-3xl font-display text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
-          Compare the air around you.
+          {t('compare.title', { defaultValue: 'Compare the air around you.' })}
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          Compare current air-quality conditions across multiple locations and
-          quickly understand which area currently has the lower AQI.
+          {t('compare.subtitle', { defaultValue: 'Compare current air-quality conditions across multiple locations and quickly understand which area currently has the lower AQI.' })}
         </p>
       </section>
 
-      {/* =====================================================
-          LOCATION SELECTOR
-      ====================================================== */}
+      {/* LOCATION SELECTOR */}
       <section className="fade-up">
         <div className="relative overflow-hidden rounded-2xl border border-ink-100 bg-surface p-5 shadow-soft sm:p-6">
           <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-forest-400/6 blur-3xl float-soft" />
@@ -196,16 +193,16 @@ export default function Compare() {
             <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-700">
-                  Choose locations
+                  {t('compare.chooseLocations', { defaultValue: 'Choose locations' })}
                 </p>
 
                 <h2 className="mt-1 font-display text-lg font-semibold text-ink-900">
-                  What do you want to compare?
+                  {t('compare.question', { defaultValue: 'What do you want to compare?' })}
                 </h2>
               </div>
 
               <span className="text-xs text-ink-400">
-                {active.length} selected
+                {t('compare.selectedCount', { count: active.length, defaultValue: `${active.length} selected` })}
               </span>
             </div>
 
@@ -239,6 +236,7 @@ export default function Compare() {
           </div>
         </div>
       </section>
+
 
       {/* =====================================================
           EMPTY STATE
