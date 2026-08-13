@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Leaf } from 'lucide-react'
-import SearchBar from './SearchBar'
 import { alerts } from '../data/demoData'
 import { useAuth } from '../auth'
 
@@ -22,8 +21,6 @@ export default function AppHeader() {
             <Leaf size={14} className="text-forest-300" />
           </span>
         </div>
-
-        <SearchBar className="flex-1 max-w-md hidden sm:block" placeholder="Search location…" />
 
         <div className="flex items-center gap-3 ml-auto">
           <Link
@@ -48,9 +45,6 @@ export default function AppHeader() {
             Sign out
           </button>
         </div>
-      </div>
-      <div className="sm:hidden px-5 pb-3">
-        <SearchBar placeholder="Search location…" />
       </div>
     </header>
   )
