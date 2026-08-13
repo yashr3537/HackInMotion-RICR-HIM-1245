@@ -17,6 +17,7 @@ import Footer from '../components/Footer'
 import RiskBadge from '../components/RiskBadge'
 import AQIGauge from '../components/AQIGauge'
 import { features, howItWorks, currentLocation } from '../data/demoData'
+import { useLanguage } from '../i18n/index.jsx'
 
 const FEATURE_ICONS = {
   activity: Activity,
@@ -36,6 +37,8 @@ const delayStyles = {
 }
 
 export default function Landing() {
+  const { t } = useLanguage()
+
   return (
     <div className="bg-canvas min-h-screen overflow-x-hidden">
       <Navbar />
@@ -78,25 +81,23 @@ export default function Landing() {
           <div className="max-w-2xl">
             <div className="fade-down mb-6 inline-flex items-center gap-2 rounded-full border border-forest-200/70 bg-forest-50 px-3.5 py-1.5 text-xs font-semibold text-forest-800 shadow-sm">
               <ShieldCheck size={13} />
-              Real-time environmental intelligence
+              {t('landing.realtimeIntelligence')}
               <Sparkles size={12} className="text-forest-600" />
             </div>
-
+ 
             <h1
               className="text-reveal font-display text-4xl font-semibold leading-[1.06] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.6rem]"
             >
-              Know the air
+              {t('landing.heroTitlePart1')}
               <br />
-              <span className="text-forest-700">around you.</span>
+              <span className="text-forest-700">{t('landing.heroTitlePart2')}</span>
             </h1>
-
+ 
             <p
               className="fade-up mt-5 max-w-md text-base leading-relaxed text-ink-700 sm:text-lg"
               style={{ animationDelay: '160ms' }}
             >
-              Turn complex environmental data into clear, personalized
-              actions. Understand your air quality, your risk, and what to do
-              next.
+              {t('landing.heroDescription')}
             </p>
 
             <div
@@ -107,7 +108,7 @@ export default function Landing() {
                 to="/dashboard"
                 className="btn-premium inline-flex items-center gap-2 rounded-lg bg-forest-700 px-5 py-3.5 text-sm font-semibold text-white shadow-lift hover:bg-forest-800"
               >
-                Check Air Quality
+                {t('landing.checkAirQuality')}
                 <ArrowRight size={16} />
               </Link>
 
@@ -115,7 +116,7 @@ export default function Landing() {
                 href="#features"
                 className="btn-premium inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-surface px-5 py-3.5 text-sm font-semibold text-ink-900 hover:border-forest-400"
               >
-                Explore Features
+                {t('landing.exploreFeatures')}
                 <CompassIcon size={16} />
               </a>
             </div>
@@ -126,17 +127,17 @@ export default function Landing() {
             >
               <span className="inline-flex items-center gap-2">
                 <span className="live-dot h-1.5 w-1.5 rounded-full bg-forest-600" />
-                Live environmental data
+                              {t('landing.liveEnvironmentalData')}
               </span>
 
               <span className="inline-flex items-center gap-2">
                 <ShieldCheck size={13} className="text-forest-600" />
-                Clear risk guidance
+                              {t('landing.clearRiskGuidance')}
               </span>
 
               <span className="inline-flex items-center gap-2">
                 <Bell size={13} className="text-forest-600" />
-                Location alerts
+                              {t('landing.locationAlerts')}
               </span>
             </div>
           </div>
@@ -267,11 +268,11 @@ export default function Landing() {
                 </div>
 
                 <h3 className="font-display mb-1.5 font-semibold text-ink-900">
-                  {f.title}
+                {t(f.titleKey || 'features.' + f.key + '.title', { defaultValue: f.title })}
                 </h3>
 
                 <p className="text-sm leading-relaxed text-ink-700">
-                  {f.description}
+                {t(f.descriptionKey || 'features.' + f.key + '.description', { defaultValue: f.description })}
                 </p>
 
                 <div className="mt-5 flex items-center gap-2 text-xs font-medium text-forest-700 opacity-70 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
@@ -316,11 +317,11 @@ export default function Landing() {
                 </div>
 
                 <h3 className="font-display mb-1.5 mt-4 font-semibold text-ink-900">
-                  {s.title}
+                {t(s.titleKey || ('howItWorks.step' + s.step + '.title'), { defaultValue: s.title })}
                 </h3>
 
                 <p className="text-sm leading-relaxed text-ink-700">
-                  {s.description}
+                {t(s.descriptionKey || ('howItWorks.step' + s.step + '.description'), { defaultValue: s.description })}
                 </p>
               </div>
             ))}

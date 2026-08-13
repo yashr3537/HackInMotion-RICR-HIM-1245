@@ -27,17 +27,26 @@ import {
 
 import { useAuth } from '../auth'
 
+import {
+  speakAirQualityAlert,
+  getStoredVoiceLanguage,
+} from '../services/voiceAlert'
+
+import { useEffect } from 'react'
+import { useLanguage } from '../i18n/index.jsx'
+
 export default function Dashboard() {
   const { currentUser } = useAuth()
+  const { t } = useLanguage()
 
   const hour = new Date().getHours()
 
   const greeting =
     hour < 12
-      ? 'Good morning'
+      ? t('dashboard.greetingMorning')
       : hour < 18
-        ? 'Good afternoon'
-        : 'Good evening'
+        ? t('dashboard.greetingAfternoon')
+        : t('dashboard.greetingEvening')
 
   const userName = currentUser?.name || 'there'
 
@@ -51,7 +60,7 @@ export default function Dashboard() {
           <div>
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-forest-100 bg-forest-50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-800">
               <Sparkles size={12} />
-              Environmental overview
+              {t('dashboard.environmentalOverview')}
             </div>
 
             <h1 className="font-display text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
@@ -74,7 +83,7 @@ export default function Dashboard() {
                   size={13}
                   className="text-forest-600"
                 />
-                Live environmental data
+                {t('dashboard.liveEnvironmentalData')}
               </span>
             </div>
           </div>
@@ -85,7 +94,7 @@ export default function Dashboard() {
               className="btn-premium inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-surface px-3.5 py-2.5 text-sm font-semibold text-ink-700 hover:border-forest-200 hover:text-forest-800"
             >
               <BellRing size={15} />
-              Alerts
+              {t('nav.alerts')}
             </Link>
 
             <Link
@@ -93,7 +102,7 @@ export default function Dashboard() {
               className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-forest-800"
             >
               <MapPin size={15} />
-              My Locations
+              {t('nav.locations')}
             </Link>
           </div>
         </div>
@@ -119,22 +128,22 @@ export default function Dashboard() {
         <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
           <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-400">
             <ShieldCheck size={12} />
-            Risk
+            {t('dashboard.riskLabel')}
           </div>
 
           <div className="mt-2 text-sm font-semibold text-ink-900">
-            Personalised
+            {t('dashboard.personalised')}
           </div>
 
           <div className="mt-1 text-[10px] text-ink-500">
-            Based on your profile
+            {t('dashboard.basedOnProfile')}
           </div>
         </div>
 
         <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
           <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-400">
             <MapPin size={12} />
-            Location
+            {t('dashboard.locationLabel')}
           </div>
 
           <div className="mt-2 truncate text-sm font-semibold text-ink-900">
@@ -142,40 +151,39 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-1 text-[10px] text-ink-500">
-            Primary monitored area
+            {t('dashboard.primaryMonitoredArea')}
           </div>
         </div>
 
         <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
           <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-400">
             <CalendarDays size={12} />
-            Tracking
+            {t('dashboard.tracking')}
           </div>
 
           <div className="mt-2 text-sm font-semibold text-ink-900">
-            {savedLocations.length} locations
+            {savedLocations.length} {t('dashboard.locations')}
           </div>
 
           <div className="mt-1 text-[10px] text-ink-500">
-            Saved for monitoring
+            {t('dashboard.savedForMonitoring')}
           </div>
         </div>
 
         <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
           <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-400">
             <BellRing size={12} />
-            Alerts
+            {t('nav.alerts')}
           </div>
-
+ 
           <div className="mt-2 text-sm font-semibold text-ink-900">
             {Array.isArray(alerts)
-              ? alerts.filter((alert) => !alert.read).length
-              : 0}{' '}
-            unread
+              ? t('dashboard.unread', { count: alerts.filter((alert) => !alert.read).length })
+              : t('dashboard.unread', { count: 0 })}
           </div>
-
+ 
           <div className="mt-1 text-[10px] text-ink-500">
-            Environmental notifications
+            {t('dashboard.environmentalNotifications')}
           </div>
         </div>
       </section>
@@ -187,16 +195,16 @@ export default function Dashboard() {
         <div className="fade-up mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest-700">
-              Environmental metrics
+              {t('dashboard.environmentalMetrics')}
             </p>
 
             <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
-              Pollutant Breakdown
+              {t('dashboard.pollutantBreakdown')}
             </h2>
           </div>
 
           <p className="text-xs text-ink-500">
-            Current readings for {currentLocation.name}
+            {t('dashboard.currentReadingsFor', { location: currentLocation.name })}
           </p>
         </div>
 
@@ -237,11 +245,11 @@ export default function Dashboard() {
         <div className="mb-4 flex items-end justify-between gap-4">
           <div>
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest-700">
-              Historical context
+              {t('dashboard.historicalContext')}
             </p>
 
             <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
-              How your air is changing
+              {t('dashboard.howAirIsChanging')}
             </h2>
           </div>
 
@@ -249,7 +257,7 @@ export default function Dashboard() {
             to="/history"
             className="group hidden items-center gap-1 text-xs font-semibold text-forest-700 hover:text-forest-800 sm:flex"
           >
-            Full history
+            {t('dashboard.fullHistory')}
             <ArrowRight
               size={13}
               className="transition-transform duration-300 group-hover:translate-x-1"
@@ -267,11 +275,11 @@ export default function Dashboard() {
         <div className="fade-up mb-4 flex items-end justify-between gap-4">
           <div>
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest-700">
-              Places that matter
+              {t('dashboard.placesThatMatter')}
             </p>
 
             <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
-              My Locations
+              {t('dashboard.myLocations')}
             </h2>
           </div>
 
@@ -279,7 +287,7 @@ export default function Dashboard() {
             to="/locations"
             className="group inline-flex items-center gap-1 text-xs font-semibold text-forest-700 hover:text-forest-800"
           >
-            View all
+            {t('dashboard.viewAll')}
             <ArrowRight
               size={13}
               className="transition-transform duration-300 group-hover:translate-x-1"
@@ -305,11 +313,11 @@ export default function Dashboard() {
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest-700">
-                Stay informed
+                {t('dashboard.stayInformed')}
               </p>
 
               <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
-                Recent Alerts
+                {t('dashboard.recentAlerts')}
               </h2>
             </div>
 
@@ -317,7 +325,7 @@ export default function Dashboard() {
               to="/alerts"
               className="group inline-flex items-center gap-1 text-xs font-semibold text-forest-700 hover:text-forest-800"
             >
-              View alerts
+              {t('dashboard.viewAlerts')}
               <ArrowRight
                 size={13}
                 className="transition-transform duration-300 group-hover:translate-x-1"
@@ -379,16 +387,15 @@ export default function Dashboard() {
             <div>
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-forest-700">
                 <ShieldCheck size={13} />
-                Keep your environment close
+                {t('dashboard.keepYourEnvironmentClose')}
               </div>
-
+ 
               <h3 className="mt-2 font-display text-lg font-semibold text-ink-900">
-                Want to explore another location?
+                {t('dashboard.exploreAnotherLocationQuestion')}
               </h3>
-
+ 
               <p className="mt-1 text-sm leading-6 text-ink-600">
-                Search a new area, compare locations, or plan a lower-exposure
-                activity.
+                {t('dashboard.searchNewArea')}
               </p>
             </div>
 
@@ -397,7 +404,7 @@ export default function Dashboard() {
                 to="/locations"
                 className="btn-premium inline-flex items-center gap-2 rounded-xl border border-forest-200 bg-white px-4 py-2.5 text-xs font-semibold text-forest-800 hover:bg-forest-50"
               >
-                Explore locations
+                {t('dashboard.exploreLocations')}
                 <ArrowRight size={14} />
               </Link>
 
@@ -405,7 +412,7 @@ export default function Dashboard() {
                 to="/activity"
                 className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2.5 text-xs font-semibold text-white hover:bg-forest-800"
               >
-                Check activity risk
+                {t('dashboard.checkActivityRisk')}
                 <Activity size={14} />
               </Link>
             </div>
