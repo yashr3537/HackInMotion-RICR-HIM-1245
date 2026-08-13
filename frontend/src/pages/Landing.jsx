@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import {
   ArrowRight, Activity, Gauge, Compass as CompassIcon, TrendingUp, Bell, Footprints,
-  ShieldCheck, MapPin, Loader2, Sparkles,
+  ShieldCheck, MapPin, Loader2, Sparkles, RefreshCw, AlertCircle,
 } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import RiskBadge from '../components/RiskBadge'
 import AQIGauge from '../components/AQIGauge'
-import { features, howItWorks, currentLocation } from '../data/demoData'
-import { getAirQuality } from '../data/airQualityApi'
+import { features, howItWorks } from '../data/demoData'
+import { useLiveAirQuality } from '../hooks/useLiveAirQuality'
+import { getAqiBand } from '../data/aqiUtils'
 import { useLanguage } from '../i18n/index.jsx'
 
 const FEATURE_ICONS = {
@@ -23,69 +23,9 @@ const FEATURE_ICONS = {
 
 export default function Landing() {
   const { t } = useLanguage()
-  const [liveAQI, setLiveAQI] = useState(null)
-  const [livePM25, setLivePM25] = useState(null)
-  const [livePM10, setLivePM10] = useState(null)
-  const [locationName, setLocationName] = useState('Your current location')
-  const [loadingAQI, setLoadingAQI] = useState(true)
-  const [aqiError, setAqiError] = useState('')
+  const { loading: loadingAQI, error: aqiError, data: liveData, refetch } = useLiveAirQuality()
 
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      setAqiError('Location is not supported by your browser.')
-      setLoadingAQI(false)
-      return
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords
-
-          const airQuality = await getAirQuality(latitude, longitude)
-
-          setLiveAQI(airQuality.aqi)
-          setLivePM25(airQuality.pm25)
-          setLivePM10(airQuality.pm10)
-
-          // Try to get the current city name
-          try {
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
-            )
-            const data = await response.json()
-            const city =
-              data.address?.city ||
-              data.address?.town ||
-              data.address?.village ||
-              data.address?.suburb ||
-              data.address?.county
-            if (city) {
-              setLocationName(city)
-            }
-          } catch (e) {
-            console.error('Failed to get location name:', e)
-          }
-        } catch (err) {
-          console.error('Failed to fetch live air quality:', err)
-          setAqiError('Could not fetch live AQI data for your location.')
-        } finally {
-          setLoadingAQI(false)
-        }
-      },
-      (error) => {
-        console.error('Geolocation error:', error)
-        setAqiError('Location access denied or unavailable.')
-        setLoadingAQI(false)
-      },
-      { timeout: 10000 }
-    )
-  }, [])
-
-  const effectiveAQI = liveAQI !== null ? liveAQI : currentLocation.aqi
-  const effectivePM25 = livePM25 !== null ? livePM25 : currentLocation.pm25
-  const effectivePM10 = livePM10 !== null ? livePM10 : currentLocation.pm10
-  const effectiveLocationName = liveAQI !== null ? locationName : currentLocation.name
+  const band = liveData ? getAqiBand(liveData.aqi) : null
 
   return (
     <div className="min-h-screen bg-canvas text-ink-900 flex flex-col font-sans antialiased overflow-x-hidden">
@@ -183,60 +123,76 @@ export default function Landing() {
             <div className="card-hover bg-surface rounded-xl2 border border-ink-100 p-6 sm:p-8 shadow-card relative">
 
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-ink-100">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <MapPin size={16} className="text-forest-700 shrink-0" />
                   <span className="text-sm font-semibold text-ink-900 truncate">
-                    {effectiveLocationName}
+                    {loadingAQI
+                      ? 'Detecting location...'
+                      : liveData
+                        ? `${liveData.name}${liveData.region ? ', ' + liveData.region : ''}`
+                        : 'Location unavailable'}
                   </span>
-                  {liveAQI !== null && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-forest-100 text-forest-800">
+                  {liveData && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-forest-100 text-forest-800 shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-forest-600 animate-pulse" />
                       {t('common.live')}
                     </span>
                   )}
                 </div>
 
-                <RiskBadge level={currentLocation.riskLevel} />
+                {liveData && <RiskBadge aqi={liveData.aqi} size="sm" />}
               </div>
 
               {loadingAQI ? (
-                <div className="flex flex-col items-center justify-center py-10">
+                <div className="flex flex-col items-center justify-center py-14">
                   <Loader2 size={32} className="text-forest-700 animate-spin mb-3" />
                   <p className="text-xs text-ink-500 font-medium">Fetching live air quality data...</p>
                 </div>
+              ) : aqiError || !liveData ? (
+                <div className="flex flex-col items-center justify-center py-10 text-center">
+                  <AlertCircle size={32} className="text-amber-600 mb-3" />
+                  <p className="text-sm font-semibold text-ink-900 mb-1">Live data unavailable</p>
+                  <p className="text-xs text-ink-500 max-w-xs mb-4">{aqiError || 'Unable to fetch live AQI for your location.'}</p>
+                  <button
+                    type="button"
+                    onClick={refetch}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-forest-50 text-forest-700 hover:bg-forest-100 transition-colors"
+                  >
+                    <RefreshCw size={13} />
+                    Try again
+                  </button>
+                </div>
               ) : (
                 <>
-                  {aqiError && (
-                    <div className="mb-4 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-                      {aqiError} — Showing sample data for {currentLocation.name}.
-                    </div>
-                  )}
-
                   {/* AQI Gauge Display */}
-                  <div className="py-2">
-                    <AQIGauge value={effectiveAQI} status={currentLocation.status} />
+                  <div className="py-2 flex justify-center">
+                    <AQIGauge aqi={liveData.aqi} size={200} />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-ink-100 text-xs">
                     <div className="bg-canvas rounded-lg p-3 border border-ink-100">
                       <span className="text-ink-500 block text-[11px] mb-0.5">PM2.5</span>
-                      <span className="font-semibold text-ink-900 text-sm">{effectivePM25} µg/m³</span>
+                      <span className="font-semibold text-ink-900 text-sm">
+                        {liveData.pm25 !== null && liveData.pm25 !== undefined ? `${Math.round(liveData.pm25)} µg/m³` : '—'}
+                      </span>
                     </div>
 
                     <div className="bg-canvas rounded-lg p-3 border border-ink-100">
                       <span className="text-ink-500 block text-[11px] mb-0.5">PM10</span>
-                      <span className="font-semibold text-ink-900 text-sm">{effectivePM10} µg/m³</span>
+                      <span className="font-semibold text-ink-900 text-sm">
+                        {liveData.pm10 !== null && liveData.pm10 !== undefined ? `${Math.round(liveData.pm10)} µg/m³` : '—'}
+                      </span>
                     </div>
+                  </div>
+
+                  <div className="mt-5 p-3 rounded-lg bg-forest-50 border border-forest-100 text-xs text-forest-900 flex items-start gap-2.5">
+                    <ShieldCheck size={16} className="text-forest-700 shrink-0 mt-0.5" />
+                    <span>
+                      {band.advice}
+                    </span>
                   </div>
                 </>
               )}
-
-              <div className="mt-5 p-3 rounded-lg bg-forest-50 border border-forest-100 text-xs text-forest-900 flex items-start gap-2.5">
-                <ShieldCheck size={16} className="text-forest-700 shrink-0 mt-0.5" />
-                <span>
-                  {currentLocation.recommendation}
-                </span>
-              </div>
             </div>
           </div>
         </div>

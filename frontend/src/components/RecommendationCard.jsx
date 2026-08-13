@@ -23,6 +23,17 @@ export default function RecommendationCard({ recommendation }) {
     return () => window.clearTimeout(timer)
   }, [recommendation])
 
+  if (!recommendation) {
+    return (
+      <div className="card-hover relative overflow-hidden rounded-xl2 bg-gradient-to-br from-forest-950 via-forest-900 to-forest-700 p-6 text-white shadow-lift flex flex-col items-center justify-center text-center min-h-[220px]">
+        <ShieldCheck size={28} className="text-forest-200 mb-2" />
+        <p className="text-sm font-semibold">Recommendations Unavailable</p>
+        <p className="text-xs text-forest-100/80 mt-1">Waiting for live environmental data...</p>
+      </div>
+    )
+  }
+
+
   return (
     <div
       className={`card-hover card-glow group relative overflow-hidden rounded-xl2 bg-gradient-to-br from-forest-950 via-forest-900 to-forest-700 p-6 text-white shadow-lift transition-all duration-700 sm:p-7 ${

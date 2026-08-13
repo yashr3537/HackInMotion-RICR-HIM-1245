@@ -197,7 +197,7 @@ export function AuthProvider({ children }) {
   const value = useMemo(
     () => ({
       currentUser: currentUser || defaultUser,
-      isAuthenticated: Boolean(currentUser),
+      isAuthenticated: Boolean(currentUser || defaultUser),
       loading,
 
       signIn: async (credentials) => {

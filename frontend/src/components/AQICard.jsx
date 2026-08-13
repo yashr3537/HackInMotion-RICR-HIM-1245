@@ -5,15 +5,15 @@ import {
   Activity,
   ShieldCheck,
   ArrowUpRight,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react'
 
 import AQIGauge from './AQIGauge'
 import RiskBadge from './RiskBadge'
 import { getAqiBand } from '../data/aqiUtils'
 
-export default function AQICard({ location }) {
-  const band = getAqiBand(location.aqi)
-
+export default function AQICard({ location, loading, error, onRetry }) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -22,7 +22,41 @@ export default function AQICard({ location }) {
     }, 80)
 
     return () => window.clearTimeout(timer)
-  }, [location.aqi])
+  }, [location?.aqi])
+
+  if (loading) {
+    return (
+      <section className="card-hover relative overflow-hidden rounded-xl2 border border-ink-100 bg-surface p-8 shadow-card flex flex-col items-center justify-center min-h-[280px]">
+        <Loader2 size={36} className="text-forest-700 animate-spin mb-3" />
+        <p className="text-sm font-semibold text-ink-900">Loading live air quality data...</p>
+        <p className="text-xs text-ink-500 mt-1">Retrieving latest pollutant measurements</p>
+      </section>
+    )
+  }
+
+  if (error || !location || location.aqi === null || location.aqi === undefined) {
+    return (
+      <section className="card-hover relative overflow-hidden rounded-xl2 border border-amber-200/60 bg-surface p-8 shadow-card flex flex-col items-center justify-center text-center min-h-[280px]">
+        <AlertCircle size={38} className="text-amber-600 mb-3" />
+        <h3 className="font-display text-lg font-semibold text-ink-900">Live air quality data is currently unavailable</h3>
+        <p className="mt-1 max-w-md text-xs leading-relaxed text-ink-600">
+          {error || 'Could not retrieve live AQI readings for this location. Please check your network connection or try again.'}
+        </p>
+        {onRetry && (
+          <button
+            type="button"
+            onClick={onRetry}
+            className="mt-4 rounded-xl bg-forest-700 px-4 py-2 text-xs font-semibold text-white hover:bg-forest-800 transition-colors"
+          >
+            Try Again
+          </button>
+        )}
+      </section>
+    )
+  }
+
+  const band = getAqiBand(location.aqi)
+
 
   return (
     <section

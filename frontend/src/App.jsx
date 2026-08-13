@@ -61,6 +61,11 @@ export default function App() {
             element={<MyLocations />}
           />
 
+          <Route
+            path="/locations/:locationId"
+            element={<LocationDetails />}
+          />
+
           {/* Location Details */}
           <Route
             path="/location-details"

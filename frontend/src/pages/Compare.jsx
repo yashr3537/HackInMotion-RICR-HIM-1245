@@ -14,6 +14,7 @@ import {
 
 import RiskBadge from '../components/RiskBadge'
 import { compareLocations } from '../data/demoData'
+import { getAirQuality } from '../data/airQualityApi'
 import { useLanguage } from '../i18n/index.jsx'
 
 const getRiskMeta = (aqi, t) => {
@@ -114,17 +115,49 @@ const METRICS = [
 
 export default function Compare() {
   const { t } = useLanguage()
+  const [locations, setLocations] = useState(compareLocations)
   const [selected, setSelected] = useState(
     compareLocations.map((location) => location.id),
   )
   const [visible, setVisible] = useState(false)
 
+  useEffect(() => {
+    let isMounted = true
+    Promise.all(
+      compareLocations.map(async (loc) => {
+        if (loc.latitude && loc.longitude) {
+          try {
+            const data = await getAirQuality(loc.latitude, loc.longitude)
+            if (data.aqi !== null) {
+              return {
+                ...loc,
+                aqi: data.aqi,
+                pm25: data.pm25,
+                pm10: data.pm10,
+                no2: data.no2,
+              }
+            }
+          } catch (e) {
+            console.error(`Compare live fetch failed for ${loc.name}:`, e)
+          }
+        }
+        return loc
+      })
+    ).then((updated) => {
+      if (isMounted) setLocations(updated)
+    })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   const active = useMemo(
     () =>
-      compareLocations.filter((location) =>
+      locations.filter((location) =>
         selected.includes(location.id),
       ),
-    [selected],
+    [locations, selected],
   )
 
   const sortedByAqi = useMemo(

@@ -222,5 +222,15 @@ export default {
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
     resetTokenUsed: 'This reset token has already been used.'
+  },
+
+  locations: {
+    remove: 'Remove Location',
+    removeTitle: 'Remove saved location?',
+    removeDescription: 'Are you sure you want to remove {name}? This location will be removed from your saved locations.',
+    cancel: 'Cancel',
+    removed: 'Location removed',
+    noLocations: 'No saved locations',
+    viewLive: 'View Live',
   }
 }

@@ -65,6 +65,17 @@ export default function DominantPollutantCard({ data }) {
 
   const { t } = useLanguage()
 
+  if (!data) {
+    return (
+      <div className="card-hover relative overflow-hidden rounded-xl2 border border-ink-100 bg-surface p-6 shadow-soft flex flex-col items-center justify-center text-center min-h-[220px]">
+        <Activity size={24} className="text-forest-600 mb-2" />
+        <p className="text-xs font-semibold text-ink-900">Dominant Pollutant</p>
+        <p className="text-[11px] text-ink-500 mt-1">Live pollutant measurements needed to compute dominant risk factor.</p>
+      </div>
+    )
+  }
+
+
   return (
     <div
       className={`card-hover card-glow group relative overflow-hidden rounded-xl2 border border-ink-100 bg-surface p-6 shadow-soft transition-all duration-700 ${

@@ -97,6 +97,8 @@ export const savedLocations = [
     icon: 'home',
     name: 'Bhopal',
     region: 'Arera Colony',
+    latitude: 23.2599,
+    longitude: 77.4126,
     aqi: 82,
     lastUpdated: '5 minutes ago',
     alertThreshold: 100,
@@ -107,6 +109,8 @@ export const savedLocations = [
     icon: 'school',
     name: 'Bhopal',
     region: 'MANIT Campus',
+    latitude: 23.2144,
+    longitude: 77.4042,
     aqi: 91,
     lastUpdated: '12 minutes ago',
     alertThreshold: 100,
@@ -117,6 +121,8 @@ export const savedLocations = [
     icon: 'star',
     name: 'Indore',
     region: 'Vijay Nagar',
+    latitude: 22.7196,
+    longitude: 75.8577,
     aqi: 64,
     lastUpdated: '20 minutes ago',
     alertThreshold: 100,
@@ -195,10 +201,10 @@ export const activityRiskData = {
 // ---------------------------------------------------------------------------
 
 export const compareLocations = [
-  { id: 'cmp-bhopal', name: 'Bhopal', region: 'Madhya Pradesh', aqi: 82 },
-  { id: 'cmp-indore', name: 'Indore', region: 'Madhya Pradesh', aqi: 64 },
-  { id: 'cmp-delhi', name: 'Delhi', region: 'Delhi NCR', aqi: 173 },
-  { id: 'cmp-mumbai', name: 'Mumbai', region: 'Maharashtra', aqi: 72 },
+  { id: 'cmp-bhopal', name: 'Bhopal', region: 'Madhya Pradesh', latitude: 23.2599, longitude: 77.4126, aqi: 82 },
+  { id: 'cmp-indore', name: 'Indore', region: 'Madhya Pradesh', latitude: 22.7196, longitude: 75.8577, aqi: 64 },
+  { id: 'cmp-delhi', name: 'Delhi', region: 'Delhi NCR', latitude: 28.6139, longitude: 77.2090, aqi: 173 },
+  { id: 'cmp-mumbai', name: 'Mumbai', region: 'Maharashtra', latitude: 19.0760, longitude: 72.8777, aqi: 72 },
 ]
 
 // ---------------------------------------------------------------------------

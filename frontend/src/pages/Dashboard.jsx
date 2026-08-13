@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -7,6 +8,10 @@ import {
   ShieldCheck,
   Sparkles,
   Activity,
+  RefreshCw,
+  Navigation,
+  Loader2,
+  Trash2,
 } from 'lucide-react'
 
 import AQICard from '../components/AQICard'
@@ -15,29 +20,36 @@ import RecommendationCard from '../components/RecommendationCard'
 import DominantPollutantCard from '../components/DominantPollutantCard'
 import TrendChart from '../components/TrendChart'
 import LocationCard from '../components/LocationCard'
-
-import {
-  currentLocation,
-  pollutants,
-  recommendation,
-  dominantPollutant,
-  savedLocations,
-  alerts,
-} from '../data/demoData'
+import { alerts } from '../data/demoData'
+import { loadUserSavedLocations, removeUserSavedLocation } from '../data/savedLocationsStore'
 
 import { useAuth } from '../auth'
-
-import {
-  speakAirQualityAlert,
-  getStoredVoiceLanguage,
-} from '../services/voiceAlert'
-
-import { useEffect } from 'react'
 import { useLanguage } from '../i18n/index.jsx'
+import { useLiveAirQuality } from '../hooks/useLiveAirQuality'
+import {
+  formatPollutants,
+  getDominantPollutant,
+  getRecommendationForAqi,
+} from '../data/aqiUtils'
 
 export default function Dashboard() {
   const { currentUser } = useAuth()
   const { t } = useLanguage()
+  const { loading, error, data: liveLocation, refetch } = useLiveAirQuality()
+
+  const [userSavedLocations, setUserSavedLocations] = useState([])
+  const [removingLocation, setRemovingLocation] = useState(null)
+
+  useEffect(() => {
+    setUserSavedLocations(loadUserSavedLocations(currentUser?.id))
+  }, [currentUser?.id])
+
+  const handleRemoveRequest = (target) => {
+    if (!target) return
+    const updated = removeUserSavedLocation(target, currentUser?.id)
+    setUserSavedLocations(updated)
+    setRemovingLocation(null)
+  }
 
   const hour = new Date().getHours()
 
@@ -49,6 +61,15 @@ export default function Dashboard() {
         : t('dashboard.greetingEvening')
 
   const userName = currentUser?.name || 'there'
+
+  const livePollutants = liveLocation ? formatPollutants(liveLocation) : []
+  const liveDominantPollutant = getDominantPollutant(livePollutants)
+  const liveRecommendation = getRecommendationForAqi(liveLocation?.aqi)
+
+  const handleResetToCurrentLocation = () => {
+    localStorage.removeItem('selectedAirGuardLocation')
+    refetch()
+  }
 
   return (
     <div className="page-enter flex flex-col gap-8 pb-8 sm:gap-10">
@@ -68,12 +89,16 @@ export default function Dashboard() {
             </h1>
 
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-500">
-              <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1.5 font-medium text-ink-900">
                 <MapPin
                   size={14}
                   className="text-forest-600"
                 />
-                {currentLocation.name}, {currentLocation.region}
+                {loading
+                  ? 'Detecting location...'
+                  : liveLocation
+                    ? `${liveLocation.name}${liveLocation.region ? ', ' + liveLocation.region : ''}`
+                    : 'Location unavailable'}
               </span>
 
               <span className="hidden h-1 w-1 rounded-full bg-ink-300 sm:block" />
@@ -88,7 +113,29 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="stagger-children flex flex-wrap gap-2.5">
+          <div className="stagger-children flex flex-wrap gap-2.5 items-center">
+            {localStorage.getItem('selectedAirGuardLocation') && (
+              <button
+                type="button"
+                onClick={handleResetToCurrentLocation}
+                className="btn-premium inline-flex items-center gap-2 rounded-xl border border-forest-200 bg-forest-50 px-3.5 py-2.5 text-sm font-semibold text-forest-800 hover:bg-forest-100"
+                title="Use my device current location"
+              >
+                <Navigation size={15} />
+                My Location
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={refetch}
+              disabled={loading}
+              className="btn-premium inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-surface px-3.5 py-2.5 text-sm font-semibold text-ink-700 hover:border-forest-200 hover:text-forest-800 disabled:opacity-50"
+            >
+              <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
+              Refresh
+            </button>
+
             <Link
               to="/alerts"
               className="btn-premium inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-surface px-3.5 py-2.5 text-sm font-semibold text-ink-700 hover:border-forest-200 hover:text-forest-800"
@@ -116,7 +163,12 @@ export default function Dashboard() {
           <div className="pointer-events-none absolute -inset-4 rounded-[28px] bg-forest-400/5 blur-3xl" />
 
           <div className="relative">
-            <AQICard location={currentLocation} />
+            <AQICard
+              location={liveLocation}
+              loading={loading}
+              error={error}
+              onRetry={refetch}
+            />
           </div>
         </div>
       </section>
@@ -147,7 +199,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-2 truncate text-sm font-semibold text-ink-900">
-            {currentLocation.name}
+            {loading ? 'Detecting...' : liveLocation ? liveLocation.name : 'Unavailable'}
           </div>
 
           <div className="mt-1 text-[10px] text-ink-500">
@@ -162,7 +214,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-2 text-sm font-semibold text-ink-900">
-            {savedLocations.length} {t('dashboard.locations')}
+            {userSavedLocations.length} {t('dashboard.locations')}
           </div>
 
           <div className="mt-1 text-[10px] text-ink-500">
@@ -175,13 +227,13 @@ export default function Dashboard() {
             <BellRing size={12} />
             {t('nav.alerts')}
           </div>
- 
+
           <div className="mt-2 text-sm font-semibold text-ink-900">
             {Array.isArray(alerts)
               ? t('dashboard.unread', { count: alerts.filter((alert) => !alert.read).length })
               : t('dashboard.unread', { count: 0 })}
           </div>
- 
+
           <div className="mt-1 text-[10px] text-ink-500">
             {t('dashboard.environmentalNotifications')}
           </div>
@@ -204,18 +256,33 @@ export default function Dashboard() {
           </div>
 
           <p className="text-xs text-ink-500">
-            {t('dashboard.currentReadingsFor', { location: currentLocation.name })}
+            {liveLocation ? t('dashboard.currentReadingsFor', { location: liveLocation.name }) : 'Current readings'}
           </p>
         </div>
 
-        <div className="stagger-children grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4">
-          {pollutants.map((pollutant) => (
-            <PollutantCard
-              key={pollutant.key}
-              pollutant={pollutant}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-40 rounded-xl border border-ink-100 bg-surface p-4 flex flex-col items-center justify-center animate-pulse">
+                <Loader2 size={20} className="text-forest-600 animate-spin mb-2" />
+                <span className="text-xs text-ink-400">Loading...</span>
+              </div>
+            ))}
+          </div>
+        ) : error || !liveLocation ? (
+          <div className="rounded-xl border border-amber-200 bg-surface p-6 text-center text-xs text-amber-700">
+            Live pollutant readings are currently unavailable.
+          </div>
+        ) : (
+          <div className="stagger-children grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4">
+            {livePollutants.map((pollutant) => (
+              <PollutantCard
+                key={pollutant.key}
+                pollutant={pollutant}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* =====================================================
@@ -224,7 +291,7 @@ export default function Dashboard() {
       <section className="grid gap-5 sm:gap-6 lg:grid-cols-5">
         <div className="fade-left lg:col-span-3">
           <RecommendationCard
-            recommendation={recommendation}
+            recommendation={liveRecommendation}
           />
         </div>
 
@@ -233,7 +300,7 @@ export default function Dashboard() {
           style={{ animationDelay: '120ms' }}
         >
           <DominantPollutantCard
-            data={dominantPollutant}
+            data={liveDominantPollutant}
           />
         </div>
       </section>
@@ -296,14 +363,59 @@ export default function Dashboard() {
         </div>
 
         <div className="stagger-children grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {savedLocations.map((location) => (
+          {userSavedLocations.map((location) => (
             <LocationCard
               key={location.id}
               location={location}
+              onRemove={(target) => handleRemoveRequest(target)}
             />
           ))}
         </div>
       </section>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {removingLocation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div
+            className="w-full max-w-md scale-in rounded-2xl border border-ink-100 bg-surface p-6 shadow-card"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-600 mb-4">
+              <Trash2 size={24} />
+            </div>
+
+            <h3 className="font-display text-lg font-semibold text-ink-900">
+              {t('common.removeLocationTitle', { defaultValue: 'Remove Location' })}
+            </h3>
+
+            <p className="mt-2 text-sm leading-relaxed text-ink-600">
+              {t('common.removeLocationConfirm', {
+                defaultValue: `Are you sure you want to remove "${removingLocation.name}" from your saved locations?`,
+                name: removingLocation.name,
+              })}
+            </p>
+
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setRemovingLocation(null)}
+                className="rounded-xl border border-ink-200 bg-surface px-4 py-2.5 text-xs font-semibold text-ink-700 hover:bg-ink-50 transition-colors"
+              >
+                {t('common.cancel', { defaultValue: 'Cancel' })}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleConfirmRemove}
+                className="rounded-xl bg-red-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-red-700 transition-colors"
+              >
+                {t('common.remove', { defaultValue: 'Remove Location' })}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* =====================================================
           ALERT PREVIEW
@@ -361,7 +473,7 @@ export default function Dashboard() {
                       <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-ink-400">
                         <span>{alert.location}</span>
 
-                        {alert.aqi !== undefined && (
+                        {alert.aqi !== undefined && alert.aqi !== null && (
                           <span className="font-mono font-semibold text-ink-600">
                             AQI {alert.aqi}
                           </span>

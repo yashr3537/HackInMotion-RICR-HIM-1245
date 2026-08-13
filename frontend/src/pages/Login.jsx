@@ -158,14 +158,14 @@ export default function Login() {
       </div>
 
       {/* LEFT BRAND PANEL */}
-      <div className="relative hidden w-[46%] flex-col justify-between overflow-hidden border-r border-ink-100 bg-forest-950 px-10 py-10 text-white lg:flex xl:px-14">
+      <div className="relative hidden w-[46%] flex-col overflow-hidden border-r border-ink-100 bg-forest-950 px-10 py-10 text-white lg:flex xl:px-14">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-20 top-10 h-80 w-80 rounded-full bg-forest-500/10 blur-3xl float-slow" />
           <div className="absolute -right-28 bottom-0 h-96 w-96 rounded-full bg-mist-300/8 blur-3xl float-gentle" />
           <div className="environment-grid absolute inset-0 opacity-20" />
         </div>
 
-        <Link to="/" className="nav-enter group relative z-10 flex w-fit items-center gap-3">
+        <Link to="/" className="nav-enter group relative z-10 flex w-fit shrink-0 items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-forest-300/10 bg-forest-500/10 transition-all duration-300 group-hover:scale-105 group-hover:-rotate-2">
             <Leaf size={20} className="text-forest-300 transition-transform duration-300 group-hover:scale-110" />
           </div>
@@ -176,7 +176,7 @@ export default function Login() {
           </div>
         </Link>
 
-        <div className="relative z-10 max-w-lg">
+        <div className="relative z-10 max-w-lg mt-16 xl:mt-20 mb-12">
           <div className="fade-up mb-5 inline-flex items-center gap-2 rounded-full border border-forest-300/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-200">
             <Sparkles size={12} />
             {t('auth.leftTag', { defaultValue: 'Environmental intelligence' })}
@@ -218,7 +218,7 @@ export default function Login() {
           </div>
         </div>
 
-        <div className="relative z-10 text-[10px] uppercase tracking-[0.14em] text-forest-300/35">
+        <div className="relative z-10 mt-auto text-[10px] uppercase tracking-[0.14em] text-forest-300/35">
           {t('auth.leftFooter', { defaultValue: 'Environmental awareness, made actionable.' })}
         </div>
       </div>
