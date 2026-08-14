@@ -37,6 +37,7 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [verificationSent, setVerificationSent] = useState(null)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -46,6 +47,7 @@ export default function Login() {
 
   useEffect(() => {
     setError('')
+    setVerificationSent(null)
 
     setForm((current) => ({
       ...current,
@@ -96,11 +98,18 @@ export default function Login() {
           throw new Error(t('auth.passwordsDoNotMatch', { defaultValue: 'Passwords do not match.' }))
         }
 
-        await signUp({
+        const result = await signUp({
           name: form.name.trim(),
           email: form.email.trim(),
           password: form.password,
         })
+
+        if (result?.needsVerification || !result?.session) {
+          setVerificationSent({ email: form.email.trim() })
+          return
+        }
+
+        navigate('/dashboard', { replace: true })
       } else {
         if (!form.email.trim() || !form.password) {
           throw new Error(t('auth.credentialsRequired', { defaultValue: 'Please enter your email and password.' }))
@@ -110,12 +119,12 @@ export default function Login() {
           email: form.email.trim(),
           password: form.password,
         })
-      }
 
-      navigate('/dashboard', { replace: true })
+        navigate('/dashboard', { replace: true })
+      }
     } catch (submitError) {
       setError(
-        submitError?.message || t('auth.genericError', { defaultValue: 'Something went wrong. Please try again.' })
+        submitError?.message || t('auth.genericError', { defaultValue: 'Something went wrong while creating your account. Please try again later.' })
       )
     } finally {
       setIsSubmitting(false)
@@ -242,226 +251,274 @@ export default function Login() {
           </div>
 
           {/* Card */}
-          <div className="scale-in">
-            <div className="card-glow rounded-[28px] border border-ink-100 bg-surface p-6 shadow-card sm:p-8">
-              {/* Tabs */}
-              <div className="mb-7 rounded-xl border border-ink-100 bg-ink-50 p-1">
-                <div className="grid grid-cols-2 gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setMode('signin')}
-                    className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                      mode === 'signin' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-700'
-                    }`}
-                  >
-                    {t('auth.signInTab', { defaultValue: 'Sign in' })}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setMode('signup')}
-                    className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                      mode === 'signup' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-700'
-                    }`}
-                  >
-                    {t('auth.signUpTab', { defaultValue: 'Create account' })}
-                  </button>
-                </div>
-              </div>
-
-              {/* Heading */}
-              <div className="fade-up">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
-                  {mode === 'signin' ? <ShieldCheck size={18} /> : <Sparkles size={18} />}
+          {verificationSent ? (
+            <div className="scale-in">
+              <div className="card-glow rounded-[28px] border border-forest-100 bg-surface p-6 shadow-card sm:p-8">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-forest-50 text-forest-700">
+                  <Mail size={28} />
                 </div>
 
                 <h1 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
-                  {mode === 'signin'
-                    ? t('auth.welcomeBack', { defaultValue: 'Welcome back' })
-                    : t('auth.createYourAccount', { defaultValue: 'Create your account' })}
+                  Account created successfully! 📧
                 </h1>
 
-                <p className="mt-2 text-sm leading-6 text-ink-500">
-                  {mode === 'signin'
-                    ? t('auth.signInSubtitle', { defaultValue: 'Sign in to access your personalized environmental dashboard.' })
-                    : t('auth.signUpSubtitle', { defaultValue: 'Set up your profile to receive more relevant environmental guidance.' })}
+                <p className="mt-3 text-sm leading-relaxed text-ink-600">
+                  We've sent a verification email to:
                 </p>
-              </div>
 
-              {/* FORM */}
-              <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4">
-                {/* Name */}
-                {mode === 'signup' && (
+                <div className="mt-2 inline-block rounded-xl border border-forest-200 bg-forest-50 px-4 py-2 text-sm font-semibold text-forest-800 break-all">
+                  {verificationSent.email}
+                </div>
+
+                <p className="mt-4 text-xs leading-relaxed text-ink-600">
+                  Please check your inbox and click the verification link to confirm your email address.
+                </p>
+
+                <div className="mt-6 rounded-2xl border border-ink-100 bg-ink-50/70 p-4 text-left">
+                  <p className="text-xs font-semibold text-ink-800 mb-2">Didn't receive the email?</p>
+                  <ul className="text-xs text-ink-600 space-y-1.5 list-disc list-inside">
+                    <li>Check your <strong>Spam/Junk</strong> folder.</li>
+                    <li>Make sure the email address is correct.</li>
+                    <li>Try again after a few moments.</li>
+                  </ul>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVerificationSent(null)
+                      setMode('signin')
+                    }}
+                    className="btn-premium w-full rounded-xl bg-forest-700 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-forest-800"
+                  >
+                    Proceed to Sign In
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="scale-in">
+              <div className="card-glow rounded-[28px] border border-ink-100 bg-surface p-6 shadow-card sm:p-8">
+                {/* Tabs */}
+                <div className="mb-7 rounded-xl border border-ink-100 bg-ink-50 p-1">
+                  <div className="grid grid-cols-2 gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setMode('signin')}
+                      className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                        mode === 'signin' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-700'
+                      }`}
+                    >
+                      {t('auth.signInTab', { defaultValue: 'Sign in' })}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setMode('signup')}
+                      className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                        mode === 'signup' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-700'
+                      }`}
+                    >
+                      {t('auth.signUpTab', { defaultValue: 'Create account' })}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Heading */}
+                <div className="fade-up">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
+                    {mode === 'signin' ? <ShieldCheck size={18} /> : <Sparkles size={18} />}
+                  </div>
+
+                  <h1 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
+                    {mode === 'signin'
+                      ? t('auth.welcomeBack', { defaultValue: 'Welcome back' })
+                      : t('auth.createYourAccount', { defaultValue: 'Create your account' })}
+                  </h1>
+
+                  <p className="mt-2 text-sm leading-6 text-ink-500">
+                    {mode === 'signin'
+                      ? t('auth.signInSubtitle', { defaultValue: 'Sign in to access your personalized environmental dashboard.' })
+                      : t('auth.signUpSubtitle', { defaultValue: 'Set up your profile to receive more relevant environmental guidance.' })}
+                  </p>
+                </div>
+
+                {/* FORM */}
+                <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4">
+                  {/* Name */}
+                  {mode === 'signup' && (
+                    <div className="fade-up">
+                      <label htmlFor="name" className="mb-1.5 block text-xs font-semibold text-ink-700">
+                        {t('auth.fullName', { defaultValue: 'Full name' })}
+                      </label>
+
+                      <div className="search-premium relative">
+                        <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+                        <input
+                          id="name"
+                          name="name"
+                          type="text"
+                          autoComplete="name"
+                          value={form.name}
+                          onChange={handleChange}
+                          placeholder={t('auth.fullNamePlaceholder', { defaultValue: 'Your name' })}
+                          className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Email */}
                   <div className="fade-up">
-                    <label htmlFor="name" className="mb-1.5 block text-xs font-semibold text-ink-700">
-                      {t('auth.fullName', { defaultValue: 'Full name' })}
+                    <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-ink-700">
+                      {t('auth.emailAddress', { defaultValue: 'Email address' })}
                     </label>
 
                     <div className="search-premium relative">
-                      <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
                       <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        autoComplete="name"
-                        value={form.name}
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        value={form.email}
                         onChange={handleChange}
-                        placeholder={t('auth.fullNamePlaceholder', { defaultValue: 'Your name' })}
+                        placeholder={t('auth.emailPlaceholder', { defaultValue: 'you@example.com' })}
                         className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
                       />
                     </div>
                   </div>
-                )}
 
-                {/* Email */}
-                <div className="fade-up">
-                  <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-ink-700">
-                    {t('auth.emailAddress', { defaultValue: 'Email address' })}
-                  </label>
-
-                  <div className="search-premium relative">
-                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder={t('auth.emailPlaceholder', { defaultValue: 'you@example.com' })}
-                      className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div className="fade-up">
-                  <div className="mb-1.5 flex items-center justify-between gap-3">
-                    <label htmlFor="password" className="text-xs font-semibold text-ink-700">
-                      {t('auth.passwordLabel', { defaultValue: 'Password' })}
-                    </label>
-
-                    {mode === 'signin' && (
-                      <Link to="/forgot-password" className="text-[10px] font-semibold text-forest-700 hover:text-forest-800">
-                        {t('auth.forgotPasswordLink', { defaultValue: 'Forgot password?' })}
-                      </Link>
-                    )}
-                  </div>
-
-                  <div className="search-premium relative">
-                    <LockKeyhole size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
-                    <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-                      value={form.password}
-                      onChange={handleChange}
-                      placeholder="••••••••"
-                      className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 pr-11 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="icon-hover absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-ink-400 hover:bg-ink-50 hover:text-ink-700"
-                    >
-                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-                    </button>
-                  </div>
-
-                  {/* Password strength */}
-                  {mode === 'signup' && form.password && (
-                    <div className="mt-2">
-                      <div className="flex gap-1">
-                        {[1, 2, 3].map((level) => (
-                          <span
-                            key={level}
-                            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                              passwordStrength.level >= level
-                                ? level === 3
-                                  ? 'bg-forest-600'
-                                  : 'bg-forest-400'
-                                : 'bg-ink-100'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <p className="mt-1 text-[10px] text-ink-400">{passwordStrength.label}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Confirm password */}
-                {mode === 'signup' && (
+                  {/* Password */}
                   <div className="fade-up">
-                    <label htmlFor="confirmPassword" className="mb-1.5 block text-xs font-semibold text-ink-700">
-                      {t('auth.confirmPasswordLabel', { defaultValue: 'Confirm password' })}
-                    </label>
+                    <div className="mb-1.5 flex items-center justify-between gap-3">
+                      <label htmlFor="password" className="text-xs font-semibold text-ink-700">
+                        {t('auth.passwordLabel', { defaultValue: 'Password' })}
+                      </label>
+
+                      {mode === 'signin' && (
+                        <Link to="/forgot-password" className="text-[10px] font-semibold text-forest-700 hover:text-forest-800">
+                          {t('auth.forgotPasswordLink', { defaultValue: 'Forgot password?' })}
+                        </Link>
+                      )}
+                    </div>
 
                     <div className="search-premium relative">
                       <LockKeyhole size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
                       <input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        autoComplete="new-password"
-                        value={form.confirmPassword}
+                        id="password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                        value={form.password}
                         onChange={handleChange}
-                        placeholder={t('auth.confirmPasswordLabel', { defaultValue: 'Confirm password' })}
+                        placeholder="••••••••"
                         className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 pr-11 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
                       />
 
                       <button
                         type="button"
-                        onClick={() => setShowConfirmPassword((v) => !v)}
+                        onClick={() => setShowPassword((v) => !v)}
                         className="icon-hover absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-ink-400 hover:bg-ink-50 hover:text-ink-700"
                       >
-                        {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                        {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                       </button>
                     </div>
-                  </div>
-                )}
 
-                {/* Error */}
-                {error && (
-                  <div className="notification-enter flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700">
-                    <AlertCircle size={16} className="mt-0.5 shrink-0" />
-                    <p>{error}</p>
+                    {/* Password strength */}
+                    {mode === 'signup' && form.password && (
+                      <div className="mt-2">
+                        <div className="flex gap-1">
+                          {[1, 2, 3].map((level) => (
+                            <span
+                              key={level}
+                              className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                                passwordStrength.level >= level
+                                  ? level === 3
+                                    ? 'bg-forest-600'
+                                    : 'bg-forest-400'
+                                  : 'bg-ink-100'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <p className="mt-1 text-[10px] text-ink-400">{passwordStrength.label}</p>
+                      </div>
+                    )}
                   </div>
-                )}
 
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-premium mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-forest-800 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      {t('auth.pleaseWait', { defaultValue: 'Please wait...' })}
-                    </>
-                  ) : (
-                    <>
-                      {mode === 'signin'
-                        ? t('auth.signInButton', { defaultValue: 'Sign In' })
-                        : t('auth.createAccountButton', { defaultValue: 'Create Account' })}
-                      <ArrowRight size={15} className="transition-transform duration-300" />
-                    </>
+                  {/* Confirm password */}
+                  {mode === 'signup' && (
+                    <div className="fade-up">
+                      <label htmlFor="confirmPassword" className="mb-1.5 block text-xs font-semibold text-ink-700">
+                        {t('auth.confirmPasswordLabel', { defaultValue: 'Confirm password' })}
+                      </label>
+
+                      <div className="search-premium relative">
+                        <LockKeyhole size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+                        <input
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          autoComplete="new-password"
+                          value={form.confirmPassword}
+                          onChange={handleChange}
+                          placeholder={t('auth.confirmPasswordLabel', { defaultValue: 'Confirm password' })}
+                          className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 pr-11 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword((v) => !v)}
+                          className="icon-hover absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+                        >
+                          {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                        </button>
+                      </div>
+                    </div>
                   )}
-                </button>
-              </form>
 
-              {/* Security note */}
-              <div className="fade-up mt-6 flex items-start gap-2.5 rounded-xl border border-ink-100 bg-ink-50/60 px-3.5 py-3">
-                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-forest-700" />
-                <p className="text-[10px] leading-5 text-ink-500">
-                  {t('auth.securityNote', { defaultValue: 'Your account settings and saved environmental locations are associated with your account.' })}
-                </p>
+                  {/* Error */}
+                  {error && (
+                    <div className="notification-enter flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700">
+                      <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                      <p>{error}</p>
+                    </div>
+                  )}
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-premium mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-forest-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        {mode === 'signup' ? 'Creating your account...' : t('auth.pleaseWait', { defaultValue: 'Please wait...' })}
+                      </>
+                    ) : (
+                      <>
+                        {mode === 'signin'
+                          ? t('auth.signInButton', { defaultValue: 'Sign In' })
+                          : t('auth.createAccountButton', { defaultValue: 'Create Account' })}
+                        <ArrowRight size={15} className="transition-transform duration-300" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                {/* Security note */}
+                <div className="fade-up mt-6 flex items-start gap-2.5 rounded-xl border border-ink-100 bg-ink-50/60 px-3.5 py-3">
+                  <ShieldCheck size={14} className="mt-0.5 shrink-0 text-forest-700" />
+                  <p className="text-[10px] leading-5 text-ink-500">
+                    {t('auth.securityNote', { defaultValue: 'Your account settings and saved environmental locations are associated with your account.' })}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Demo credentials */}
           <div className="fade-up mt-5 rounded-xl border border-ink-100 bg-surface/70 px-4 py-3 text-center">
@@ -485,4 +542,4 @@ export default function Login() {
       </div>
     </div>
   )
-}
+}
