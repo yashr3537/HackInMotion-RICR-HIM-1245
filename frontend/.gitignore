@@ -1,4 +1,16 @@
-node_modules
-dist
-.DS_Store
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+
+# Logs
 *.log
+
+# OS files
+.DS_Store
