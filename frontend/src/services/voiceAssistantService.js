@@ -1,5 +1,5 @@
-import { getAirQuality, getWeather } from '../data/airQualityApi'
-import { searchLocation, reverseGeocode } from '../data/locationApi'
+import { getAirQuality, getWeather } from './airQuality/airQualityApi'
+import { searchLocation, reverseGeocode } from './location/locationApi'
 import {
   getAqiCategory,
   getPersonalizedGuidance,
