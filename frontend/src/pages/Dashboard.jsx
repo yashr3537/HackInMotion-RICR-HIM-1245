@@ -33,11 +33,7 @@ import { Sliders } from 'lucide-react'
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
 import { useLiveAirQuality } from '../hooks/useLiveAirQuality'
-import {
-  formatPollutants,
-  getDominantPollutant,
-  getRecommendationForAqi,
-} from '../data/aqiUtils'
+import { formatPollutants, getDominantPollutant, getRecommendationForAqi } from '../data/aqiUtils'
 
 export default function Dashboard() {
   const { currentUser } = useAuth()
@@ -122,7 +118,11 @@ export default function Dashboard() {
     if (!editingThresholdLocation || !currentUser?.id) return
     const targetId = editingThresholdLocation.id
     try {
-      const success = await updateSavedLocationThreshold(currentUser.id, targetId, editingThresholdValue)
+      const success = await updateSavedLocationThreshold(
+        currentUser.id,
+        targetId,
+        editingThresholdValue
+      )
       if (success) {
         setUserSavedLocations((prev) =>
           prev.map((loc) =>
@@ -176,10 +176,7 @@ export default function Dashboard() {
 
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-500">
               <span className="inline-flex items-center gap-1.5 font-medium text-ink-900">
-                <MapPin
-                  size={14}
-                  className="text-forest-600"
-                />
+                <MapPin size={14} className="text-forest-600" />
                 {loading
                   ? 'Detecting location...'
                   : liveLocation
@@ -190,10 +187,7 @@ export default function Dashboard() {
               <span className="hidden h-1 w-1 rounded-full bg-ink-300 sm:block" />
 
               <span className="inline-flex items-center gap-1.5">
-                <Activity
-                  size={13}
-                  className="text-forest-600"
-                />
+                <Activity size={13} className="text-forest-600" />
                 {t('dashboard.liveEnvironmentalData')}
               </span>
             </div>
@@ -257,12 +251,7 @@ export default function Dashboard() {
           <div className="pointer-events-none absolute -inset-4 rounded-[28px] bg-forest-400/5 blur-3xl" />
 
           <div className="relative">
-            <AQICard
-              location={liveLocation}
-              loading={loading}
-              error={error}
-              onRetry={refetch}
-            />
+            <AQICard location={liveLocation} loading={loading} error={error} onRetry={refetch} />
           </div>
         </div>
       </section>
@@ -281,9 +270,7 @@ export default function Dashboard() {
             {t('dashboard.personalised')}
           </div>
 
-          <div className="mt-1 text-[10px] text-ink-500">
-            {t('dashboard.basedOnProfile')}
-          </div>
+          <div className="mt-1 text-[10px] text-ink-500">{t('dashboard.basedOnProfile')}</div>
         </div>
 
         <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
@@ -296,9 +283,7 @@ export default function Dashboard() {
             {loading ? 'Detecting...' : liveLocation ? liveLocation.name : 'Unavailable'}
           </div>
 
-          <div className="mt-1 text-[10px] text-ink-500">
-            {t('dashboard.primaryMonitoredArea')}
-          </div>
+          <div className="mt-1 text-[10px] text-ink-500">{t('dashboard.primaryMonitoredArea')}</div>
         </div>
 
         <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
@@ -311,9 +296,7 @@ export default function Dashboard() {
             {userSavedLocations.length} {t('dashboard.locations')}
           </div>
 
-          <div className="mt-1 text-[10px] text-ink-500">
-            {t('dashboard.savedForMonitoring')}
-          </div>
+          <div className="mt-1 text-[10px] text-ink-500">{t('dashboard.savedForMonitoring')}</div>
         </div>
 
         <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
@@ -350,14 +333,19 @@ export default function Dashboard() {
           </div>
 
           <p className="text-xs text-ink-500">
-            {liveLocation ? t('dashboard.currentReadingsFor', { location: liveLocation.name }) : 'Current readings'}
+            {liveLocation
+              ? t('dashboard.currentReadingsFor', { location: liveLocation.name })
+              : 'Current readings'}
           </p>
         </div>
 
         {loading ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-40 rounded-xl border border-ink-100 bg-surface p-4 flex flex-col items-center justify-center animate-pulse">
+              <div
+                key={i}
+                className="h-40 rounded-xl border border-ink-100 bg-surface p-4 flex flex-col items-center justify-center animate-pulse"
+              >
                 <Loader2 size={20} className="text-forest-600 animate-spin mb-2" />
                 <span className="text-xs text-ink-400">Loading...</span>
               </div>
@@ -370,10 +358,7 @@ export default function Dashboard() {
         ) : (
           <div className="stagger-children grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4">
             {livePollutants.map((pollutant) => (
-              <PollutantCard
-                key={pollutant.key}
-                pollutant={pollutant}
-              />
+              <PollutantCard key={pollutant.key} pollutant={pollutant} />
             ))}
           </div>
         )}
@@ -384,18 +369,11 @@ export default function Dashboard() {
       ====================================================== */}
       <section className="grid gap-5 sm:gap-6 lg:grid-cols-5">
         <div className="fade-left lg:col-span-3">
-          <RecommendationCard
-            recommendation={liveRecommendation}
-          />
+          <RecommendationCard recommendation={liveRecommendation} />
         </div>
 
-        <div
-          className="fade-right lg:col-span-2"
-          style={{ animationDelay: '120ms' }}
-        >
-          <DominantPollutantCard
-            data={liveDominantPollutant}
-          />
+        <div className="fade-right lg:col-span-2" style={{ animationDelay: '120ms' }}>
+          <DominantPollutantCard data={liveDominantPollutant} />
         </div>
       </section>
 
@@ -524,21 +502,18 @@ export default function Dashboard() {
                 <h3 className="font-display text-lg font-semibold text-ink-900">
                   Edit Alert Threshold
                 </h3>
-                <p className="text-xs text-ink-500">
-                  {editingThresholdLocation.name}
-                </p>
+                <p className="text-xs text-ink-500">{editingThresholdLocation.name}</p>
               </div>
             </div>
 
             <p className="text-xs text-ink-600 leading-relaxed mb-4">
-              Update your trigger AQI for voice &amp; push notifications for {editingThresholdLocation.name}.
+              Update your trigger AQI for voice &amp; push notifications for{' '}
+              {editingThresholdLocation.name}.
             </p>
 
             <div className="space-y-4 rounded-xl border border-ink-100 bg-ink-50/50 p-4">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-ink-700">
-                  Trigger AQI Threshold:
-                </label>
+                <label className="text-xs font-semibold text-ink-700">Trigger AQI Threshold:</label>
                 <span className="font-mono text-base font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
                   {editingThresholdValue} AQI
                 </span>
@@ -626,28 +601,19 @@ export default function Dashboard() {
 
           <div className="stagger-children space-y-3">
             {alerts.slice(0, 3).map((alert) => (
-              <div
-                key={alert.id}
-                className="card-hover rounded-xl"
-              >
+              <div key={alert.id} className="card-hover rounded-xl">
                 <div className="rounded-xl border border-ink-100 bg-surface">
                   <div className="flex items-start gap-3 p-4">
                     <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-forest-600" />
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <p className="text-sm font-semibold text-ink-900">
-                          {alert.title}
-                        </p>
+                        <p className="text-sm font-semibold text-ink-900">{alert.title}</p>
 
-                        <span className="text-[10px] text-ink-400">
-                          {alert.time}
-                        </span>
+                        <span className="text-[10px] text-ink-400">{alert.time}</span>
                       </div>
 
-                      <p className="mt-1 text-xs leading-5 text-ink-600">
-                        {alert.message}
-                      </p>
+                      <p className="mt-1 text-xs leading-5 text-ink-600">{alert.message}</p>
 
                       <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-ink-400">
                         <span>{alert.location}</span>
@@ -680,14 +646,12 @@ export default function Dashboard() {
                 <ShieldCheck size={13} />
                 {t('dashboard.keepYourEnvironmentClose')}
               </div>
- 
+
               <h3 className="mt-2 font-display text-lg font-semibold text-ink-900">
                 {t('dashboard.exploreAnotherLocationQuestion')}
               </h3>
- 
-              <p className="mt-1 text-sm leading-6 text-ink-600">
-                {t('dashboard.searchNewArea')}
-              </p>
+
+              <p className="mt-1 text-sm leading-6 text-ink-600">{t('dashboard.searchNewArea')}</p>
             </div>
 
             <div className="flex flex-wrap gap-2.5">

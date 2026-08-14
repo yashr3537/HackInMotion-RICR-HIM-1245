@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  Sparkles,
-  User,
-  Footprints,
-  ArrowRight,
-  ShieldCheck,
-  Activity,
-} from 'lucide-react'
+import { Sparkles, User, Footprints, ArrowRight, ShieldCheck, Activity } from 'lucide-react'
 
 import { useLanguage } from '../i18n/index.jsx'
 
@@ -33,13 +26,10 @@ export default function RecommendationCard({ recommendation }) {
     )
   }
 
-
   return (
     <div
       className={`card-hover card-glow group relative overflow-hidden rounded-xl2 bg-gradient-to-br from-forest-950 via-forest-900 to-forest-700 p-6 text-white shadow-lift transition-all duration-700 sm:p-7 ${
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'translate-y-4 opacity-0'
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
       }`}
     >
       {/* =====================================================
@@ -58,10 +48,7 @@ export default function RecommendationCard({ recommendation }) {
         ==================================================== */}
         <div className="fade-down mb-4 flex items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-100 backdrop-blur-sm">
-            <Sparkles
-              size={13}
-              className="text-forest-200"
-            />
+            <Sparkles size={13} className="text-forest-200" />
 
             {t('recommendation.header')}
           </div>
@@ -98,10 +85,7 @@ export default function RecommendationCard({ recommendation }) {
           {/* Profile */}
           <div className="card-hover inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/8 px-3 py-2 text-sm backdrop-blur-sm">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10">
-              <User
-                size={14}
-                className="text-forest-200"
-              />
+              <User size={14} className="text-forest-200" />
             </span>
 
             <div>
@@ -109,19 +93,14 @@ export default function RecommendationCard({ recommendation }) {
                 {t('recommendation.profile')}
               </div>
 
-              <div className="text-xs font-medium text-white/85">
-                {recommendation.profile}
-              </div>
+              <div className="text-xs font-medium text-white/85">{recommendation.profile}</div>
             </div>
           </div>
 
           {/* Activity */}
           <div className="card-hover inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/8 px-3 py-2 text-sm backdrop-blur-sm">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10">
-              <Footprints
-                size={14}
-                className="text-forest-200"
-              />
+              <Footprints size={14} className="text-forest-200" />
             </span>
 
             <div>
@@ -129,18 +108,13 @@ export default function RecommendationCard({ recommendation }) {
                 {t('recommendation.activity')}
               </div>
 
-              <div className="text-xs font-medium text-white/85">
-                {recommendation.activity}
-              </div>
+              <div className="text-xs font-medium text-white/85">{recommendation.activity}</div>
             </div>
           </div>
 
           {/* Verdict */}
           <div className="risk-pulse inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-forest-800 shadow-sm">
-            <ShieldCheck
-              size={14}
-              className="text-forest-700"
-            />
+            <ShieldCheck size={14} className="text-forest-700" />
 
             {recommendation.verdict}
           </div>
@@ -151,14 +125,9 @@ export default function RecommendationCard({ recommendation }) {
         ==================================================== */}
         <div className="mt-7 flex flex-col gap-4 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2 text-xs text-white/45">
-            <Activity
-              size={13}
-              className="text-forest-200"
-            />
+            <Activity size={13} className="text-forest-200" />
 
-            <span>
-              {t('recommendation.basedOn')}
-            </span>
+            <span>{t('recommendation.basedOn')}</span>
           </div>
 
           <Link

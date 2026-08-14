@@ -78,7 +78,13 @@ export default function HistoryPage() {
     return () => {
       isMounted = false
     }
-  }, [currentUser?.id, currentLocation?.latitude, currentLocation?.longitude, currentLocation?.name, range])
+  }, [
+    currentUser?.id,
+    currentLocation?.latitude,
+    currentLocation?.longitude,
+    currentLocation?.name,
+    range,
+  ])
 
   const stats = historyData?.stats || { avg: '--', best: '--', worst: '--', changePercent: 0 }
   const chartData = historyData?.snapshots || []
@@ -110,7 +116,9 @@ export default function HistoryPage() {
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          Real-time environmental timeline for <strong className="text-ink-900 font-semibold">{locationName}</strong>{locationRegion}.
+          Real-time environmental timeline for{' '}
+          <strong className="text-ink-900 font-semibold">{locationName}</strong>
+          {locationRegion}.
         </p>
       </section>
 
@@ -158,7 +166,9 @@ export default function HistoryPage() {
             {locLoading || loadingHistory ? (
               <div className="flex flex-col items-center justify-center gap-2 text-ink-400 py-12">
                 <Loader2 size={24} className="animate-spin text-forest-600" />
-                <span className="text-xs font-medium">Fetching real-time AQI timeline for {locationName}...</span>
+                <span className="text-xs font-medium">
+                  Fetching real-time AQI timeline for {locationName}...
+                </span>
               </div>
             ) : !historyData || chartData.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-6 text-center">
@@ -180,8 +190,16 @@ export default function HistoryPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6B7280' }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} tickLine={false} domain={[0, 'auto']} />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 11, fill: '#6B7280' }}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: '#6B7280' }}
+                    tickLine={false}
+                    domain={[0, 'auto']}
+                  />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#18221E',
@@ -191,7 +209,14 @@ export default function HistoryPage() {
                       fontSize: '12px',
                     }}
                   />
-                  <Area type="monotone" dataKey="aqi" stroke="#22A85F" strokeWidth={2.5} fillOpacity={1} fill="url(#histGrad)" />
+                  <Area
+                    type="monotone"
+                    dataKey="aqi"
+                    stroke="#22A85F"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#histGrad)"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             )}

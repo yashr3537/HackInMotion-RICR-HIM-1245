@@ -28,9 +28,11 @@ const STATUS_STEPS = ['pending', 'under_review', 'in_progress', 'resolved']
 
 const SEVERITY_BADGES = {
   low: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
-  medium: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800',
+  medium:
+    'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800',
   high: 'bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-800',
-  critical: 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800',
+  critical:
+    'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800',
 }
 
 export default function ReportDetails() {
@@ -124,7 +126,9 @@ export default function ReportDetails() {
               <span className="font-mono text-sm font-bold text-forest-700 dark:text-forest-400 bg-forest-50 dark:bg-forest-950 px-3 py-1 rounded-md border border-forest-200 dark:border-forest-800">
                 {report.report_id}
               </span>
-              <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-semibold border ${severityClass}`}>
+              <span
+                className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-semibold border ${severityClass}`}
+              >
                 {t(`report.sev_${report.severity}`) || report.severity}
               </span>
             </div>
@@ -194,9 +198,7 @@ export default function ReportDetails() {
                       <span>{idx + 1}</span>
                     )}
                   </div>
-                  <div className="text-xs font-semibold">
-                    {t(`status.${stepKey}`)}
-                  </div>
+                  <div className="text-xs font-semibold">{t(`status.${stepKey}`)}</div>
                 </div>
               )
             })}
@@ -244,9 +246,7 @@ export default function ReportDetails() {
           <div className="space-y-3 text-xs">
             <div>
               <span className="text-ink-400 block">{t('report.cityLabel')}:</span>
-              <span className="font-semibold text-ink-900 text-sm">
-                {report.city || 'N/A'}
-              </span>
+              <span className="font-semibold text-ink-900 text-sm">{report.city || 'N/A'}</span>
             </div>
 
             {report.region && (
@@ -283,9 +283,7 @@ export default function ReportDetails() {
         </h2>
 
         {!report.image_path && !report.video_path ? (
-          <p className="text-xs text-ink-400 py-4 text-center">
-            {t('reportDetails.noEvidence')}
-          </p>
+          <p className="text-xs text-ink-400 py-4 text-center">{t('reportDetails.noEvidence')}</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Photo Evidence */}
@@ -311,11 +309,7 @@ export default function ReportDetails() {
                   <Video size={14} /> Video Evidence
                 </span>
                 <div className="rounded-xl border border-ink-200 overflow-hidden bg-canvas aspect-video">
-                  <video
-                    src={report.video_path}
-                    controls
-                    className="w-full h-full object-cover"
-                  />
+                  <video src={report.video_path} controls className="w-full h-full object-cover" />
                 </div>
               </div>
             )}

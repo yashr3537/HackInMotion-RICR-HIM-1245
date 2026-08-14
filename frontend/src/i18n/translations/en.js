@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'Check Air Quality',
     language: 'Language',
     live: 'Live',
-    monitoring: 'Monitoring'
+    monitoring: 'Monitoring',
   },
 
   nav: {
@@ -33,7 +33,8 @@ export default {
   },
 
   sidebar: {
-    footerNotice: 'Air quality data refreshes automatically. Demo build — backend not yet connected.'
+    footerNotice:
+      'Air quality data refreshes automatically. Demo build — backend not yet connected.',
   },
 
   dashboard: {
@@ -68,7 +69,7 @@ export default {
     exploreAnotherLocationQuestion: 'Want to explore another location?',
     searchNewArea: 'Search a new area, compare locations, or plan a lower-exposure activity.',
     exploreLocations: 'Explore locations',
-    checkActivityRisk: 'Check activity risk'
+    checkActivityRisk: 'Check activity risk',
   },
 
   settings: {
@@ -76,7 +77,7 @@ export default {
     language: 'Language',
     voiceAlerts: 'Voice Alerts',
     darkMode: 'Dark Mode',
-    applicationPreferences: 'Application preferences'
+    applicationPreferences: 'Application preferences',
   },
 
   alerts: {
@@ -84,7 +85,7 @@ export default {
     critical: 'Critical',
     warning: 'Warning',
     information: 'Information',
-    aqiMessage: 'Air quality alert for {location}. Current AQI is {aqi}.'
+    aqiMessage: 'Air quality alert for {location}. Current AQI is {aqi}.',
   },
 
   aqi: {
@@ -97,7 +98,7 @@ export default {
 
   pollutant: {
     relativeLevel: 'Relative level',
-    environmentalMetric: 'Environmental metric'
+    environmentalMetric: 'Environmental metric',
   },
 
   recommendation: {
@@ -106,7 +107,7 @@ export default {
     profile: 'Profile',
     activity: 'Activity',
     basedOn: 'Based on current environmental conditions',
-    checkActivity: 'Check Activity Risk'
+    checkActivity: 'Check Activity Risk',
   },
 
   dominant: {
@@ -118,15 +119,16 @@ export default {
     higherAttention: 'Higher attention recommended',
     monitorConditions: 'Monitor current conditions',
     withinRange: 'Current level is within the expected range',
-    indicatorInfo: 'This indicator is based on the current pollutant level and its configured reference limit.'
+    indicatorInfo:
+      'This indicator is based on the current pollutant level and its configured reference limit.',
   },
-
 
   landing: {
     realtimeIntelligence: 'Real-time environmental intelligence',
     heroTitlePart1: 'Know the air',
     heroTitlePart2: 'around you.',
-    heroDescription: 'Turn complex environmental data into clear, personalized actions. Understand your air quality, your risk, and what to do next.',
+    heroDescription:
+      'Turn complex environmental data into clear, personalized actions. Understand your air quality, your risk, and what to do next.',
     checkAirQuality: 'Check Air Quality',
     exploreFeatures: 'Explore Features',
     liveEnvironmentalData: 'Live environmental data',
@@ -137,60 +139,62 @@ export default {
     liveMonitoring: 'Live monitoring',
     features: 'Features',
     featuresHeadline: 'Everything you need to understand your air',
-    featuresDescription: 'From live environmental conditions to historical trends and personalized guidance, AirGuard keeps the information simple and useful.',
+    featuresDescription:
+      'From live environmental conditions to historical trends and personalized guidance, AirGuard keeps the information simple and useful.',
     exploreCapability: 'Explore capability',
     howItWorksTitle: 'How It Works',
     howItWorksHeadline: 'From location to action, in four steps',
     premiumAwareness: 'Environmental awareness, made personal',
     builtForPeople: 'Built for people who breathe the same air every day.',
-    premiumDescription: 'AirGuard was built as a hackathon project to make environmental risk personal, clear, and actionable.',
-    ctaCheckAirQuality: 'Check Air Quality'
+    premiumDescription:
+      'AirGuard was built as a hackathon project to make environmental risk personal, clear, and actionable.',
+    ctaCheckAirQuality: 'Check Air Quality',
   },
 
   features: {
     live: {
       title: 'Live Air Quality',
-      description: 'Monitor real-time air quality for any location.'
+      description: 'Monitor real-time air quality for any location.',
     },
     risk: {
       title: 'Risk Intelligence',
-      description: 'Turn complex pollution data into an easy-to-understand risk level.'
+      description: 'Turn complex pollution data into an easy-to-understand risk level.',
     },
     guidance: {
       title: 'Personalized Guidance',
-      description: 'Get recommendations based on your environmental sensitivity.'
+      description: 'Get recommendations based on your environmental sensitivity.',
     },
     trends: {
       title: 'Historical Trends',
-      description: 'Understand whether air quality is improving or worsening.'
+      description: 'Understand whether air quality is improving or worsening.',
     },
     alerts: {
       title: 'Smart Alerts',
-      description: 'Know when your saved locations become risky.'
+      description: 'Know when your saved locations become risky.',
     },
     activity: {
       title: 'Activity Risk Advisor',
-      description: 'Check whether running, cycling or outdoor activities are suitable right now.'
-    }
+      description: 'Check whether running, cycling or outdoor activities are suitable right now.',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'Choose Location',
-      description: 'Search any city or use your current location to get started.'
+      description: 'Search any city or use your current location to get started.',
     },
     step2: {
       title: 'Get Live Data',
-      description: 'AirGuard pulls the latest pollutant readings for that location.'
+      description: 'AirGuard pulls the latest pollutant readings for that location.',
     },
     step3: {
       title: 'Understand Your Risk',
-      description: 'See a clear risk level based on your environmental profile.'
+      description: 'See a clear risk level based on your environmental profile.',
     },
     step4: {
       title: 'Take Action',
-      description: 'Follow tailored guidance on activity, exposure, and precautions.'
-    }
+      description: 'Follow tailored guidance on activity, exposure, and precautions.',
+    },
   },
 
   auth: {
@@ -215,7 +219,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -224,13 +229,14 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   locations: {
     remove: 'Remove Location',
     removeTitle: 'Remove saved location?',
-    removeDescription: 'Are you sure you want to remove {name}? This location will be removed from your saved locations.',
+    removeDescription:
+      'Are you sure you want to remove {name}? This location will be removed from your saved locations.',
     cancel: 'Cancel',
     removed: 'Location removed',
     noLocations: 'No saved locations',
@@ -272,7 +278,8 @@ export default {
     descriptionPlaceholder: 'Every evening around 7 PM nearby factory releases heavy smoke...',
     descriptionMinErr: 'Description must be at least 10 characters long.',
     healthImpactLabel: 'Health Impact Observed',
-    healthNotice: 'Selected health effects are collected for community impact context and do not constitute medical advice or diagnosis.',
+    healthNotice:
+      'Selected health effects are collected for community impact context and do not constitute medical advice or diagnosis.',
     hp_breathing_difficulty: 'Breathing Difficulty',
     hp_allergy: 'Allergy / Eye Sensitivity',
     hp_eye_irritation: 'Eye Irritation',
@@ -290,7 +297,8 @@ export default {
     contactEmail: 'Email Address',
     contactPhone: 'Phone Number (Optional)',
     submitAnonymously: 'Submit Anonymously',
-    anonymousNotice: 'Your identity will be protected from public view while maintaining report authenticity.',
+    anonymousNotice:
+      'Your identity will be protected from public view while maintaining report authenticity.',
     submitBtn: 'Report Pollution',
     submittingBtn: 'Submitting Report...',
     successTitle: 'Report Submitted Successfully',
@@ -338,5 +346,5 @@ export default {
     in_progress: 'In Progress',
     resolved: 'Resolved',
     rejected: 'Rejected',
-  }
+  },
 }

@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  Menu,
-  X,
-  Leaf,
-  ArrowRight,
-  LogIn,
-  Sparkles,
-} from 'lucide-react'
+import { Menu, X, Leaf, ArrowRight, LogIn, Sparkles } from 'lucide-react'
 import LanguageSelector from './LanguageSelector.jsx'
 import { useLanguage } from '../i18n/index.jsx'
 
@@ -221,9 +214,7 @@ export default function Navbar() {
       {/* MOBILE MENU BACKDROP */}
       <div
         className={`fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
-          open
-            ? 'pointer-events-auto opacity-100'
-            : 'pointer-events-none opacity-0'
+          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={() => setOpen(false)}
         aria-hidden="true"

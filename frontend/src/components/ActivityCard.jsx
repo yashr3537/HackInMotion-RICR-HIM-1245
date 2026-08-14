@@ -19,7 +19,9 @@ export default function ActivityCard({ activity, selected, onSelect }) {
           : 'bg-surface border-ink-100 text-ink-700 hover:border-forest-300 hover:-translate-y-0.5 shadow-soft'
       }`}
     >
-      <div className={`w-11 h-11 rounded-lg flex items-center justify-center ${selected ? 'bg-white/15' : 'bg-forest-100'}`}>
+      <div
+        className={`w-11 h-11 rounded-lg flex items-center justify-center ${selected ? 'bg-white/15' : 'bg-forest-100'}`}
+      >
         <Icon size={20} className={selected ? 'text-white' : 'text-forest-700'} />
       </div>
       <span className="font-medium text-sm text-center">{activity.label}</span>

@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'గాలిని చెక్ చేయండి',
     language: 'భాష',
     live: 'లైవ్',
-    monitoring: 'మానిటరింగ్'
+    monitoring: 'మానిటరింగ్',
   },
 
   nav: {
@@ -33,7 +33,8 @@ export default {
   },
 
   sidebar: {
-    footerNotice: 'గాలి నాణ్యత డేటా ఆటోమేటిక్‌గా రిఫ్రెష్ అవుతుంది. డెమో బిల్డ్ — బెకెండ్ ఇంకా కలిపి లేదు.'
+    footerNotice:
+      'గాలి నాణ్యత డేటా ఆటోమేటిక్‌గా రిఫ్రెష్ అవుతుంది. డెమో బిల్డ్ — బెకెండ్ ఇంకా కలిపి లేదు.',
   },
 
   dashboard: {
@@ -50,7 +51,7 @@ export default {
     language: 'భాష',
     voiceAlerts: 'వాయిస్ అలెర్ట్స్',
     darkMode: 'డార్క్ మోడ్',
-    applicationPreferences: 'యాప్ ప్రాధాన్యతలు'
+    applicationPreferences: 'యాప్ ప్రాధాన్యతలు',
   },
 
   alerts: {
@@ -58,7 +59,7 @@ export default {
     critical: 'గంభీర',
     warning: 'జాగ్రత్త',
     information: 'సమాచారం',
-    aqiMessage: '{location} కోసం గాలి నాణ్యత హెచ్చరిక. ప్రస్తుత AQI {aqi}.'
+    aqiMessage: '{location} కోసం గాలి నాణ్యత హెచ్చరిక. ప్రస్తుత AQI {aqi}.',
   },
 
   aqi: {
@@ -66,12 +67,12 @@ export default {
     moderate: 'మితమైన',
     sensitive: 'సున్నిత గుంపులకి అనుకూలం కాదు',
     unhealthy: 'అనారోగ్యకరంగా',
-    hazardous: 'ఎచ్చరోకి ప్రమాదకర'
+    hazardous: 'ఎచ్చరోకి ప్రమాదకర',
   },
 
   pollutant: {
     relativeLevel: 'సాపేక్ష స్థాయి',
-    environmentalMetric: 'పర్యావరణ ప్రమాణం'
+    environmentalMetric: 'పర్యావరణ ప్రమాణం',
   },
 
   recommendation: {
@@ -80,7 +81,7 @@ export default {
     profile: 'ప్రొఫైల్',
     activity: 'చర్య',
     basedOn: 'ప్రస్తుత పర్యావరణ పరిస్థితుల ఆధారంగా',
-    checkActivity: 'చర్య ప్రమాదాన్ని తనిఖీ చేయండి'
+    checkActivity: 'చర్య ప్రమాదాన్ని తనిఖీ చేయండి',
   },
 
   dominant: {
@@ -92,20 +93,16 @@ export default {
     higherAttention: 'జాగ్రత్త ఎక్కువ అవసరం',
     monitorConditions: 'ప్రస్తుత పరిస్థితులను పర్యవేక్షించండి',
     withinRange: 'ప్రస్తుత స్థాయి అనుకుంటున్న పరిధిలో ఉంది',
-    indicatorInfo: 'ఈ సూచి ప్రస్తుత దూషక స్థాయిపై మరియు దాని అమర్చిన సూచన పరిమితి ఆధారంగా ఉంటుంది.'
+    indicatorInfo: 'ఈ సూచి ప్రస్తుత దూషక స్థాయిపై మరియు దాని అమర్చిన సూచన పరిమితి ఆధారంగా ఉంటుంది.',
   },
 
-
-  auth: {
-    login: 'లాగిన్',
-    signup: 'సైన్ అప్'
-  },
 
   landing: {
     realtimeIntelligence: 'రీల్-టైమ్ పర్యావరణ నైపుణ్యం',
     heroTitlePart1: 'గాలి తెలుసుకోండి',
     heroTitlePart2: 'మీ చుట్టుపక్కల.',
-    heroDescription: 'సంక్లిష్ట పర్యావరణ డేటాను స్పష్టమైన, వ్యక్తిగత చర్యలుగా మార్చండి. మీ గాలి నాణ్యత, మీ రిస్క్ మరియు తరువాత ఏమి చేయాలో అర్థం చేసుకోండి.',
+    heroDescription:
+      'సంక్లిష్ట పర్యావరణ డేటాను స్పష్టమైన, వ్యక్తిగత చర్యలుగా మార్చండి. మీ గాలి నాణ్యత, మీ రిస్క్ మరియు తరువాత ఏమి చేయాలో అర్థం చేసుకోండి.',
     checkAirQuality: 'గాలి నాణ్యత తనిఖీ చేయండి',
     exploreFeatures: 'ఫీచర్లు అన్వేషించండి',
     liveEnvironmentalData: 'సజీవ పర్యావరణ డేటా',
@@ -116,60 +113,64 @@ export default {
     liveMonitoring: 'సజీవ మానిటరింగ్',
     features: 'ఫీచర్లు',
     featuresHeadline: 'మీ గాలి అర్థం చేసుకోవడానికి అవసరమైన ప్రతీటి',
-    featuresDescription: 'సజీవ పరిస్థితుల నుండి చరిత్రాత్మక నమూనాలు మరియు వ్యక్తిగత మార్గదర్శకత్వం వరకు, AirGuard సమాచారాన్ని సరళంగా మరియు ఉపయోగకరంగా ఉంచుతుంది.',
+    featuresDescription:
+      'సజీవ పరిస్థితుల నుండి చరిత్రాత్మక నమూనాలు మరియు వ్యక్తిగత మార్గదర్శకత్వం వరకు, AirGuard సమాచారాన్ని సరళంగా మరియు ఉపయోగకరంగా ఉంచుతుంది.',
     exploreCapability: 'శక్తిని అన్వేషించండి',
     howItWorksTitle: 'ఇది ఎలా పనిచేస్తుంది',
     howItWorksHeadline: 'స్థలంతో కూడి చర్య, నాలుగు దశలలో',
     premiumAwareness: 'పర్యావరణ అవగాహన, వ్యక్తిగత',
     builtForPeople: 'ప్రతిరోజూ అదే గాలి శ్వాస తీసుకునేవారికి రూపొందించబడింది.',
-    premiumDescription: 'AirGuard హ్యాకథాన్ ప్రాజెక్ట్‌గా రూపొందించబడింది మరియు పర్యావరణ రిస్క్‌ను వ్యక్తిగత, స్పష్టమైన మరియు చర్యలో అమలుపరచటానికి రూపొందించబడింది.',
-    ctaCheckAirQuality: 'గాలి నాణ్యత తనిఖీ'
+    premiumDescription:
+      'AirGuard హ్యాకథాన్ ప్రాజెక్ట్‌గా రూపొందించబడింది మరియు పర్యావరణ రిస్క్‌ను వ్యక్తిగత, స్పష్టమైన మరియు చర్యలో అమలుపరచటానికి రూపొందించబడింది.',
+    ctaCheckAirQuality: 'గాలి నాణ్యత తనిఖీ',
   },
 
   features: {
     live: {
       title: 'సజీవ గాలి నాణ్యత',
-      description: 'ఏ స్థానమైనా రియల్-టైమ్ గాలి నాణ్యతను మానిటర్ చేయండి.'
+      description: 'ఏ స్థానమైనా రియల్-టైమ్ గాలి నాణ్యతను మానిటర్ చేయండి.',
     },
     risk: {
       title: 'రిస్క్ ఇంటిలిజెన్స్',
-      description: 'సంక్లిష్ట కాలుష్య డేటాను సులభంగా అర్ధమయ్యే రిస్క్ స్థాయిలో మార్చండి.'
+      description: 'సంక్లిష్ట కాలుష్య డేటాను సులభంగా అర్ధమయ్యే రిస్క్ స్థాయిలో మార్చండి.',
     },
     guidance: {
       title: 'వ్యక్తిగత మార్గదర్శకత్వం',
-      description: 'మీ పర్యావరణ సున్నితత్వానికి అనుగుణంగా సిఫార్సులు పొందండి.'
+      description: 'మీ పర్యావరణ సున్నితత్వానికి అనుగుణంగా సిఫార్సులు పొందండి.',
     },
     trends: {
       title: 'చరిత్రాత్మక ధోరణులు',
-      description: 'గాలి నాణ్యత మెరుగ్పడుతున్నదా లేదా చెడుపడుతున్నదో అర్థం చేసుకోండి.'
+      description: 'గాలి నాణ్యత మెరుగ్పడుతున్నదా లేదా చెడుపడుతున్నదో అర్థం చేసుకోండి.',
     },
     alerts: {
       title: 'స్మార్ట్ అలెర్ట్స్',
-      description: 'మీ సేవ్ చేయబడిన ప్రాంతాలు ఎప్పుడు ప్రమాదంలో ఉంటాయో తెలుసుకోండి.'
+      description: 'మీ సేవ్ చేయబడిన ప్రాంతాలు ఎప్పుడు ప్రమాదంలో ఉంటాయో తెలుసుకోండి.',
     },
     activity: {
       title: 'క్రియాశీలత రిస్క్ సలహాదారు',
-      description: 'ప్రస్తుతం పరుగులు, సైక్లింగ్ లేదా బాహ్య కార్యకలাপాలు అనుకూలమా అని తనిఖీ చేయండి.'
-    }
+      description:
+        'ప్రస్తుతం పరుగులు, సైక్లింగ్ లేదా బాహ్య కార్యకలাপాలు అనుకూలమా అని తనిఖీ చేయండి.',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'ప్రాంతాన్ని ఎంచుకోండి',
-      description: 'ప్రారంభించడానికి ఏ నగరాన్ని అయినా శోధించండి లేదా మీ ప్రస్తుత స్థానం ఉపయోగించండి.'
+      description:
+        'ప్రారంభించడానికి ఏ నగరాన్ని అయినా శోధించండి లేదా మీ ప్రస్తుత స్థానం ఉపయోగించండి.',
     },
     step2: {
       title: 'సజీవ డేటా పొందండి',
-      description: 'AirGuard ఆ ప్రాంతానికి చివరి కాలుషక పఠనాలను పొందుతుంది.'
+      description: 'AirGuard ఆ ప్రాంతానికి చివరి కాలుషక పఠనాలను పొందుతుంది.',
     },
     step3: {
       title: 'మీ రిస్క్‌ను అర్థం చేసుకోండి',
-      description: 'మీ పర్యావరణ ప్రొఫైల్ ఆధారంగా ఒక క్లియర్ రిస్క్ స్థాయిని చూడండి.'
+      description: 'మీ పర్యావరణ ప్రొఫైల్ ఆధారంగా ఒక క్లియర్ రిస్క్ స్థాయిని చూడండి.',
     },
     step4: {
       title: 'చర్య తీసుకోండి',
-      description: 'చర్యలు, ఎక్స్‌పోజర్ మరియు జాగ్రత్తలపై ప్రత్యేక మార్గదర్శకాన్ని అనుసరించండి.'
-    }
+      description: 'చర్యలు, ఎక్స్‌పోజర్ మరియు జాగ్రత్తలపై ప్రత్యేక మార్గదర్శకాన్ని అనుసరించండి.',
+    },
   },
 
   auth: {
@@ -194,7 +195,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -203,7 +205,7 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   report: {
@@ -304,5 +306,5 @@ export default {
     in_progress: 'పురోగతిలో ఉంది',
     resolved: 'పరిష్కరించబడింది',
     rejected: 'తిరస్కరించబడింది',
-  }
+  },
 }

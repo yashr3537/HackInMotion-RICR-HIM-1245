@@ -1,14 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLanguage } from '../i18n/index.jsx'
-import {
-  Wind,
-  CircleDot,
-  Cloud,
-  Sun,
-  FlaskConical,
-  Flame,
-  Activity,
-} from 'lucide-react'
+import { Wind, CircleDot, Cloud, Sun, FlaskConical, Flame, Activity } from 'lucide-react'
 
 const ICONS = {
   pm25: CircleDot,
@@ -70,25 +62,19 @@ const getVisualPercent = (value) => {
 
 // status labels will be provided via translations inside the component
 
-
 export default function PollutantCard({ pollutant }) {
   const { t } = useLanguage()
   const Icon = ICONS[pollutant.key] || Wind
   const tint = STATUS_COLORS[pollutant.status] || STATUS_COLORS.good
 
   const targetValue = Number(pollutant.value)
-  const visualPercent = useMemo(
-    () => getVisualPercent(targetValue),
-    [targetValue],
-  )
+  const visualPercent = useMemo(() => getVisualPercent(targetValue), [targetValue])
 
   const [displayValue, setDisplayValue] = useState(0)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const numericTarget = Number.isFinite(targetValue)
-      ? targetValue
-      : 0
+    const numericTarget = Number.isFinite(targetValue) ? targetValue : 0
 
     const duration = 700
     const startTime = performance.now()
@@ -101,9 +87,7 @@ export default function PollutantCard({ pollutant }) {
 
       const easedProgress = 1 - Math.pow(1 - progress, 3)
 
-      setDisplayValue(
-        Number((numericTarget * easedProgress).toFixed(1)),
-      )
+      setDisplayValue(Number((numericTarget * easedProgress).toFixed(1)))
 
       if (progress < 1) {
         frameId = requestAnimationFrame(animateValue)
@@ -128,9 +112,7 @@ export default function PollutantCard({ pollutant }) {
   return (
     <div
       className={`card-hover card-glow group relative flex flex-col gap-4 overflow-hidden rounded-xl border bg-surface p-4 shadow-soft transition-all duration-500 ${
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'translate-y-3 opacity-0'
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
       }`}
       style={{
         borderColor: tint.border,
@@ -190,7 +172,7 @@ export default function PollutantCard({ pollutant }) {
             className="text-[10px] font-semibold uppercase tracking-[0.14em]"
             style={{ color: tint.color }}
           >
-          {t('common.live')}
+            {t('common.live')}
           </span>
         </div>
       </div>
@@ -199,9 +181,7 @@ export default function PollutantCard({ pollutant }) {
       <div className="relative z-10">
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="text-xs font-medium text-ink-500">
-              {pollutant.label}
-            </p>
+            <p className="text-xs font-medium text-ink-500">{pollutant.label}</p>
 
             <div className="mt-1 flex items-baseline">
               <span
@@ -213,9 +193,7 @@ export default function PollutantCard({ pollutant }) {
                 {displayValue}
               </span>
 
-              <span className="ml-1.5 text-xs font-normal text-ink-500">
-                {pollutant.unit}
-              </span>
+              <span className="ml-1.5 text-xs font-normal text-ink-500">{pollutant.unit}</span>
             </div>
           </div>
 
@@ -227,7 +205,7 @@ export default function PollutantCard({ pollutant }) {
               border: `1px solid ${tint.border}`,
             }}
           >
-          {t(`aqi.${pollutant.status}`)}
+            {t(`aqi.${pollutant.status}`)}
           </div>
         </div>
       </div>
@@ -236,13 +214,10 @@ export default function PollutantCard({ pollutant }) {
       <div className="relative z-10">
         <div className="mb-2 flex items-center justify-between">
           <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-400">
-          {t('pollutant.relativeLevel')}
+            {t('pollutant.relativeLevel')}
           </span>
 
-          <span
-            className="text-[10px] font-semibold tabular-nums"
-            style={{ color: tint.color }}
-          >
+          <span className="text-[10px] font-semibold tabular-nums" style={{ color: tint.color }}>
             {Math.round(visualPercent)}%
           </span>
         </div>
@@ -263,14 +238,14 @@ export default function PollutantCard({ pollutant }) {
       <div className="relative z-10 flex items-center justify-between border-t border-ink-100 pt-3">
         <div className="flex items-center gap-1.5 text-[10px] text-ink-400">
           <Activity size={11} />
-        {t('pollutant.environmentalMetric')}
+          {t('pollutant.environmentalMetric')}
         </div>
 
         <span
           className="text-[10px] font-medium transition-transform duration-300 group-hover:translate-x-0.5"
           style={{ color: tint.color }}
         >
-        {t('common.monitoring')}
+          {t('common.monitoring')}
         </span>
       </div>
     </div>

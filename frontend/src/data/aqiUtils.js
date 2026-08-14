@@ -2,12 +2,55 @@
 // Swap thresholds here later if the backend uses a different standard (e.g. US EPA vs CPCB).
 
 export const AQI_BANDS = [
-  { key: 'good', label: 'Good', max: 50, color: '#22A85F', bg: '#E6F7EC', advice: 'Air quality is satisfactory and poses little or no risk.' },
-  { key: 'moderate', label: 'Moderate', max: 100, color: '#D6A70C', bg: '#FBF3D9', advice: 'Air quality is acceptable, but sensitive individuals should take caution.' },
-  { key: 'sensitive', label: 'Unhealthy for Sensitive Groups', max: 150, color: '#E5822A', bg: '#FCEADA', advice: 'Sensitive groups may experience health effects. General public is less likely to be affected.' },
-  { key: 'unhealthy', label: 'Unhealthy', max: 200, color: '#D8492E', bg: '#FBE2DC', advice: 'Everyone may begin to experience health effects. Limit prolonged outdoor exertion.' },
-  { key: 'veryunhealthy', label: 'Very Unhealthy', max: 300, color: '#9A3FBF', bg: '#F1E1F8', advice: 'Health alert: everyone may experience more serious health effects.' },
-  { key: 'hazardous', label: 'Hazardous', max: 999, color: '#7A2035', bg: '#F1DDE1', advice: 'Health warning of emergency conditions. Entire population is likely to be affected.' },
+  {
+    key: 'good',
+    label: 'Good',
+    max: 50,
+    color: '#22A85F',
+    bg: '#E6F7EC',
+    advice: 'Air quality is satisfactory and poses little or no risk.',
+  },
+  {
+    key: 'moderate',
+    label: 'Moderate',
+    max: 100,
+    color: '#D6A70C',
+    bg: '#FBF3D9',
+    advice: 'Air quality is acceptable, but sensitive individuals should take caution.',
+  },
+  {
+    key: 'sensitive',
+    label: 'Unhealthy for Sensitive Groups',
+    max: 150,
+    color: '#E5822A',
+    bg: '#FCEADA',
+    advice:
+      'Sensitive groups may experience health effects. General public is less likely to be affected.',
+  },
+  {
+    key: 'unhealthy',
+    label: 'Unhealthy',
+    max: 200,
+    color: '#D8492E',
+    bg: '#FBE2DC',
+    advice: 'Everyone may begin to experience health effects. Limit prolonged outdoor exertion.',
+  },
+  {
+    key: 'veryunhealthy',
+    label: 'Very Unhealthy',
+    max: 300,
+    color: '#9A3FBF',
+    bg: '#F1E1F8',
+    advice: 'Health alert: everyone may experience more serious health effects.',
+  },
+  {
+    key: 'hazardous',
+    label: 'Hazardous',
+    max: 999,
+    color: '#7A2035',
+    bg: '#F1DDE1',
+    advice: 'Health warning of emergency conditions. Entire population is likely to be affected.',
+  },
 ]
 
 export function getAqiBand(aqi) {
@@ -81,17 +124,62 @@ export function calculatePollutantStatus(key, value) {
 export function formatPollutants(data) {
   if (!data) return []
 
-  const coVal = data.co !== null && data.co !== undefined && !isNaN(Number(data.co))
-    ? (Number(data.co) > 50 ? Number((Number(data.co) / 1000).toFixed(1)) : Number(Number(data.co).toFixed(1)))
-    : null
+  const coVal =
+    data.co !== null && data.co !== undefined && !isNaN(Number(data.co))
+      ? Number(data.co) > 50
+        ? Number((Number(data.co) / 1000).toFixed(1))
+        : Number(Number(data.co).toFixed(1))
+      : null
 
   return [
-    { key: 'pm25', label: 'PM2.5', value: data.pm25 !== null && data.pm25 !== undefined ? Math.round(Number(data.pm25)) : null, unit: 'µg/m³', status: calculatePollutantStatus('pm25', data.pm25), description: 'Fine particulate matter' },
-    { key: 'pm10', label: 'PM10', value: data.pm10 !== null && data.pm10 !== undefined ? Math.round(Number(data.pm10)) : null, unit: 'µg/m³', status: calculatePollutantStatus('pm10', data.pm10), description: 'Coarse particulate matter' },
-    { key: 'no2', label: 'NO₂', value: data.no2 !== null && data.no2 !== undefined ? Math.round(Number(data.no2)) : null, unit: 'µg/m³', status: calculatePollutantStatus('no2', data.no2), description: 'Nitrogen dioxide' },
-    { key: 'o3', label: 'O₃', value: data.o3 !== null && data.o3 !== undefined ? Math.round(Number(data.o3)) : null, unit: 'µg/m³', status: calculatePollutantStatus('o3', data.o3), description: 'Ground-level ozone' },
-    { key: 'so2', label: 'SO₂', value: data.so2 !== null && data.so2 !== undefined ? Math.round(Number(data.so2)) : null, unit: 'µg/m³', status: calculatePollutantStatus('so2', data.so2), description: 'Sulfur dioxide' },
-    { key: 'co', label: 'CO', value: coVal, unit: 'mg/m³', status: calculatePollutantStatus('co', data.co), description: 'Carbon monoxide' },
+    {
+      key: 'pm25',
+      label: 'PM2.5',
+      value: data.pm25 !== null && data.pm25 !== undefined ? Math.round(Number(data.pm25)) : null,
+      unit: 'µg/m³',
+      status: calculatePollutantStatus('pm25', data.pm25),
+      description: 'Fine particulate matter',
+    },
+    {
+      key: 'pm10',
+      label: 'PM10',
+      value: data.pm10 !== null && data.pm10 !== undefined ? Math.round(Number(data.pm10)) : null,
+      unit: 'µg/m³',
+      status: calculatePollutantStatus('pm10', data.pm10),
+      description: 'Coarse particulate matter',
+    },
+    {
+      key: 'no2',
+      label: 'NO₂',
+      value: data.no2 !== null && data.no2 !== undefined ? Math.round(Number(data.no2)) : null,
+      unit: 'µg/m³',
+      status: calculatePollutantStatus('no2', data.no2),
+      description: 'Nitrogen dioxide',
+    },
+    {
+      key: 'o3',
+      label: 'O₃',
+      value: data.o3 !== null && data.o3 !== undefined ? Math.round(Number(data.o3)) : null,
+      unit: 'µg/m³',
+      status: calculatePollutantStatus('o3', data.o3),
+      description: 'Ground-level ozone',
+    },
+    {
+      key: 'so2',
+      label: 'SO₂',
+      value: data.so2 !== null && data.so2 !== undefined ? Math.round(Number(data.so2)) : null,
+      unit: 'µg/m³',
+      status: calculatePollutantStatus('so2', data.so2),
+      description: 'Sulfur dioxide',
+    },
+    {
+      key: 'co',
+      label: 'CO',
+      value: coVal,
+      unit: 'mg/m³',
+      status: calculatePollutantStatus('co', data.co),
+      description: 'Carbon monoxide',
+    },
   ]
 }
 
@@ -113,7 +201,7 @@ export function getDominantPollutant(pollutantsList) {
     key: maxItem.key,
     label: maxItem.label,
     percentOfLimit: Math.min(100, Math.round((maxItem.value / 100) * 100)),
-    description: `${maxItem.label} is currently the main contributor to air-quality risk.`
+    description: `${maxItem.label} is currently the main contributor to air-quality risk.`,
   }
 }
 
@@ -154,4 +242,3 @@ export function getRecommendationForAqi(aqi, activity = 'Running') {
     verdict,
   }
 }
-

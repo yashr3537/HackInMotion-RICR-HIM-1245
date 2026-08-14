@@ -28,16 +28,13 @@ import { AuthProvider, useAuth } from './auth'
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth()
 
-  return isAuthenticated
-    ? <AppLayout />
-    : <Navigate to="/login" replace />
+  return isAuthenticated ? <AppLayout /> : <Navigate to="/login" replace />
 }
 
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
-
         {/* Public Pages */}
         <Route path="/" element={<Landing />} />
 
@@ -51,90 +48,42 @@ export default function App() {
 
         {/* Protected Pages */}
         <Route element={<ProtectedRoute />}>
-
           {/* Main Dashboard */}
-          <Route
-            path="/dashboard"
-            element={<Dashboard />}
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
 
           {/* My Locations */}
-          <Route
-            path="/locations"
-            element={<MyLocations />}
-          />
+          <Route path="/locations" element={<MyLocations />} />
 
-          <Route
-            path="/locations/:locationId"
-            element={<LocationDetails />}
-          />
+          <Route path="/locations/:locationId" element={<LocationDetails />} />
 
           {/* Location Details */}
-          <Route
-            path="/location-details"
-            element={<LocationDetails />}
-          />
+          <Route path="/location-details" element={<LocationDetails />} />
 
           {/* Other Pages */}
-          <Route
-            path="/explore"
-            element={<Explore />}
-          />
+          <Route path="/explore" element={<Explore />} />
 
-          <Route
-            path="/history"
-            element={<HistoryPage />}
-          />
+          <Route path="/history" element={<HistoryPage />} />
 
-          <Route
-            path="/alerts"
-            element={<Alerts />}
-          />
+          <Route path="/alerts" element={<Alerts />} />
 
-          <Route
-            path="/activity"
-            element={<ActivityAdvisor />}
-          />
+          <Route path="/activity" element={<ActivityAdvisor />} />
 
-          <Route
-            path="/compare"
-            element={<Compare />}
-          />
+          <Route path="/compare" element={<Compare />} />
 
-          <Route
-            path="/profile"
-            element={<Profile />}
-          />
+          <Route path="/profile" element={<Profile />} />
 
-          <Route
-            path="/settings"
-            element={<Settings />}
-          />
+          <Route path="/settings" element={<Settings />} />
 
           {/* Pollution Reporting */}
-          <Route
-            path="/report"
-            element={<ReportIssue />}
-          />
+          <Route path="/report" element={<ReportIssue />} />
 
-          <Route
-            path="/my-reports"
-            element={<MyReports />}
-          />
+          <Route path="/my-reports" element={<MyReports />} />
 
-          <Route
-            path="/my-reports/:reportId"
-            element={<ReportDetails />}
-          />
-
+          <Route path="/my-reports/:reportId" element={<ReportDetails />} />
         </Route>
 
         {/* 404 */}
-        <Route
-          path="*"
-          element={<NotFound />}
-        />
-
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>
   )

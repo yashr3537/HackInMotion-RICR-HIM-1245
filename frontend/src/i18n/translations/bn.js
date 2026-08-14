@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'বায়ুর গুণমান পরীক্ষা করুন',
     language: 'ভাষা',
     live: 'লাইভ',
-    monitoring: 'মনিটরিং'
+    monitoring: 'মনিটরিং',
   },
 
   nav: {
@@ -33,7 +33,8 @@ export default {
   },
 
   sidebar: {
-    footerNotice: 'বায়ুর মানের ডেটা স্বয়ংক্রিয়ভাবে রিফ্রেশ হয়। ডেমো বিল্ড — ব্যাকএন্ড এখনও সংযুক্ত নয়।'
+    footerNotice:
+      'বায়ুর মানের ডেটা স্বয়ংক্রিয়ভাবে রিফ্রেশ হয়। ডেমো বিল্ড — ব্যাকএন্ড এখনও সংযুক্ত নয়।',
   },
 
   dashboard: {
@@ -50,7 +51,7 @@ export default {
     language: 'ভাষা',
     voiceAlerts: 'ভয়েস অ্যালার্ট',
     darkMode: 'ডার্ক মোড',
-    applicationPreferences: 'অ্যাপ্লিকেশন পছন্দ'
+    applicationPreferences: 'অ্যাপ্লিকেশন পছন্দ',
   },
 
   alerts: {
@@ -58,7 +59,7 @@ export default {
     critical: 'গুরুতর',
     warning: 'সতর্কতা',
     information: 'তথ্য',
-    aqiMessage: '{location} জন্য বায়ুর মান সতর্কতা। বর্তমান AQI {aqi}।'
+    aqiMessage: '{location} জন্য বায়ুর মান সতর্কতা। বর্তমান AQI {aqi}।',
   },
 
   aqi: {
@@ -71,7 +72,7 @@ export default {
 
   pollutant: {
     relativeLevel: 'সাপেক্ষ স্তর',
-    environmentalMetric: 'পরিবেশগত মেট্রিক'
+    environmentalMetric: 'পরিবেশগত মেট্রিক',
   },
 
   recommendation: {
@@ -80,7 +81,7 @@ export default {
     profile: 'প্রোফাইল',
     activity: 'কর্মকলাপ',
     basedOn: 'বর্তমান পরিবেশগত পরিস্থিতির উপর ভিত্তি করে',
-    checkActivity: 'কার্য ঝুঁকি পরীক্ষা করুন'
+    checkActivity: 'কার্য ঝুঁকি পরীক্ষা করুন',
   },
 
   dominant: {
@@ -92,20 +93,16 @@ export default {
     higherAttention: 'উচ্চ মনোযোগের সুপারিশ',
     monitorConditions: 'বর্তমান পরিস্থিতি পর্যবেক্ষণ করুন',
     withinRange: 'বর্তমান স্তর প্রত্যাশিত পরিসরের মধ্যে রয়েছে',
-    indicatorInfo: 'এই সূচকটি বর্তমান দূষক স্তর এবং এর কনফিগার করা রেফারেন্স সীমার উপর ভিত্তি করে।'
+    indicatorInfo: 'এই সূচকটি বর্তমান দূষক স্তর এবং এর কনফিগার করা রেফারেন্স সীমার উপর ভিত্তি করে।',
   },
 
-
-  auth: {
-    login: 'লগইন',
-    signup: 'সাইন আপ'
-  },
 
   landing: {
     realtimeIntelligence: 'রিয়েল-টাইম পরিবেশগত বুদ্ধিমত্তা',
     heroTitlePart1: 'বাতাস জানুন',
     heroTitlePart2: 'আপনার চারপাশে।',
-    heroDescription: 'জটিল পরিবেশগত ডেটাকে পরিষ্কার, ব্যক্তিগতকৃত পদক্ষেপে রূপান্তর করুন। আপনার বায়ুর মান, ঝুঁকি এবং পরবর্তী করণীয়গুলি বুঝুন।',
+    heroDescription:
+      'জটিল পরিবেশগত ডেটাকে পরিষ্কার, ব্যক্তিগতকৃত পদক্ষেপে রূপান্তর করুন। আপনার বায়ুর মান, ঝুঁকি এবং পরবর্তী করণীয়গুলি বুঝুন।',
     checkAirQuality: 'বায়ুর মান পরীক্ষা করুন',
     exploreFeatures: 'বৈশিষ্ট্য অন্বেষণ করুন',
     liveEnvironmentalData: 'লাইভ পরিবেশগত ডেটা',
@@ -116,60 +113,63 @@ export default {
     liveMonitoring: 'লাইভ মনিটরিং',
     features: 'বৈশিষ্ট্য',
     featuresHeadline: 'আপনার বায়ু বোঝার জন্য যেটি দরকার সব',
-    featuresDescription: 'লাইভ পরিস্থিতি থেকে ঐতিহাসিক প্রবণতা এবং ব্যক্তিগত নির্দেশনা পর্যন্ত, AirGuard তথ্যকে সহজ এবং কার্যকর রাখে।',
+    featuresDescription:
+      'লাইভ পরিস্থিতি থেকে ঐতিহাসিক প্রবণতা এবং ব্যক্তিগত নির্দেশনা পর্যন্ত, AirGuard তথ্যকে সহজ এবং কার্যকর রাখে।',
     exploreCapability: 'ক্ষমতা এক্সপ্লোর করুন',
     howItWorksTitle: 'কীভাবে কাজ করে',
     howItWorksHeadline: 'অবস্থান থেকে কর্মে, চারটি ধাপে',
     premiumAwareness: 'পরিবেশগত সচেতনতা, ব্যক্তিগতকৃত',
     builtForPeople: 'যারা প্রতিদিন একই বাতাস শ্বাস নেয় তাদের জন্য নির্মিত',
-    premiumDescription: 'AirGuard একটি হ্যাকাথন প্রকল্প হিসাবে তৈরি করা হয়েছে যাতে পরিবেশগত ঝুঁকি ব্যক্তিগত, পরিষ্কার এবং কার্যকর করা যায়।',
-    ctaCheckAirQuality: 'বায়ুর মান পরীক্ষা করুন'
+    premiumDescription:
+      'AirGuard একটি হ্যাকাথন প্রকল্প হিসাবে তৈরি করা হয়েছে যাতে পরিবেশগত ঝুঁকি ব্যক্তিগত, পরিষ্কার এবং কার্যকর করা যায়।',
+    ctaCheckAirQuality: 'বায়ুর মান পরীক্ষা করুন',
   },
 
   features: {
     live: {
       title: 'লাইভ বায়ুর মান',
-      description: 'যেকোনো স্থানের জন্য রিয়েল-টাইম বায়ুর মান মনিটর করুন।'
+      description: 'যেকোনো স্থানের জন্য রিয়েল-টাইম বায়ুর মান মনিটর করুন।',
     },
     risk: {
       title: 'ঝুঁকি বুদ্ধিমত্তা',
-      description: 'জটিল দূষণ ডেটাকে সহজভাবে বোঝার যোগ্য ঝুঁকি স্তরে রূপান্তর করুন।'
+      description: 'জটিল দূষণ ডেটাকে সহজভাবে বোঝার যোগ্য ঝুঁকি স্তরে রূপান্তর করুন।',
     },
     guidance: {
       title: 'ব্যক্তিগত নির্দেশিকা',
-      description: 'আপনার পরিবেশগত সংবেদনশীলতার উপর ভিত্তি করে সুপারিশ পান।'
+      description: 'আপনার পরিবেশগত সংবেদনশীলতার উপর ভিত্তি করে সুপারিশ পান।',
     },
     trends: {
       title: 'ঐতিহাসিক প্রবণতা',
-      description: 'বুঝুন বায়ুর মান উন্নত হচ্ছে কি খারাপ হচ্ছে।'
+      description: 'বুঝুন বায়ুর মান উন্নত হচ্ছে কি খারাপ হচ্ছে।',
     },
     alerts: {
       title: 'স্মার্ট সতর্কতা',
-      description: 'আপনার সংরক্ষিত স্থানগুলি কখন ঝুঁকিপূর্ণ হবে তা জানুন।'
+      description: 'আপনার সংরক্ষিত স্থানগুলি কখন ঝুঁকিপূর্ণ হবে তা জানুন।',
     },
     activity: {
       title: 'কর্ম ঝুঁকি উপদেষ্টা',
-      description: 'পরীক্ষা করুন দৌড়ানো, সাইকেল চালানো বা বাইরে কার্যক্রম এই মুহূর্তে উপযুক্ত কি না।'
-    }
+      description:
+        'পরীক্ষা করুন দৌড়ানো, সাইকেল চালানো বা বাইরে কার্যক্রম এই মুহূর্তে উপযুক্ত কি না।',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'অবস্থান নির্বাচন করুন',
-      description: 'শুরু করতে যে কোন শহর খুঁজুন বা আপনার বর্তমান অবস্থান ব্যবহার করুন।'
+      description: 'শুরু করতে যে কোন শহর খুঁজুন বা আপনার বর্তমান অবস্থান ব্যবহার করুন।',
     },
     step2: {
       title: 'লাইভ ডেটা পান',
-      description: 'AirGuard সেই অবস্থানের জন্য সর্বশেষ দূষক পাঠগুলি আনবে।'
+      description: 'AirGuard সেই অবস্থানের জন্য সর্বশেষ দূষক পাঠগুলি আনবে।',
     },
     step3: {
       title: 'আপনার ঝুঁকি বুঝুন',
-      description: 'আপনার পরিবেশগত প্রোফাইলের ভিত্তিতে একটি পরিষ্কার ঝুঁকি স্তর দেখুন।'
+      description: 'আপনার পরিবেশগত প্রোফাইলের ভিত্তিতে একটি পরিষ্কার ঝুঁকি স্তর দেখুন।',
     },
     step4: {
       title: 'কর্ম করুন',
-      description: 'কর্ম, এক্সপোজার এবং সতর্কতার উপর কাস্টমাইজড নির্দেশিকা অনুসরণ করুন।'
-    }
+      description: 'কর্ম, এক্সপোজার এবং সতর্কতার উপর কাস্টমাইজড নির্দেশিকা অনুসরণ করুন।',
+    },
   },
 
   auth: {
@@ -194,7 +194,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -203,7 +204,7 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   report: {
@@ -307,5 +308,5 @@ export default {
     in_progress: 'প্রক্রিয়াধীন',
     resolved: 'মীমাংসিত',
     rejected: 'বাতিল',
-  }
+  },
 }

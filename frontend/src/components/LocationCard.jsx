@@ -45,7 +45,11 @@ export default function LocationCard({
         .then((res) => {
           if (isMounted && res.aqi !== null) {
             setAqiVal(res.aqi)
-            setUpdatedTime(res.time ? new Date(res.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now')
+            setUpdatedTime(
+              res.time
+                ? new Date(res.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : 'Just now'
+            )
           }
         })
         .catch((e) => console.error(`Live AQI fetch failed for ${location.name}:`, e))
@@ -72,9 +76,7 @@ export default function LocationCard({
   return (
     <div
       className={`card-hover card-glow group relative flex flex-col gap-4 overflow-hidden rounded-xl border border-ink-100 bg-surface p-5 shadow-soft transition-all duration-500 ${
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'translate-y-3 opacity-0'
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
       }`}
     >
       {/* Soft ambient glow */}
@@ -201,10 +203,7 @@ export default function LocationCard({
             </p>
 
             <div className="mt-1.5">
-              <RiskBadge
-                aqi={aqiVal}
-                size="sm"
-              />
+              <RiskBadge aqi={aqiVal} size="sm" />
             </div>
           </div>
 

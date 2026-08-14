@@ -74,11 +74,7 @@ export default function RiskBadge({ aqi, size = 'md' }) {
 
       {/* Optional shield icon for larger badges */}
       {size === 'lg' && (
-        <ShieldAlert
-          size={currentSize.icon}
-          strokeWidth={2.2}
-          className="shrink-0"
-        />
+        <ShieldAlert size={currentSize.icon} strokeWidth={2.2} className="shrink-0" />
       )}
 
       <span>{band.label}</span>

@@ -49,10 +49,7 @@ export default function AQIGauge({ aqi, size = 220 }) {
     }
   }, [aqi])
 
-  const ticks = useMemo(
-    () => Array.from({ length: 11 }, (_, index) => index),
-    [],
-  )
+  const ticks = useMemo(() => Array.from({ length: 11 }, (_, index) => index), [])
 
   return (
     <div
@@ -175,9 +172,7 @@ export default function AQIGauge({ aqi, size = 220 }) {
         ==================================================== */}
         <div
           className={`absolute left-1/2 top-[57%] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center transition-all duration-700 ${
-            visible
-              ? 'scale-100 opacity-100'
-              : 'scale-90 opacity-0'
+            visible ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
           }`}
         >
           <span
@@ -200,9 +195,7 @@ export default function AQIGauge({ aqi, size = 220 }) {
       ====================================================== */}
       <div
         className={`mt-[-4px] flex items-center gap-2 transition-all duration-700 ${
-          visible
-            ? 'translate-y-0 opacity-100'
-            : 'translate-y-2 opacity-0'
+          visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
         }`}
       >
         <span
@@ -213,10 +206,7 @@ export default function AQIGauge({ aqi, size = 220 }) {
           }}
         />
 
-        <span
-          className="text-xs font-semibold"
-          style={{ color: band.color }}
-        >
+        <span className="text-xs font-semibold" style={{ color: band.color }}>
           {band.label || band.name || 'Air Quality'}
         </span>
       </div>

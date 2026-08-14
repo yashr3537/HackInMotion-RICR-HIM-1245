@@ -138,10 +138,7 @@ export default function MyLocations() {
       console.log('Confirming save location payload:', locToSave, 'currentUser:', currentUser)
       const savedLoc = await saveLocationToDb(currentUser.id, locToSave)
       if (savedLoc) {
-        setMySavedLocations((prev) => [
-          savedLoc,
-          ...prev.filter((item) => item.id !== savedLoc.id),
-        ])
+        setMySavedLocations((prev) => [savedLoc, ...prev.filter((item) => item.id !== savedLoc.id)])
       }
     } catch (error) {
       console.error('Save location failed:', error)
@@ -160,7 +157,11 @@ export default function MyLocations() {
     if (!editingThresholdLocation || !currentUser?.id) return
     const targetId = editingThresholdLocation.id
     try {
-      const success = await updateSavedLocationThreshold(currentUser.id, targetId, editingThresholdValue)
+      const success = await updateSavedLocationThreshold(
+        currentUser.id,
+        targetId,
+        editingThresholdValue
+      )
       if (success) {
         setMySavedLocations((prev) =>
           prev.map((loc) =>
@@ -241,7 +242,9 @@ export default function MyLocations() {
           setCurrentLiveLocation((prev) => ({
             ...prev,
             loading: false,
-            error: t('common.unableFetchAQI', { defaultValue: 'Unable to fetch current air quality.' }),
+            error: t('common.unableFetchAQI', {
+              defaultValue: 'Unable to fetch current air quality.',
+            }),
           }))
         }
       }
@@ -251,7 +254,9 @@ export default function MyLocations() {
       setCurrentLiveLocation((prev) => ({
         ...prev,
         loading: false,
-        error: t('common.geoNotSupported', { defaultValue: 'Location is not supported by your browser.' }),
+        error: t('common.geoNotSupported', {
+          defaultValue: 'Location is not supported by your browser.',
+        }),
       }))
       return () => {
         cancelled = true
@@ -372,7 +377,9 @@ export default function MyLocations() {
         console.error('Location search error:', error)
         if (!cancelled) {
           setSearchResults([])
-          setSearchError(t('common.unableSearch', { defaultValue: 'Unable to search locations right now.' }))
+          setSearchError(
+            t('common.unableSearch', { defaultValue: 'Unable to search locations right now.' })
+          )
         }
       } finally {
         if (!cancelled) {
@@ -397,7 +404,6 @@ export default function MyLocations() {
 
   return (
     <div className="page-enter flex flex-col gap-8 pb-8 sm:gap-10">
-
       {/* =====================================================
           HEADER
       ===================================================== */}
@@ -414,7 +420,8 @@ export default function MyLocations() {
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
             {t('common.myLocationsDesc', {
-              defaultValue: 'Monitor live air quality for your saved locations or search any city worldwide.',
+              defaultValue:
+                'Monitor live air quality for your saved locations or search any city worldwide.',
             })}
           </p>
         </div>
@@ -450,7 +457,8 @@ export default function MyLocations() {
               {t('common.savedPlaces', { defaultValue: 'Saved places' })}
             </p>
             <h2 className="font-display text-lg font-semibold text-ink-900 sm:text-xl">
-              {t('common.savedLocations', { defaultValue: 'Saved Locations' })} ({mySavedLocations.length})
+              {t('common.savedLocations', { defaultValue: 'Saved Locations' })} (
+              {mySavedLocations.length})
             </h2>
           </div>
         </div>
@@ -462,7 +470,8 @@ export default function MyLocations() {
               Log in to save locations and receive alerts
             </h3>
             <p className="mt-1 text-xs text-ink-500 max-w-md mx-auto">
-              Guest users cannot save locations or receive voice and air quality threshold alerts. Please log in to sync your saved places and stay protected.
+              Guest users cannot save locations or receive voice and air quality threshold alerts.
+              Please log in to sync your saved places and stay protected.
             </p>
             <button
               type="button"
@@ -475,7 +484,9 @@ export default function MyLocations() {
         ) : loadingLocations ? (
           <div className="flex items-center justify-center p-12 text-ink-400">
             <Loader2 size={24} className="animate-spin text-forest-700" />
-            <span className="ml-2 text-sm">{t('common.loading', { defaultValue: 'Loading saved locations...' })}</span>
+            <span className="ml-2 text-sm">
+              {t('common.loading', { defaultValue: 'Loading saved locations...' })}
+            </span>
           </div>
         ) : mySavedLocations.length > 0 ? (
           <div className="stagger-children grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -495,7 +506,8 @@ export default function MyLocations() {
               variant="no-saved-locations"
               title={t('common.noSavedLocations', { defaultValue: 'No saved locations' })}
               description={t('common.noSavedLocationsDesc', {
-                defaultValue: "You haven't saved any locations yet. Use search below to explore and save cities.",
+                defaultValue:
+                  "You haven't saved any locations yet. Use search below to explore and save cities.",
               })}
             />
           </div>
@@ -533,9 +545,7 @@ export default function MyLocations() {
                     {t('common.live', { defaultValue: 'Live' })}
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-ink-500">
-                  {currentLiveLocation.region}
-                </p>
+                <p className="mt-1 text-sm text-ink-500">{currentLiveLocation.region}</p>
               </div>
             </div>
 
@@ -610,7 +620,9 @@ export default function MyLocations() {
             {t('common.searchLocation', { defaultValue: 'Search Location' })}
           </h2>
           <p className="mt-1 text-xs text-ink-500">
-            {t('common.searchLocationDesc', { defaultValue: 'Search any city or region to check its current AQI and save it.' })}
+            {t('common.searchLocationDesc', {
+              defaultValue: 'Search any city or region to check its current AQI and save it.',
+            })}
           </p>
         </div>
 
@@ -620,7 +632,9 @@ export default function MyLocations() {
             <SearchBar
               value={query}
               onChange={setQuery}
-              placeholder={t('common.searchPlaceholder', { defaultValue: 'Search city or region...' })}
+              placeholder={t('common.searchPlaceholder', {
+                defaultValue: 'Search city or region...',
+              })}
             />
           </div>
 
@@ -655,7 +669,9 @@ export default function MyLocations() {
                             <MapPin size={16} />
                           </div>
                           <div className="min-w-0">
-                            <p className="font-display font-semibold text-ink-900">{location.name}</p>
+                            <p className="font-display font-semibold text-ink-900">
+                              {location.name}
+                            </p>
                             <p className="mt-0.5 truncate text-xs text-ink-500">
                               {location.region}
                               {location.country ? `, ${location.country}` : ''}
@@ -698,9 +714,7 @@ export default function MyLocations() {
                             {location.aqi ?? '—'}
                           </p>
                         </div>
-                        {location.aqi !== null && (
-                          <RiskBadge aqi={location.aqi} size="sm" />
-                        )}
+                        {location.aqi !== null && <RiskBadge aqi={location.aqi} size="sm" />}
                       </div>
                     </div>
 
@@ -740,7 +754,9 @@ export default function MyLocations() {
                 {t('common.searchPromptTitle', { defaultValue: 'Search for a location' })}
               </p>
               <p className="mt-1 text-xs text-ink-500">
-                {t('common.searchPromptDesc', { defaultValue: 'Enter a city name to see its live air quality.' })}
+                {t('common.searchPromptDesc', {
+                  defaultValue: 'Enter a city name to see its live air quality.',
+                })}
               </p>
             </div>
           )}
@@ -808,20 +824,20 @@ export default function MyLocations() {
                   Set Alert Threshold
                 </h3>
                 <p className="text-xs text-ink-500">
-                  {savingLocationModal.name}{savingLocationModal.region ? `, ${savingLocationModal.region}` : ''}
+                  {savingLocationModal.name}
+                  {savingLocationModal.region ? `, ${savingLocationModal.region}` : ''}
                 </p>
               </div>
             </div>
 
             <p className="text-xs text-ink-600 leading-relaxed mb-4">
-              Set the Air Quality Index (AQI) level at which you want to receive voice and push alerts for this location.
+              Set the Air Quality Index (AQI) level at which you want to receive voice and push
+              alerts for this location.
             </p>
 
             <div className="space-y-4 rounded-xl border border-ink-100 bg-ink-50/50 p-4">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-ink-700">
-                  AQI Alert Threshold:
-                </label>
+                <label className="text-xs font-semibold text-ink-700">AQI Alert Threshold:</label>
                 <span className="font-mono text-base font-bold text-forest-800 bg-forest-50 px-2.5 py-1 rounded-lg border border-forest-200">
                   {savingThreshold} AQI
                 </span>
@@ -893,21 +909,18 @@ export default function MyLocations() {
                 <h3 className="font-display text-lg font-semibold text-ink-900">
                   Edit Alert Threshold
                 </h3>
-                <p className="text-xs text-ink-500">
-                  {editingThresholdLocation.name}
-                </p>
+                <p className="text-xs text-ink-500">{editingThresholdLocation.name}</p>
               </div>
             </div>
 
             <p className="text-xs text-ink-600 leading-relaxed mb-4">
-              Update your trigger AQI for voice &amp; push notifications for {editingThresholdLocation.name}.
+              Update your trigger AQI for voice &amp; push notifications for{' '}
+              {editingThresholdLocation.name}.
             </p>
 
             <div className="space-y-4 rounded-xl border border-ink-100 bg-ink-50/50 p-4">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-ink-700">
-                  Trigger AQI Threshold:
-                </label>
+                <label className="text-xs font-semibold text-ink-700">Trigger AQI Threshold:</label>
                 <span className="font-mono text-base font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
                   {editingThresholdValue} AQI
                 </span>
@@ -964,7 +977,6 @@ export default function MyLocations() {
           </div>
         </div>
       )}
-
     </div>
   )
 }

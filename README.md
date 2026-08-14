@@ -1,4 +1,4 @@
-# README.md 
+# README.md
 
 # 🌿 AirGuard – AI Powered Environmental Risk & Air Quality Monitoring Platform
 
@@ -24,15 +24,15 @@ AirGuard addresses this problem by converting live environmental data into clear
 
 AirGuard is an AI-inspired environmental monitoring platform that combines:
 
-* 🌍 Real-Time Air Quality Monitoring
-* 📍 Location-Based Search
-* 📈 Historical AQI Tracking
-* ❤️ Personalized Health Recommendations
-* 🚨 Smart AQI Alerts
-* 📊 Risk Classification Engine
-* 🗺️ Route Risk Planner
-* 🤝 Community Environmental Reporting
-* 🌐 Multi-location Monitoring
+- 🌍 Real-Time Air Quality Monitoring
+- 📍 Location-Based Search
+- 📈 Historical AQI Tracking
+- ❤️ Personalized Health Recommendations
+- 🚨 Smart AQI Alerts
+- 📊 Risk Classification Engine
+- 🗺️ Route Risk Planner
+- 🤝 Community Environmental Reporting
+- 🌐 Multi-location Monitoring
 
 The platform empowers users to make safer daily decisions based on environmental conditions.
 
@@ -42,12 +42,12 @@ The platform empowers users to make safer daily decisions based on environmental
 
 ## 🔐 Secure Authentication
 
-* Secure user registration
-* Secure login using Supabase Authentication
-* Session management
-* Private user profiles
-* Protected routes
-* Individual user data isolation
+- Secure user registration
+- Secure login using Supabase Authentication
+- Session management
+- Private user profiles
+- Protected routes
+- Individual user data isolation
 
 ---
 
@@ -55,22 +55,22 @@ The platform empowers users to make safer daily decisions based on environmental
 
 Users can:
 
-* Search any city or locality
-* Use their current device location
-* View real-time environmental conditions
+- Search any city or locality
+- Use their current device location
+- View real-time environmental conditions
 
 Displayed parameters include:
 
-* AQI
-* PM2.5
-* PM10
-* Carbon Monoxide (CO)
-* Nitrogen Dioxide (NO₂)
-* Sulphur Dioxide (SO₂)
-* Ozone (O₃)
-* Temperature
-* Humidity
-* Wind Speed
+- AQI
+- PM2.5
+- PM10
+- Carbon Monoxide (CO)
+- Nitrogen Dioxide (NO₂)
+- Sulphur Dioxide (SO₂)
+- Ozone (O₃)
+- Temperature
+- Humidity
+- Wind Speed
 
 ---
 
@@ -85,7 +85,7 @@ AirGuard converts raw AQI values into understandable categories.
 | 101–150 | 🟠 Unhealthy for Sensitive Groups |
 | 151–200 | 🔴 Unhealthy                      |
 | 201–300 | 🟣 Very Unhealthy                 |
-| 301+    | ⚫ Hazardous                       |
+| 301+    | ⚫ Hazardous                      |
 
 ---
 
@@ -95,21 +95,21 @@ Recommendations are generated based on user profile.
 
 Supported profiles:
 
-* General User
-* Asthma Patient
-* Respiratory Disease
-* Senior Citizen
-* Child
-* Outdoor Worker
+- General User
+- Asthma Patient
+- Respiratory Disease
+- Senior Citizen
+- Child
+- Outdoor Worker
 
 Example guidance includes:
 
-* Limit outdoor exposure
-* Wear N95 mask
-* Keep windows closed
-* Avoid jogging
-* Use air purifier
-* Seek medical advice if symptoms worsen
+- Limit outdoor exposure
+- Wear N95 mask
+- Keep windows closed
+- Avoid jogging
+- Use air purifier
+- Seek medical advice if symptoms worsen
 
 ---
 
@@ -117,11 +117,11 @@ Example guidance includes:
 
 Users can save multiple frequently visited locations such as:
 
-* Home
-* Office
-* School
-* College
-* Gym
+- Home
+- Office
+- School
+- College
+- Gym
 
 Each location displays its current AQI status for quick monitoring.
 
@@ -133,11 +133,11 @@ AirGuard stores historical air quality snapshots to help users analyze trends.
 
 Features include:
 
-* Daily monitoring
-* 7-Day trend
-* 30-Day trend
-* AQI comparison
-* Pollution trend analysis
+- Daily monitoring
+- 7-Day trend
+- 30-Day trend
+- AQI comparison
+- Pollution trend analysis
 
 Interactive charts provide a visual understanding of environmental changes over time.
 
@@ -149,10 +149,10 @@ The application automatically generates alerts whenever the AQI exceeds configur
 
 Alerts include:
 
-* High Pollution Warning
-* Health Advisory
-* Sensitive Group Warning
-* Hazardous Air Alert
+- High Pollution Warning
+- Health Advisory
+- Sensitive Group Warning
+- Hazardous Air Alert
 
 ---
 
@@ -160,11 +160,11 @@ Alerts include:
 
 Users can report environmental issues such as:
 
-* Garbage Burning
-* Industrial Smoke
-* Construction Dust
-* Waste Burning
-* Heavy Pollution
+- Garbage Burning
+- Industrial Smoke
+- Construction Dust
+- Waste Burning
+- Heavy Pollution
 
 Community reports improve environmental awareness and encourage public participation.
 
@@ -174,10 +174,10 @@ Community reports improve environmental awareness and encourage public participa
 
 Users can compare air quality along different travel routes before:
 
-* Walking
-* Running
-* Cycling
-* Daily Commute
+- Walking
+- Running
+- Cycling
+- Daily Commute
 
 This helps users choose healthier travel paths.
 
@@ -189,11 +189,11 @@ Compare air quality between multiple cities simultaneously.
 
 Displayed comparisons include:
 
-* AQI
-* PM2.5
-* PM10
-* Risk Level
-* Health Recommendation
+- AQI
+- PM2.5
+- PM10
+- Risk Level
+- Health Recommendation
 
 ---
 
@@ -201,50 +201,50 @@ Displayed comparisons include:
 
 ## Frontend
 
-* React.js
-* Vite
-* Tailwind CSS
-* JavaScript
+- React.js
+- Vite
+- Tailwind CSS
+- JavaScript
 
 ---
 
 ## Backend
 
-* Node.js
-* Express.js
+- Node.js
+- Express.js
 
 ---
 
 ## Database & Authentication
 
-* Supabase Database
-* Supabase Authentication
-* Row Level Security (RLS)
+- Supabase Database
+- Supabase Authentication
+- Row Level Security (RLS)
 
 ---
 
 ## APIs
 
-* Open-Meteo Air Quality API
-* Open-Meteo Geocoding API
-* Browser Geolocation API
+- Open-Meteo Air Quality API
+- Open-Meteo Geocoding API
+- Browser Geolocation API
 
 ---
 
 ## Visualization
 
-* Chart.js / Recharts
-* Responsive Dashboard
-* Interactive Charts
+- Chart.js / Recharts
+- Responsive Dashboard
+- Interactive Charts
 
 ---
 
 ## Development Tools
 
-* Git
-* GitHub
-* VS Code
-* npm
+- Git
+- GitHub
+- VS Code
+- npm
 
 ---
 

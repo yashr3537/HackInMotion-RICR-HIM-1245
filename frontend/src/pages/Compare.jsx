@@ -21,9 +21,21 @@ import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
 
 const DEFAULT_CITIES = [
-  { id: 'cmp-bhopal', name: 'Bhopal', region: 'Madhya Pradesh', latitude: 23.2599, longitude: 77.4126 },
-  { id: 'cmp-indore', name: 'Indore', region: 'Madhya Pradesh', latitude: 22.7196, longitude: 75.8577 },
-  { id: 'cmp-delhi', name: 'Delhi', region: 'Delhi NCR', latitude: 28.6139, longitude: 77.2090 },
+  {
+    id: 'cmp-bhopal',
+    name: 'Bhopal',
+    region: 'Madhya Pradesh',
+    latitude: 23.2599,
+    longitude: 77.4126,
+  },
+  {
+    id: 'cmp-indore',
+    name: 'Indore',
+    region: 'Madhya Pradesh',
+    latitude: 22.7196,
+    longitude: 75.8577,
+  },
+  { id: 'cmp-delhi', name: 'Delhi', region: 'Delhi NCR', latitude: 28.6139, longitude: 77.209 },
 ]
 
 const getRiskMeta = (aqi, t) => {
@@ -68,12 +80,20 @@ const getRiskMeta = (aqi, t) => {
 
 const getMetricValue = (location, key) => {
   if (location.loading) return '--'
-  if (key === 'aqi') return location.aqi !== null && location.aqi !== undefined ? location.aqi : '--'
-  if (key === 'pm25') return location.pm25 !== null && location.pm25 !== undefined ? location.pm25 : '--'
-  if (key === 'pm10') return location.pm10 !== null && location.pm10 !== undefined ? location.pm10 : '--'
-  if (key === 'no2') return location.no2 !== null && location.no2 !== undefined ? location.no2 : '--'
-  if (key === 'temperature') return location.temperature !== null && location.temperature !== undefined ? location.temperature : '--'
-  if (key === 'humidity') return location.humidity !== null && location.humidity !== undefined ? location.humidity : '--'
+  if (key === 'aqi')
+    return location.aqi !== null && location.aqi !== undefined ? location.aqi : '--'
+  if (key === 'pm25')
+    return location.pm25 !== null && location.pm25 !== undefined ? location.pm25 : '--'
+  if (key === 'pm10')
+    return location.pm10 !== null && location.pm10 !== undefined ? location.pm10 : '--'
+  if (key === 'no2')
+    return location.no2 !== null && location.no2 !== undefined ? location.no2 : '--'
+  if (key === 'temperature')
+    return location.temperature !== null && location.temperature !== undefined
+      ? location.temperature
+      : '--'
+  if (key === 'humidity')
+    return location.humidity !== null && location.humidity !== undefined ? location.humidity : '--'
   return '--'
 }
 
@@ -250,7 +270,10 @@ export default function Compare() {
 
     // Check maximum limit
     if (compareList.length >= 6) {
-      setNotice({ type: 'warning', text: 'Maximum 6 cities can be compared. Remove a city to add another.' })
+      setNotice({
+        type: 'warning',
+        text: 'Maximum 6 cities can be compared. Remove a city to add another.',
+      })
       return
     }
 
@@ -323,7 +346,8 @@ export default function Compare() {
 
   // Active loaded list sorted by AQI
   const validList = useMemo(
-    () => compareList.filter((item) => !item.loading && item.aqi !== null && item.aqi !== undefined),
+    () =>
+      compareList.filter((item) => !item.loading && item.aqi !== null && item.aqi !== undefined),
     [compareList]
   )
 
@@ -335,8 +359,14 @@ export default function Compare() {
     })
   }, [compareList])
 
-  const best = useMemo(() => (validList.length > 0 ? [...validList].sort((a, b) => a.aqi - b.aqi)[0] : null), [validList])
-  const worst = useMemo(() => (validList.length > 0 ? [...validList].sort((a, b) => b.aqi - a.aqi)[0] : null), [validList])
+  const best = useMemo(
+    () => (validList.length > 0 ? [...validList].sort((a, b) => a.aqi - b.aqi)[0] : null),
+    [validList]
+  )
+  const worst = useMemo(
+    () => (validList.length > 0 ? [...validList].sort((a, b) => b.aqi - a.aqi)[0] : null),
+    [validList]
+  )
 
   const averageAqi = useMemo(() => {
     if (validList.length === 0) return '--'
@@ -358,7 +388,10 @@ export default function Compare() {
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          {t('compare.subtitle', { defaultValue: 'Compare live air-quality conditions across cities and analyze key environmental metrics side-by-side.' })}
+          {t('compare.subtitle', {
+            defaultValue:
+              'Compare live air-quality conditions across cities and analyze key environmental metrics side-by-side.',
+          })}
         </p>
       </section>
 
@@ -437,7 +470,8 @@ export default function Compare() {
                           >
                             <span className="font-semibold text-ink-900">{item.name}</span>
                             <span className="text-xs text-ink-400">
-                              {item.region ? `${item.region}, ` : ''}{item.country}
+                              {item.region ? `${item.region}, ` : ''}
+                              {item.country}
                             </span>
                           </button>
                         </li>
@@ -458,7 +492,11 @@ export default function Compare() {
                 }`}
               >
                 <span>{notice.text}</span>
-                <button type="button" onClick={() => setNotice(null)} className="ml-2 text-ink-500 hover:text-ink-800">
+                <button
+                  type="button"
+                  onClick={() => setNotice(null)}
+                  className="ml-2 text-ink-500 hover:text-ink-800"
+                >
                   <X size={14} />
                 </button>
               </div>
@@ -504,7 +542,8 @@ export default function Compare() {
             </h2>
 
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink-500">
-              Use the search bar above to select cities and compare live environmental air quality metrics side-by-side.
+              Use the search bar above to select cities and compare live environmental air quality
+              metrics side-by-side.
             </p>
           </div>
         </section>
@@ -524,9 +563,7 @@ export default function Compare() {
                 {compareList.length}
               </div>
 
-              <p className="mt-1 text-[10px] text-ink-500">
-                Cities active
-              </p>
+              <p className="mt-1 text-[10px] text-ink-500">Cities active</p>
             </div>
 
             <div className="card-hover rounded-xl border border-forest-100 bg-forest-50 p-4 shadow-soft">
@@ -539,9 +576,7 @@ export default function Compare() {
                 {best?.aqi ?? '--'}
               </div>
 
-              <p className="mt-1 truncate text-[10px] text-forest-700/70">
-                {best?.name || '—'}
-              </p>
+              <p className="mt-1 truncate text-[10px] text-forest-700/70">{best?.name || '—'}</p>
             </div>
 
             <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
@@ -550,13 +585,9 @@ export default function Compare() {
                 Average
               </div>
 
-              <div className="mt-2 font-mono text-2xl font-bold text-ink-900">
-                {averageAqi}
-              </div>
+              <div className="mt-2 font-mono text-2xl font-bold text-ink-900">{averageAqi}</div>
 
-              <p className="mt-1 text-[10px] text-ink-500">
-                Mean AQI
-              </p>
+              <p className="mt-1 text-[10px] text-ink-500">Mean AQI</p>
             </div>
 
             <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
@@ -569,9 +600,7 @@ export default function Compare() {
                 {worst?.aqi ?? '--'}
               </div>
 
-              <p className="mt-1 truncate text-[10px] text-ink-500">
-                {worst?.name || '—'}
-              </p>
+              <p className="mt-1 truncate text-[10px] text-ink-500">{worst?.name || '—'}</p>
             </div>
           </section>
 
@@ -605,9 +634,7 @@ export default function Compare() {
                   <div
                     key={location.id}
                     className={`card-hover card-glow group relative overflow-hidden rounded-2xl border p-5 shadow-soft transition-all duration-300 ${
-                      isBest
-                        ? 'border-forest-200 bg-forest-50'
-                        : 'border-ink-100 bg-surface'
+                      isBest ? 'border-forest-200 bg-forest-50' : 'border-ink-100 bg-surface'
                     }`}
                   >
                     {/* Ambient glow */}
@@ -632,7 +659,9 @@ export default function Compare() {
                     {location.loading ? (
                       <div className="flex h-48 flex-col items-center justify-center gap-3">
                         <Loader2 size={24} className="animate-spin text-forest-600" />
-                        <span className="text-xs font-medium text-ink-500">Fetching live AQI for {location.name}...</span>
+                        <span className="text-xs font-medium text-ink-500">
+                          Fetching live AQI for {location.name}...
+                        </span>
                       </div>
                     ) : (
                       <div className="relative z-10">
@@ -693,10 +722,7 @@ export default function Compare() {
                             <div
                               className="progress-fill h-full rounded-full"
                               style={{
-                                width: `${Math.min(
-                                  ((location.aqi || 0) / 300) * 100,
-                                  100
-                                )}%`,
+                                width: `${Math.min(((location.aqi || 0) / 300) * 100, 100)}%`,
                                 backgroundColor: risk.color,
                               }}
                             />
@@ -764,7 +790,9 @@ export default function Compare() {
 
                             <div>
                               <p className="text-xs font-semibold text-ink-800">{metric.label}</p>
-                              {metric.unit && <p className="text-[9px] text-ink-400">{metric.unit}</p>}
+                              {metric.unit && (
+                                <p className="text-[9px] text-ink-400">{metric.unit}</p>
+                              )}
                             </div>
                           </div>
                         </td>
@@ -801,7 +829,9 @@ export default function Compare() {
                   <div>
                     <p className="text-sm font-semibold text-ink-900">Live comparison insight</p>
                     <p className="mt-1 text-xs leading-6 text-ink-600">
-                      <strong>{best.name}</strong> currently has the cleanest air among compared cities with an AQI of {best.aqi}. <strong>{worst.name}</strong> records the highest pollution level at {worst.aqi}.
+                      <strong>{best.name}</strong> currently has the cleanest air among compared
+                      cities with an AQI of {best.aqi}. <strong>{worst.name}</strong> records the
+                      highest pollution level at {worst.aqi}.
                     </p>
                   </div>
                 </div>

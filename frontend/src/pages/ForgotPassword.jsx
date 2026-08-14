@@ -57,13 +57,22 @@ export default function ForgotPassword() {
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-canvas">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-ink-900">{t('auth.forgotPassword')}</h2>
-          <p className="mt-2 text-center text-sm text-ink-600">{t('auth.forgotPasswordDescription')}</p>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-ink-900">
+            {t('auth.forgotPassword')}
+          </h2>
+          <p className="mt-2 text-center text-sm text-ink-600">
+            {t('auth.forgotPasswordDescription')}
+          </p>
         </div>
 
-        <form className="mt-8 space-y-6 bg-surface p-6 rounded-2xl border border-ink-100 shadow-soft" onSubmit={handleSubmit}>
+        <form
+          className="mt-8 space-y-6 bg-surface p-6 rounded-2xl border border-ink-100 shadow-soft"
+          onSubmit={handleSubmit}
+        >
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-ink-700">{t('auth.emailAddress')}</label>
+            <label htmlFor="email" className="block text-sm font-medium text-ink-700">
+              {t('auth.emailAddress')}
+            </label>
             <div className="mt-1 relative">
               <Mail className="absolute left-3 top-3 text-ink-300" />
               <input
@@ -87,10 +96,16 @@ export default function ForgotPassword() {
           )}
 
           <div className="flex items-center justify-between">
-             <Link to="/login" className="text-sm text-ink-600 hover:text-forest-700">{t('auth.backToSignIn')}</Link>
-             <button disabled={status === 'sending'} type="submit" className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forest-800 disabled:opacity-50">
-               {status === 'sending' ? t('auth.sending') : t('auth.sendResetLink')}
-             </button>
+            <Link to="/login" className="text-sm text-ink-600 hover:text-forest-700">
+              {t('auth.backToSignIn')}
+            </Link>
+            <button
+              disabled={status === 'sending'}
+              type="submit"
+              className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forest-800 disabled:opacity-50"
+            >
+              {status === 'sending' ? t('auth.sending') : t('auth.sendResetLink')}
+            </button>
           </div>
 
           {status === 'sent' && (
@@ -103,7 +118,12 @@ export default function ForgotPassword() {
                   {resetToken ? (
                     <div className="mt-2 text-xs">
                       {/* For demo builds, provide a direct link to the reset page so the user can complete the flow locally */}
-                      <Link to={`/reset-password?token=${resetToken}`} className="text-sm font-medium text-forest-700">{t('auth.openResetLink')}</Link>
+                      <Link
+                        to={`/reset-password?token=${resetToken}`}
+                        className="text-sm font-medium text-forest-700"
+                      >
+                        {t('auth.openResetLink')}
+                      </Link>
                     </div>
                   ) : (
                     <div className="mt-2 text-xs text-ink-600">{t('auth.demoResetNotice')}</div>

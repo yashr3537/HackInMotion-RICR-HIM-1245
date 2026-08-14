@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'वायु गुणवत्ता जांचें',
     language: 'भाषा',
     live: 'लाइव',
-    monitoring: 'निगरानी'
+    monitoring: 'निगरानी',
   },
 
   nav: {
@@ -33,7 +33,8 @@ export default {
   },
 
   sidebar: {
-    footerNotice: 'वायु गुणवत्ता डेटा स्वचालित रूप से ताज़ा होता है। डेमो बिल्ड — बैकएंड अभी जुड़ा नहीं है।'
+    footerNotice:
+      'वायु गुणवत्ता डेटा स्वचालित रूप से ताज़ा होता है। डेमो बिल्ड — बैकएंड अभी जुड़ा नहीं है।',
   },
 
   dashboard: {
@@ -66,9 +67,10 @@ export default {
     viewAlerts: 'चेतावनियाँ देखें',
     keepYourEnvironmentClose: 'अपने वातावरण को पास रखें',
     exploreAnotherLocationQuestion: 'क्या आप किसी और स्थान का अन्वेषण करना चाहते हैं?',
-    searchNewArea: 'एक नया क्षेत्र खोजें, स्थानों की तुलना करें, या कम-एक्सपोज़र गतिविधि योजना बनाएं।',
+    searchNewArea:
+      'एक नया क्षेत्र खोजें, स्थानों की तुलना करें, या कम-एक्सपोज़र गतिविधि योजना बनाएं।',
     exploreLocations: 'स्थान देखें',
-    checkActivityRisk: 'गतिविधि जोखिम जांचें'
+    checkActivityRisk: 'गतिविधि जोखिम जांचें',
   },
 
   settings: {
@@ -76,7 +78,7 @@ export default {
     language: 'भाषा',
     voiceAlerts: 'वॉयस चेतावनी',
     darkMode: 'डार्क मोड',
-    applicationPreferences: 'एप्लिकेशन वरीयताएँ'
+    applicationPreferences: 'एप्लिकेशन वरीयताएँ',
   },
 
   alerts: {
@@ -84,7 +86,7 @@ export default {
     critical: 'गंभीर',
     warning: 'चेतावनी',
     information: 'सूचना',
-    aqiMessage: ' {location} के लिए वायु गुणवत्ता चेतावनी। वर्तमान AQI {aqi}.'
+    aqiMessage: ' {location} के लिए वायु गुणवत्ता चेतावनी। वर्तमान AQI {aqi}.',
   },
 
   aqi: {
@@ -97,7 +99,7 @@ export default {
 
   pollutant: {
     relativeLevel: 'सापेक्ष स्तर',
-    environmentalMetric: 'पर्यावरणीय मेट्रिक'
+    environmentalMetric: 'पर्यावरणीय मेट्रिक',
   },
 
   recommendation: {
@@ -106,7 +108,7 @@ export default {
     profile: 'प्रोफ़ाइल',
     activity: 'गतिविधि',
     basedOn: 'वर्तमान पर्यावरणीय परिस्थितियों के आधार पर',
-    checkActivity: 'गतिविधि जोखिम जांचें'
+    checkActivity: 'गतिविधि जोखिम जांचें',
   },
 
   dominant: {
@@ -118,14 +120,16 @@ export default {
     higherAttention: 'उच्च ध्यान की सिफारिश',
     monitorConditions: 'वर्तमान परिस्थितियों की निगरानी करें',
     withinRange: 'वर्तमान स्तर अपेक्षित सीमा के भीतर है',
-    indicatorInfo: 'यह संकेतक वर्तमान प्रदूषक स्तर और इसके कॉन्फ़िगर किए गए संदर्भ सीमा पर आधारित है।'
+    indicatorInfo:
+      'यह संकेतक वर्तमान प्रदूषक स्तर और इसके कॉन्फ़िगर किए गए संदर्भ सीमा पर आधारित है।',
   },
 
   landing: {
     realtimeIntelligence: 'रीयल-टाइम पर्यावरणीय बुद्धिमत्ता',
     heroTitlePart1: 'हवा को जानें',
     heroTitlePart2: 'आपके आसपास।',
-    heroDescription: 'जटिल पर्यावरणीय डेटा को स्पष्ट, व्यक्तिगत कार्रवाई में बदलें। अपनी वायु गुणवत्ता, जोखिम और अगला कदम समझें।',
+    heroDescription:
+      'जटिल पर्यावरणीय डेटा को स्पष्ट, व्यक्तिगत कार्रवाई में बदलें। अपनी वायु गुणवत्ता, जोखिम और अगला कदम समझें।',
     checkAirQuality: 'वायु गुणवत्ता जांचें',
     exploreFeatures: 'विशेषताएँ देखें',
     liveEnvironmentalData: 'लाइव पर्यावरणीय डेटा',
@@ -136,60 +140,62 @@ export default {
     liveMonitoring: 'लाइव मॉनिटरिंग',
     features: 'विशेषताएँ',
     featuresHeadline: 'अपनी हवा को समझने के लिए सब कुछ',
-    featuresDescription: 'लाइव परिस्थितियों से ऐतिहासिक प्रवृत्तियों और व्यक्तिगत मार्गदर्शन तक — AirGuard जानकारी को सरल और उपयोगी रखता है।',
+    featuresDescription:
+      'लाइव परिस्थितियों से ऐतिहासिक प्रवृत्तियों और व्यक्तिगत मार्गदर्शन तक — AirGuard जानकारी को सरल और उपयोगी रखता है।',
     exploreCapability: 'क्षमता एक्सप्लोर करें',
     howItWorksTitle: 'यह कैसे काम करता है',
     howItWorksHeadline: 'स्थान से क्रिया तक, चार चरणों में',
     premiumAwareness: 'पर्यावरण जागरूकता, व्यक्तिगत रूप से',
     builtForPeople: 'उन लोगों के लिए बना है जो हर दिन वही हवा सांस लेते हैं।',
-    premiumDescription: 'AirGuard को हैकाथॉन प्रोजेक्ट के रूप में बनाया गया था ताकि पर्यावरणीय जोखिम को व्यक्तिगत, स्पष्ट और कार्रवाई योग्य बनाया जा सके।',
-    ctaCheckAirQuality: 'वायु गुणवत्ता जांचें'
+    premiumDescription:
+      'AirGuard को हैकाथॉन प्रोजेक्ट के रूप में बनाया गया था ताकि पर्यावरणीय जोखिम को व्यक्तिगत, स्पष्ट और कार्रवाई योग्य बनाया जा सके।',
+    ctaCheckAirQuality: 'वायु गुणवत्ता जांचें',
   },
 
   features: {
     live: {
       title: 'लाइव वायु गुणवत्ता',
-      description: 'किसी भी स्थान के लिए वास्तविक समय की वायु गुणवत्ता की निगरानी करें।'
+      description: 'किसी भी स्थान के लिए वास्तविक समय की वायु गुणवत्ता की निगरानी करें।',
     },
     risk: {
       title: 'जोखिम बुद्धिमत्ता',
-      description: 'जटिल प्रदूषण डेटा को आसान-से-समझ जोखिम स्तर में बदलें।'
+      description: 'जटिल प्रदूषण डेटा को आसान-से-समझ जोखिम स्तर में बदलें।',
     },
     guidance: {
       title: 'व्यक्तिगत मार्गदर्शन',
-      description: 'आपकी पर्यावरणीय संवेदनशीलता के आधार पर सिफारिशें प्राप्त करें।'
+      description: 'आपकी पर्यावरणीय संवेदनशीलता के आधार पर सिफारिशें प्राप्त करें।',
     },
     trends: {
       title: 'ऐतिहासिक प्रवृत्तियाँ',
-      description: 'समझें कि क्या वायु गुणवत्ता बेहतर हो रही है या बिगड़ रही है।'
+      description: 'समझें कि क्या वायु गुणवत्ता बेहतर हो रही है या बिगड़ रही है।',
     },
     alerts: {
       title: 'स्मार्ट चेतावनियाँ',
-      description: 'जानें कब आपके सहेजे गए स्थान जोखिम में आते हैं।'
+      description: 'जानें कब आपके सहेजे गए स्थान जोखिम में आते हैं।',
     },
     activity: {
       title: 'गतिविधि जोखिम सलाहकार',
-      description: 'जांचें कि क्या दौड़ना, साइकल चलाना या बाहरी गतिविधियाँ अभी उपयुक्त हैं।'
-    }
+      description: 'जांचें कि क्या दौड़ना, साइकल चलाना या बाहरी गतिविधियाँ अभी उपयुक्त हैं।',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'स्थान चुनें',
-      description: 'शुरू करने के लिए किसी भी शहर की खोज करें या अपने वर्तमान स्थान का उपयोग करें।'
+      description: 'शुरू करने के लिए किसी भी शहर की खोज करें या अपने वर्तमान स्थान का उपयोग करें।',
     },
     step2: {
       title: 'लाइव डेटा प्राप्त करें',
-      description: 'AirGuard उस स्थान के लिए नवीनतम प्रदूषक रीडिंग खींचता है।'
+      description: 'AirGuard उस स्थान के लिए नवीनतम प्रदूषक रीडिंग खींचता है।',
     },
     step3: {
       title: 'अपने जोखिम को समझें',
-      description: 'अपने पर्यावरणीय प्रोफ़ाइल के आधार पर एक स्पष्ट जोखिम स्तर देखें।'
+      description: 'अपने पर्यावरणीय प्रोफ़ाइल के आधार पर एक स्पष्ट जोखिम स्तर देखें।',
     },
     step4: {
       title: 'कार्यवाही करें',
-      description: 'गतिविधि, जोखिम और सावधानियों पर अनुकूलित मार्गदर्शन का पालन करें।'
-    }
+      description: 'गतिविधि, जोखिम और सावधानियों पर अनुकूलित मार्गदर्शन का पालन करें।',
+    },
   },
 
   auth: {
@@ -214,7 +220,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -223,7 +230,7 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   report: {
@@ -261,7 +268,8 @@ export default {
     descriptionPlaceholder: 'हर शाम 7 बजे पास की फैक्टरी भारी धुआं छोड़ती है...',
     descriptionMinErr: 'विवरण कम से कम 10 अक्षरों का होना चाहिए।',
     healthImpactLabel: 'स्वास्थ्य पर देखा गया प्रभाव',
-    healthNotice: 'चयनित स्वास्थ्य प्रभाव केवल सामुदायिक संदर्भ के लिए एकत्रित किए जाते हैं और यह कोई चिकित्सीय सलाह नहीं है।',
+    healthNotice:
+      'चयनित स्वास्थ्य प्रभाव केवल सामुदायिक संदर्भ के लिए एकत्रित किए जाते हैं और यह कोई चिकित्सीय सलाह नहीं है।',
     hp_breathing_difficulty: 'सांस लेने में कठिनाई',
     hp_allergy: 'एलर्जी / आंखों में जलन',
     hp_eye_irritation: 'आंखों में जलन',
@@ -327,5 +335,5 @@ export default {
     in_progress: 'प्रगति पर (In Progress)',
     resolved: 'समाधान किया गया (Resolved)',
     rejected: 'अस्वीकृत (Rejected)',
-  }
+  },
 }

@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ 확인 ਕਰੋ',
     language: 'ਭਾਸ਼ਾ',
     live: 'ਲਾਈਵ',
-    monitoring: 'ਮਾਨੀਟਰਿੰਗ'
+    monitoring: 'ਮਾਨੀਟਰਿੰਗ',
   },
 
   nav: {
@@ -46,7 +46,7 @@ export default {
     language: 'ਭਾਸ਼ਾ',
     voiceAlerts: 'ਵੋਇਸ ਅਲਰਟ',
     darkMode: 'ਡਾਰਕ ਮੋਡ',
-    applicationPreferences: 'ਐਪਲਿਕੇਸ਼ਨ ਪ੍ਰਾਥਮਿਕਤਾਵਾਂ'
+    applicationPreferences: 'ਐਪਲਿਕੇਸ਼ਨ ਪ੍ਰਾਥਮਿਕਤਾਵਾਂ',
   },
 
   alerts: {
@@ -54,7 +54,7 @@ export default {
     critical: 'ਸੰਕਟ',
     warning: 'ਚੇਤਾਵਨੀ',
     information: 'ਜਾਣਕਾਰੀ',
-    aqiMessage: '{location} ਲਈ ਹਵਾ ਗੁਣਵੱਤਾ ਚੇਤਾਵਨੀ। ਮੌਜੂਦਾ AQI {aqi}.'
+    aqiMessage: '{location} ਲਈ ਹਵਾ ਗੁਣਵੱਤਾ ਚੇਤਾਵਨੀ। ਮੌਜੂਦਾ AQI {aqi}.',
   },
 
   aqi: {
@@ -67,7 +67,7 @@ export default {
 
   pollutant: {
     relativeLevel: 'ਸਾਥੀ ਪੱਧਰ',
-    environmentalMetric: 'ਪਰਿਵੇਸ਼ੀ ਮੈਟਰਿਕ'
+    environmentalMetric: 'ਪਰਿਵੇਸ਼ੀ ਮੈਟਰਿਕ',
   },
 
   recommendation: {
@@ -76,7 +76,7 @@ export default {
     profile: 'ਪ੍ਰੋਫਾਈਲ',
     activity: 'ਕਿਰਿਆ',
     basedOn: 'ਮੌਜੂਦਾ ਵਾਤਾਵਰਣੀ حالات ਦੇ ਆਧਾਰ ਤੇ',
-    checkActivity: 'ਕਿਰਿਆ ਜੋਖਮ ਦੀ ਜਾਂਚ'
+    checkActivity: 'ਕਿਰਿਆ ਜੋਖਮ ਦੀ ਜਾਂਚ',
   },
 
   dominant: {
@@ -88,9 +88,8 @@ export default {
     higherAttention: 'ਵਧੇਰੇ ਧਿਆਨ ਦੀ ਸਿਫਾਰਿਸ਼',
     monitorConditions: 'ਮੌਜੂਦਾ ਹਾਲਾਤ ਦੀ ਨਿਗਰਾਨੀ ਕਰੋ',
     withinRange: 'ਮੌਜੂਦਾ ਪੱਧਰ ਉਮੀਦ ਕੀਤੀ ਸੀਮਾ ਵਿੱਚ ਹੈ',
-    indicatorInfo: 'ਇਹ ਇੰਡਿਕੇਟਰ ਮੌਜੂਦਾ ਪ੍ਰਦੂਸ਼ਕ ਪੱਧਰ ਅਤੇ ਇਸ ਦੀ ਸੰਰਚਿਤ ਰੈਫਰੈਂਸ ਸੀਮਾ ਦੇ ਆਧਾਰ ਤੇ ਹੈ.'
+    indicatorInfo: 'ਇਹ ਇੰਡਿਕੇਟਰ ਮੌਜੂਦਾ ਪ੍ਰਦੂਸ਼ਕ ਪੱਧਰ ਅਤੇ ਇਸ ਦੀ ਸੰਰਚਿਤ ਰੈਫਰੈਂਸ ਸੀਮਾ ਦੇ ਆਧਾਰ ਤੇ ਹੈ.',
   },
-
 
   auth: {
     login: 'ਲੌਗਇਨ',
@@ -114,7 +113,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -123,14 +123,15 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   landing: {
     realtimeIntelligence: 'ਰੀਅਲ-ਟਾਈਮ ਵਾਤਾਵਰਣ ਬੁੱਧੀਮਤਾ',
     heroTitlePart1: 'ਹਵਾ ਨੂੰ ਜਾਣੋ',
     heroTitlePart2: 'ਤੁਹਾਡੇ ਆਲੇ-ਦੁਆਲੇ।',
-    heroDescription: 'ਜਟਿਲ ਵਾਤਾਵਰਣ ਡੇਟਾ ਨੂੰ ਸਪਸ਼ਟ, ਨਿੱਜੀ ਕਾਰਵਾਈਆਂ ਵਿੱਚ ਬਦਲੋ। ਆਪਣੀ ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ, ਆਪਣਾ ਜੋਖਮ ਅਤੇ ਅਗਲਾ ਕੀਤਾ ਜਾਣਾ ਸਮਝੋ।',
+    heroDescription:
+      'ਜਟਿਲ ਵਾਤਾਵਰਣ ਡੇਟਾ ਨੂੰ ਸਪਸ਼ਟ, ਨਿੱਜੀ ਕਾਰਵਾਈਆਂ ਵਿੱਚ ਬਦਲੋ। ਆਪਣੀ ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ, ਆਪਣਾ ਜੋਖਮ ਅਤੇ ਅਗਲਾ ਕੀਤਾ ਜਾਣਾ ਸਮਝੋ।',
     checkAirQuality: 'ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ ਚੈੱਕ ਕਰੋ',
     exploreFeatures: 'ਖੂਬੀਆਂ ਦੀ ਜਾਂਚ ਕਰੋ',
     liveEnvironmentalData: 'ਲਾਈਵ ਵਾਤਾਵਰਣ ਡੇਟਾ',
@@ -141,64 +142,66 @@ export default {
     liveMonitoring: 'ਲਾਈਵ ਨਿਰੀਖਣ',
     features: 'ਖੂਬੀਆਂ',
     featuresHeadline: 'ਆਪਣੀ ਹਵਾ ਨੂੰ ਸਮਝਣ ਲਈ ਸਭ ਕੁਝ',
-    featuresDescription: 'ਲਾਈਵ ਸਥਿਤੀਆਂ ਤੋਂ ਇਤਿਹਾਸਕ ਰੁਝਾਨ ਅਤੇ ਨਿੱਜੀ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼ ਤੱਕ, AirGuard ਜਾਣਕਾਰੀ ਨੂੰ ਸਧਾਰਨ ਅਤੇ ਲਈਯੋਗ ਰੱਖਦਾ ਹੈ।',
+    featuresDescription:
+      'ਲਾਈਵ ਸਥਿਤੀਆਂ ਤੋਂ ਇਤਿਹਾਸਕ ਰੁਝਾਨ ਅਤੇ ਨਿੱਜੀ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼ ਤੱਕ, AirGuard ਜਾਣਕਾਰੀ ਨੂੰ ਸਧਾਰਨ ਅਤੇ ਲਈਯੋਗ ਰੱਖਦਾ ਹੈ।',
     exploreCapability: 'ਖੋਜ ਸਮਰੱਥਾ',
     howItWorksTitle: 'ਇਹ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ',
     howItWorksHeadline: 'ਟਿਕਾਣੇ ਤੋਂ ਕਾਰਵਾਈ ਤਕ, ਚਾਰ ਕਦਮਾਂ ਵਿੱਚ',
     premiumAwareness: 'ਵਾਤਾਵਰਣ ਜਾਣਕਾਰੀ, ਨਿੱਜੀ',
     builtForPeople: 'ਉਹਨਾਂ ਲਈ ਬਣਾਇਆ ਗਿਆ ਜੋ ਹਰ ਰੋਜ਼ ਇੱਕੋ ਹਵਾ ਸਾਂਸ ਲੈਂਦੇ ਹਨ।',
-    premiumDescription: 'AirGuard ਨੂੰ ਹੈਕਾਥਾਨ ਪ੍ਰੋਜੈਕਟ ਵਜੋਂ ਬਣਾਇਆ ਗਿਆ ਸੀ ਤਾਂ ਜੋ ਵਾਤਾਵਰਣ ਜੋਖਮ ਨਿੱਜੀ, ਸਪਸ਼ਟ ਅਤੇ ਕਾਰਵਾਈਪੂਰਕ ਬਣਾਇਆ ਜਾ ਸਕੇ।',
-    ctaCheckAirQuality: 'ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ ਚੈੱਕ ਕਰੋ'
+    premiumDescription:
+      'AirGuard ਨੂੰ ਹੈਕਾਥਾਨ ਪ੍ਰੋਜੈਕਟ ਵਜੋਂ ਬਣਾਇਆ ਗਿਆ ਸੀ ਤਾਂ ਜੋ ਵਾਤਾਵਰਣ ਜੋਖਮ ਨਿੱਜੀ, ਸਪਸ਼ਟ ਅਤੇ ਕਾਰਵਾਈਪੂਰਕ ਬਣਾਇਆ ਜਾ ਸਕੇ।',
+    ctaCheckAirQuality: 'ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ ਚੈੱਕ ਕਰੋ',
   },
 
   features: {
     live: {
       title: 'ਲਾਈਵ ਹਵਾ ਗੁਣਵੱਤਾ',
-      description: 'ਕਿਸੇ ਵੀ ਟਿਕਾਣੇ ਲਈ ਰੀਅਲ-ਟਾਈਮ ਹਵਾ ਗੁਣਵੱਤਾ ਦੀ ਨਿਗਰਾਨੀ ਕਰੋ।'
+      description: 'ਕਿਸੇ ਵੀ ਟਿਕਾਣੇ ਲਈ ਰੀਅਲ-ਟਾਈਮ ਹਵਾ ਗੁਣਵੱਤਾ ਦੀ ਨਿਗਰਾਨੀ ਕਰੋ।',
     },
     risk: {
       title: 'ਰਿਸਕ ਇੰਟੇਲੀਜੇੰਸ',
-      description: 'ਜਟਿਲ ਪ੍ਰਦੂਸ਼ਣ ਡੇਟਾ ਨੂੰ ਅਸਾਨੀ ਨਾਲ ਸਮਝਣਯੋਗ ਜੋਖਮ ਪੱਧਰ ਵਿੱਚ ਬਦਲੋ।'
+      description: 'ਜਟਿਲ ਪ੍ਰਦੂਸ਼ਣ ਡੇਟਾ ਨੂੰ ਅਸਾਨੀ ਨਾਲ ਸਮਝਣਯੋਗ ਜੋਖਮ ਪੱਧਰ ਵਿੱਚ ਬਦਲੋ।',
     },
     guidance: {
       title: 'ਨਿੱਜੀ ਮਾਰਗਦਰਸ਼ਨ',
-      description: "ਆਪਣੀ ਵਾਤਾਵਰਣ ਸੰਵੇਦਨਸ਼ੀਲਤਾ ਦੇ ਆਧਾਰ 'ਤੇ ਸਿਫਾਰਸ਼ਾਂ ਪ੍ਰਾਪਤ ਕਰੋ।"
+      description: "ਆਪਣੀ ਵਾਤਾਵਰਣ ਸੰਵੇਦਨਸ਼ੀਲਤਾ ਦੇ ਆਧਾਰ 'ਤੇ ਸਿਫਾਰਸ਼ਾਂ ਪ੍ਰਾਪਤ ਕਰੋ।",
     },
     trends: {
       title: 'ਇਤਿਹਾਸਕ ਰੁਝਾਨ',
-      description: 'ਸਮਝੋ ਕਿ ਕੀ ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ ਸੁਧਰ ਰਹੀ ਹੈ ਜਾਂ ਖਰਾਬ ਹੋ ਰਹੀ ਹੈ।'
+      description: 'ਸਮਝੋ ਕਿ ਕੀ ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ ਸੁਧਰ ਰਹੀ ਹੈ ਜਾਂ ਖਰਾਬ ਹੋ ਰਹੀ ਹੈ।',
     },
     alerts: {
       title: 'ਸਮਾਰਟ ਚੇਤਾਵਨੀਆਂ',
-      description: 'ਜਾਣੋ ਕਿ ਤੁਹਾਡੇ ਸੁਰੱਖਿਅਤ ਟਿਕਾਣੇ ਕਦੋਂ ਜੋਖਮੀ ਹੋ ਰਹੇ ਹਨ।'
+      description: 'ਜਾਣੋ ਕਿ ਤੁਹਾਡੇ ਸੁਰੱਖਿਅਤ ਟਿਕਾਣੇ ਕਦੋਂ ਜੋਖਮੀ ਹੋ ਰਹੇ ਹਨ।',
     },
     activity: {
       title: 'ਗਤੀਵਿਧੀ ਰਿਸਕ ਸਲਾਹਕਾਰ',
-      description: 'ਚੈੱਕ ਕਰੋ ਕਿ ਦੌੜਣਾ, ਸਾਈਕਲਿੰਗ ਜਾਂ ਬਾਹਰੀ ਗਤੀਵਿਧੀਆਂ ਇਸ ਸਮੇਂ ਉਚਿਤ ਹਨ ਜਾਂ ਨਹੀਂ।'
-    }
+      description: 'ਚੈੱਕ ਕਰੋ ਕਿ ਦੌੜਣਾ, ਸਾਈਕਲਿੰਗ ਜਾਂ ਬਾਹਰੀ ਗਤੀਵਿਧੀਆਂ ਇਸ ਸਮੇਂ ਉਚਿਤ ਹਨ ਜਾਂ ਨਹੀਂ।',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'ਟਿਕਾਣਾ ਚੁਣੋ',
-      description: 'ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕਿਸੇ ਵੀ ਸ਼ਹਿਰ ਦੀ ਖੋਜ ਕਰੋ ਜਾਂ ਆਪਣੀ ਮੌਜੂਦਾ ਸਥਿਤੀ ਵਰਤੋਂ।'
+      description: 'ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕਿਸੇ ਵੀ ਸ਼ਹਿਰ ਦੀ ਖੋਜ ਕਰੋ ਜਾਂ ਆਪਣੀ ਮੌਜੂਦਾ ਸਥਿਤੀ ਵਰਤੋਂ।',
     },
     step2: {
       title: 'ਲਾਈਵ ਡੇਟਾ ਪ੍ਰਾਪਤ ਕਰੋ',
-      description: 'AirGuard ਉਸ ਟਿਕਾਣੇ ਲਈ ਤਾਜ਼ਾ ਪ੍ਰਦੂਸ਼ਕ ਪੜਤਾਲਾਂ ਨੂੰ ਖਿੱਚਦਾ ਹੈ।'
+      description: 'AirGuard ਉਸ ਟਿਕਾਣੇ ਲਈ ਤਾਜ਼ਾ ਪ੍ਰਦੂਸ਼ਕ ਪੜਤਾਲਾਂ ਨੂੰ ਖਿੱਚਦਾ ਹੈ।',
     },
     step3: {
       title: 'ਆਪਣਾ ਜੋਖਮ ਸਮਝੋ',
-      description: "ਆਪਣੇ ਵਾਤਾਵਰਣ ਪ੍ਰੋਫ਼ਾਈਲ ਦੇ ਆਧਾਰ 'ਤੇ ਇੱਕ ਸਪਸ਼ਟ ਜੋਖਮ ਪੱਧਰ ਵੇਖੋ।"
+      description: "ਆਪਣੇ ਵਾਤਾਵਰਣ ਪ੍ਰੋਫ਼ਾਈਲ ਦੇ ਆਧਾਰ 'ਤੇ ਇੱਕ ਸਪਸ਼ਟ ਜੋਖਮ ਪੱਧਰ ਵੇਖੋ।",
     },
     step4: {
       title: 'ਕਾਰਵਾਈ ਕਰੋ',
-      description: "ਕਿਰਿਆ, ਇਕਸਪੋਜ਼ਰ ਅਤੇ ਅਟੰਕਾਂ 'ਤੇ ਵਿਅਕਤੀਗਤ ਰਾਹ-ਦਰਸ਼ਨ ਦੀ ਪਾਲਣਾ ਕਰੋ।"
-    }
+      description: "ਕਿਰਿਆ, ਇਕਸਪੋਜ਼ਰ ਅਤੇ ਅਟੰਕਾਂ 'ਤੇ ਵਿਅਕਤੀਗਤ ਰਾਹ-ਦਰਸ਼ਨ ਦੀ ਪਾਲਣਾ ਕਰੋ।",
+    },
   },
 
   sidebar: {
-    footerNotice: 'ਵਾਤਾਵਰਣ ਡੇਟਾ ਆਪਣੇ ਆਪ ਤਾਜ਼ਾ ਹੁੰਦਾ ਹੈ। ਡੇਮੋ ਬਿਲਡ — ਬੈਕਐਂਡ ਅਜੇ ਜੁੜਿਆ ਨਹੀਂ ਹੈ।'
+    footerNotice: 'ਵਾਤਾਵਰਣ ਡੇਟਾ ਆਪਣੇ ਆਪ ਤਾਜ਼ਾ ਹੁੰਦਾ ਹੈ। ਡੇਮੋ ਬਿਲਡ — ਬੈਕਐਂਡ ਅਜੇ ਜੁੜਿਆ ਨਹੀਂ ਹੈ।',
   },
 
   report: {
@@ -299,5 +302,5 @@ export default {
     in_progress: 'ਪ੍ਰਗਤੀ ਵਿੱਚ',
     resolved: 'ਹੱਲ ਕੀਤਾ ਗਿਆ',
     rejected: 'ਰੱਦ ਕੀਤਾ ਗਿਆ',
-  }
+  },
 }

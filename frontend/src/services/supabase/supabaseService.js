@@ -116,7 +116,9 @@ export async function saveLocationToDb(userId, location) {
 
     if (error) {
       console.error('saveLocationToDb Supabase error details:', error)
-      throw new Error(`[Supabase Error ${error.code || ''}] ${error.message} (${error.details || error.hint || ''})`)
+      throw new Error(
+        `[Supabase Error ${error.code || ''}] ${error.message} (${error.details || error.hint || ''})`
+      )
     }
 
     return {
@@ -232,7 +234,10 @@ export async function fetchHistoricalSnapshots(userId, locationTarget, timeRange
       query = query.eq('user_id', userId)
     }
 
-    const locName = typeof locationTarget === 'object' && locationTarget !== null ? locationTarget.name : locationTarget
+    const locName =
+      typeof locationTarget === 'object' && locationTarget !== null
+        ? locationTarget.name
+        : locationTarget
     if (locName) {
       query = query.ilike('location_name', `%${locName}%`)
     }
@@ -268,7 +273,8 @@ export async function fetchHistoricalSnapshots(userId, locationTarget, timeRange
       changePercent = Math.round((rawDiff / firstAqi) * 100)
     }
 
-    const trendDirection = lastAqi < firstAqi ? 'improving' : lastAqi > firstAqi ? 'worsening' : 'stable'
+    const trendDirection =
+      lastAqi < firstAqi ? 'improving' : lastAqi > firstAqi ? 'worsening' : 'stable'
 
     const formatLabel = (dateStr) => {
       const d = new Date(dateStr)
@@ -319,7 +325,9 @@ export async function fetchUserAlerts(userId) {
       title: a.title,
       message: a.message,
       aqi: a.aqi,
-      time: a.created_at ? new Date(a.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently',
+      time: a.created_at
+        ? new Date(a.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : 'Recently',
       read: Boolean(a.read),
       location: a.location_name || '',
     }))
@@ -332,10 +340,7 @@ export async function fetchUserAlerts(userId) {
 export async function markAlertReadInDb(alertId) {
   if (!alertId) return false
   try {
-    const { error } = await supabase
-      .from('alerts')
-      .update({ read: true })
-      .eq('id', alertId)
+    const { error } = await supabase.from('alerts').update({ read: true }).eq('id', alertId)
 
     if (error) {
       console.error('markAlertReadInDb error:', error)
@@ -391,11 +396,7 @@ export async function checkAndTriggerAlert(userId, location, aqi) {
         created_at: new Date().toISOString(),
       }
 
-      const { data, error } = await supabase
-        .from('alerts')
-        .insert([payload])
-        .select()
-        .single()
+      const { data, error } = await supabase.from('alerts').insert([payload]).select().single()
 
       if (error) {
         console.warn('checkAndTriggerAlert insert warning:', error.message)

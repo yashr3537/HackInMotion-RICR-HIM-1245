@@ -18,60 +18,47 @@ const PROFILES = [
     key: 'general',
     label: 'General',
     icon: UserIcon,
-    description:
-      'Standard sensitivity to air quality changes.',
+    description: 'Standard sensitivity to air quality changes.',
   },
   {
     key: 'child',
     label: 'Child',
     icon: Baby,
-    description:
-      'Higher sensitivity due to developing lungs.',
+    description: 'Higher sensitivity due to developing lungs.',
   },
   {
     key: 'elderly',
     label: 'Elderly',
     icon: PersonStanding,
-    description:
-      'Increased risk from prolonged exposure.',
+    description: 'Increased risk from prolonged exposure.',
   },
   {
     key: 'respiratory',
     label: 'Respiratory Sensitive',
     icon: LungIcon,
-    description:
-      'Asthma or other respiratory conditions.',
+    description: 'Asthma or other respiratory conditions.',
   },
   {
     key: 'outdoor-worker',
     label: 'Outdoor Worker',
     icon: HardHat,
-    description:
-      'Extended daily outdoor exposure.',
+    description: 'Extended daily outdoor exposure.',
   },
 ]
 
 export default function Profile() {
   const { currentUser, updateCurrentUser } = useAuth()
 
-  const [profileType, setProfileType] = useState(
-    currentUser?.profileType || 'general',
-  )
+  const [profileType, setProfileType] = useState(currentUser?.profileType || 'general')
 
-  const [threshold, setThreshold] = useState(
-    currentUser?.alertThreshold || 100,
-  )
+  const [threshold, setThreshold] = useState(currentUser?.alertThreshold || 100)
 
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    setProfileType(
-      currentUser?.profileType || 'general',
-    )
+    setProfileType(currentUser?.profileType || 'general')
 
-    setThreshold(
-      currentUser?.alertThreshold || 100,
-    )
+    setThreshold(currentUser?.alertThreshold || 100)
   }, [currentUser])
 
   function handleSave() {
@@ -87,9 +74,7 @@ export default function Profile() {
     }, 2200)
   }
 
-  const activeProfile =
-    PROFILES.find((profile) => profile.key === profileType) ||
-    PROFILES[0]
+  const activeProfile = PROFILES.find((profile) => profile.key === profileType) || PROFILES[0]
 
   const ActiveIcon = activeProfile.icon
 
@@ -109,8 +94,8 @@ export default function Profile() {
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          Manage your environmental sensitivity and notification preferences
-          so AeroGuard can make risk information more relevant to you.
+          Manage your environmental sensitivity and notification preferences so AeroGuard can make
+          risk information more relevant to you.
         </p>
       </section>
 
@@ -208,9 +193,7 @@ export default function Profile() {
                     type="radio"
                     name="profileType"
                     checked={active}
-                    onChange={() =>
-                      setProfileType(profile.key)
-                    }
+                    onChange={() => setProfileType(profile.key)}
                     className="h-4 w-4 accent-forest-700"
                   />
 
@@ -226,9 +209,7 @@ export default function Profile() {
 
                   <div className="relative z-10 min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-sm font-semibold text-ink-900">
-                        {profile.label}
-                      </p>
+                      <p className="text-sm font-semibold text-ink-900">{profile.label}</p>
 
                       {active && (
                         <span className="rounded-full border border-forest-200 bg-white px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-forest-800">
@@ -237,9 +218,7 @@ export default function Profile() {
                       )}
                     </div>
 
-                    <p className="mt-1 text-xs leading-5 text-ink-500">
-                      {profile.description}
-                    </p>
+                    <p className="mt-1 text-xs leading-5 text-ink-500">{profile.description}</p>
                   </div>
                 </label>
               )
@@ -266,8 +245,7 @@ export default function Profile() {
                   </h2>
 
                   <p className="mt-0.5 text-xs text-ink-500">
-                    You'll be alerted when AQI exceeds this value at a saved
-                    location.
+                    You'll be alerted when AQI exceeds this value at a saved location.
                   </p>
                 </div>
               </div>
@@ -278,9 +256,7 @@ export default function Profile() {
                 Current threshold
               </p>
 
-              <p className="mt-0.5 font-mono text-xl font-bold text-forest-800">
-                AQI {threshold}
-              </p>
+              <p className="mt-0.5 font-mono text-xl font-bold text-forest-800">AQI {threshold}</p>
             </div>
           </div>
 
@@ -291,9 +267,7 @@ export default function Profile() {
               max="300"
               step="10"
               value={threshold}
-              onChange={(event) =>
-                setThreshold(Number(event.target.value))
-              }
+              onChange={(event) => setThreshold(Number(event.target.value))}
               className="w-full accent-forest-700"
               aria-label="AQI alert threshold"
             />
@@ -309,15 +283,11 @@ export default function Profile() {
           </div>
 
           <div className="mt-6 flex items-start gap-3 rounded-xl border border-ink-100 bg-ink-50/60 p-4">
-            <SlidersHorizontal
-              size={15}
-              className="mt-0.5 shrink-0 text-ink-500"
-            />
+            <SlidersHorizontal size={15} className="mt-0.5 shrink-0 text-ink-500" />
 
             <p className="text-xs leading-5 text-ink-500">
-              Lower thresholds trigger alerts sooner, while higher thresholds
-              reduce the number of notifications. Choose a value that matches
-              how frequently you want to be informed.
+              Lower thresholds trigger alerts sooner, while higher thresholds reduce the number of
+              notifications. Choose a value that matches how frequently you want to be informed.
             </p>
           </div>
         </div>
@@ -359,15 +329,12 @@ export default function Profile() {
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-ink-900">
-                Why your profile matters
-              </p>
+              <p className="text-sm font-semibold text-ink-900">Why your profile matters</p>
 
               <p className="mt-1 text-xs leading-6 text-ink-600">
-                AeroGuard can use your selected sensitivity profile to present
-                more relevant environmental risk guidance and activity context.
-                This personalization is intended for informational support,
-                not diagnosis or treatment.
+                AeroGuard can use your selected sensitivity profile to present more relevant
+                environmental risk guidance and activity context. This personalization is intended
+                for informational support, not diagnosis or treatment.
               </p>
             </div>
           </div>

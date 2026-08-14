@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
-    "preview": "npm --prefix frontend run preview"
+    "preview": "npm --prefix frontend run preview",
+    "lint": "npm --prefix frontend run lint",
+    "lint:fix": "npm --prefix frontend run lint:fix",
+    "format": "npx prettier --write .",
+    "format:check": "npx prettier --check ."
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

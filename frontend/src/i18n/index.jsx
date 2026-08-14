@@ -76,7 +76,9 @@ export function I18nProvider({ children }) {
 
       // If found, interpolate and return
       if (typeof node === 'string') {
-        return node.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? String(vars[k]) : `{${k}}`))
+        return node.replace(/\{(\w+)\}/g, (_, k) =>
+          vars[k] !== undefined ? String(vars[k]) : `{${k}}`
+        )
       }
 
       // Fallback to English
@@ -92,9 +94,13 @@ export function I18nProvider({ children }) {
 
       if (typeof fallback === 'string') {
         if (process.env.NODE_ENV !== 'production') {
-          console.warn(`i18n: missing key "${key}" for language "${language}", falling back to English.`)
+          console.warn(
+            `i18n: missing key "${key}" for language "${language}", falling back to English.`
+          )
         }
-        return fallback.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? String(vars[k]) : `{${k}}`))
+        return fallback.replace(/\{(\w+)\}/g, (_, k) =>
+          vars[k] !== undefined ? String(vars[k]) : `{${k}}`
+        )
       }
 
       // Final safe fallback: if a defaultValue was provided use it

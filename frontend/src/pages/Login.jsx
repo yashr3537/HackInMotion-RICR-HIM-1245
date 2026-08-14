@@ -83,19 +83,27 @@ export default function Login() {
 
       if (mode === 'signup') {
         if (!form.name.trim()) {
-          throw new Error(t('auth.fullNameRequired', { defaultValue: 'Please enter your full name.' }))
+          throw new Error(
+            t('auth.fullNameRequired', { defaultValue: 'Please enter your full name.' })
+          )
         }
 
         if (!form.email.trim()) {
-          throw new Error(t('auth.emailRequired', { defaultValue: 'Please enter your email address.' }))
+          throw new Error(
+            t('auth.emailRequired', { defaultValue: 'Please enter your email address.' })
+          )
         }
 
         if (form.password.length < 6) {
-          throw new Error(t('auth.passwordTooShort', { defaultValue: 'Password must be at least 6 characters.' }))
+          throw new Error(
+            t('auth.passwordTooShort', { defaultValue: 'Password must be at least 6 characters.' })
+          )
         }
 
         if (form.password !== form.confirmPassword) {
-          throw new Error(t('auth.passwordsDoNotMatch', { defaultValue: 'Passwords do not match.' }))
+          throw new Error(
+            t('auth.passwordsDoNotMatch', { defaultValue: 'Passwords do not match.' })
+          )
         }
 
         const result = await signUp({
@@ -112,7 +120,9 @@ export default function Login() {
         navigate('/dashboard', { replace: true })
       } else {
         if (!form.email.trim() || !form.password) {
-          throw new Error(t('auth.credentialsRequired', { defaultValue: 'Please enter your email and password.' }))
+          throw new Error(
+            t('auth.credentialsRequired', { defaultValue: 'Please enter your email and password.' })
+          )
         }
 
         await signIn({
@@ -124,7 +134,11 @@ export default function Login() {
       }
     } catch (submitError) {
       setError(
-        submitError?.message || t('auth.genericError', { defaultValue: 'Something went wrong while creating your account. Please try again later.' })
+        submitError?.message ||
+          t('auth.genericError', {
+            defaultValue:
+              'Something went wrong while creating your account. Please try again later.',
+          })
       )
     } finally {
       setIsSubmitting(false)
@@ -174,14 +188,22 @@ export default function Login() {
           <div className="environment-grid absolute inset-0 opacity-20" />
         </div>
 
-        <Link to="/" className="nav-enter group relative z-10 flex w-fit shrink-0 items-center gap-3">
+        <Link
+          to="/"
+          className="nav-enter group relative z-10 flex w-fit shrink-0 items-center gap-3"
+        >
           <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-forest-300/10 bg-forest-500/10 transition-all duration-300 group-hover:scale-105 group-hover:-rotate-2">
-            <Leaf size={20} className="text-forest-300 transition-transform duration-300 group-hover:scale-110" />
+            <Leaf
+              size={20}
+              className="text-forest-300 transition-transform duration-300 group-hover:scale-110"
+            />
           </div>
 
           <div>
             <div className="font-display text-lg font-semibold tracking-tight">AirGuard</div>
-            <div className="text-[9px] uppercase tracking-[0.2em] text-forest-300/55">Environmental Safety</div>
+            <div className="text-[9px] uppercase tracking-[0.2em] text-forest-300/55">
+              Environmental Safety
+            </div>
           </div>
         </Link>
 
@@ -199,8 +221,14 @@ export default function Login() {
             </span>
           </h2>
 
-          <p className="fade-up mt-6 max-w-md text-sm leading-7 text-forest-100/60 xl:text-base" style={{ animationDelay: '140ms' }}>
-            {t('auth.leftDesc', { defaultValue: 'Track the air around you, understand environmental risk, and make more informed decisions about the places and activities that matter to you.' })}
+          <p
+            className="fade-up mt-6 max-w-md text-sm leading-7 text-forest-100/60 xl:text-base"
+            style={{ animationDelay: '140ms' }}
+          >
+            {t('auth.leftDesc', {
+              defaultValue:
+                'Track the air around you, understand environmental risk, and make more informed decisions about the places and activities that matter to you.',
+            })}
           </p>
 
           <div className="stagger-children mt-8 space-y-3">
@@ -271,13 +299,18 @@ export default function Login() {
                 </div>
 
                 <p className="mt-4 text-xs leading-relaxed text-ink-600">
-                  Please check your inbox and click the verification link to confirm your email address.
+                  Please check your inbox and click the verification link to confirm your email
+                  address.
                 </p>
 
                 <div className="mt-6 rounded-2xl border border-ink-100 bg-ink-50/70 p-4 text-left">
-                  <p className="text-xs font-semibold text-ink-800 mb-2">Didn't receive the email?</p>
+                  <p className="text-xs font-semibold text-ink-800 mb-2">
+                    Didn't receive the email?
+                  </p>
                   <ul className="text-xs text-ink-600 space-y-1.5 list-disc list-inside">
-                    <li>Check your <strong>Spam/Junk</strong> folder.</li>
+                    <li>
+                      Check your <strong>Spam/Junk</strong> folder.
+                    </li>
                     <li>Make sure the email address is correct.</li>
                     <li>Try again after a few moments.</li>
                   </ul>
@@ -307,7 +340,9 @@ export default function Login() {
                       type="button"
                       onClick={() => setMode('signin')}
                       className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                        mode === 'signin' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-700'
+                        mode === 'signin'
+                          ? 'bg-white text-ink-900 shadow-sm'
+                          : 'text-ink-500 hover:text-ink-700'
                       }`}
                     >
                       {t('auth.signInTab', { defaultValue: 'Sign in' })}
@@ -317,7 +352,9 @@ export default function Login() {
                       type="button"
                       onClick={() => setMode('signup')}
                       className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                        mode === 'signup' ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-700'
+                        mode === 'signup'
+                          ? 'bg-white text-ink-900 shadow-sm'
+                          : 'text-ink-500 hover:text-ink-700'
                       }`}
                     >
                       {t('auth.signUpTab', { defaultValue: 'Create account' })}
@@ -339,8 +376,14 @@ export default function Login() {
 
                   <p className="mt-2 text-sm leading-6 text-ink-500">
                     {mode === 'signin'
-                      ? t('auth.signInSubtitle', { defaultValue: 'Sign in to access your personalized environmental dashboard.' })
-                      : t('auth.signUpSubtitle', { defaultValue: 'Set up your profile to receive more relevant environmental guidance.' })}
+                      ? t('auth.signInSubtitle', {
+                          defaultValue:
+                            'Sign in to access your personalized environmental dashboard.',
+                        })
+                      : t('auth.signUpSubtitle', {
+                          defaultValue:
+                            'Set up your profile to receive more relevant environmental guidance.',
+                        })}
                   </p>
                 </div>
 
@@ -349,12 +392,18 @@ export default function Login() {
                   {/* Name */}
                   {mode === 'signup' && (
                     <div className="fade-up">
-                      <label htmlFor="name" className="mb-1.5 block text-xs font-semibold text-ink-700">
+                      <label
+                        htmlFor="name"
+                        className="mb-1.5 block text-xs font-semibold text-ink-700"
+                      >
                         {t('auth.fullName', { defaultValue: 'Full name' })}
                       </label>
 
                       <div className="search-premium relative">
-                        <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+                        <User
+                          size={16}
+                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300"
+                        />
                         <input
                           id="name"
                           name="name"
@@ -371,12 +420,18 @@ export default function Login() {
 
                   {/* Email */}
                   <div className="fade-up">
-                    <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-ink-700">
+                    <label
+                      htmlFor="email"
+                      className="mb-1.5 block text-xs font-semibold text-ink-700"
+                    >
                       {t('auth.emailAddress', { defaultValue: 'Email address' })}
                     </label>
 
                     <div className="search-premium relative">
-                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+                      <Mail
+                        size={16}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300"
+                      />
                       <input
                         id="email"
                         name="email"
@@ -384,7 +439,9 @@ export default function Login() {
                         autoComplete="email"
                         value={form.email}
                         onChange={handleChange}
-                        placeholder={t('auth.emailPlaceholder', { defaultValue: 'you@example.com' })}
+                        placeholder={t('auth.emailPlaceholder', {
+                          defaultValue: 'you@example.com',
+                        })}
                         className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
                       />
                     </div>
@@ -398,14 +455,20 @@ export default function Login() {
                       </label>
 
                       {mode === 'signin' && (
-                        <Link to="/forgot-password" className="text-[10px] font-semibold text-forest-700 hover:text-forest-800">
+                        <Link
+                          to="/forgot-password"
+                          className="text-[10px] font-semibold text-forest-700 hover:text-forest-800"
+                        >
                           {t('auth.forgotPasswordLink', { defaultValue: 'Forgot password?' })}
                         </Link>
                       )}
                     </div>
 
                     <div className="search-premium relative">
-                      <LockKeyhole size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+                      <LockKeyhole
+                        size={16}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300"
+                      />
                       <input
                         id="password"
                         name="password"
@@ -451,12 +514,18 @@ export default function Login() {
                   {/* Confirm password */}
                   {mode === 'signup' && (
                     <div className="fade-up">
-                      <label htmlFor="confirmPassword" className="mb-1.5 block text-xs font-semibold text-ink-700">
+                      <label
+                        htmlFor="confirmPassword"
+                        className="mb-1.5 block text-xs font-semibold text-ink-700"
+                      >
                         {t('auth.confirmPasswordLabel', { defaultValue: 'Confirm password' })}
                       </label>
 
                       <div className="search-premium relative">
-                        <LockKeyhole size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+                        <LockKeyhole
+                          size={16}
+                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-300"
+                        />
                         <input
                           id="confirmPassword"
                           name="confirmPassword"
@@ -464,7 +533,9 @@ export default function Login() {
                           autoComplete="new-password"
                           value={form.confirmPassword}
                           onChange={handleChange}
-                          placeholder={t('auth.confirmPasswordLabel', { defaultValue: 'Confirm password' })}
+                          placeholder={t('auth.confirmPasswordLabel', {
+                            defaultValue: 'Confirm password',
+                          })}
                           className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 pl-10 pr-11 text-sm text-ink-900 outline-none transition-all duration-300 placeholder:text-ink-400 focus:border-forest-400 focus:bg-white"
                         />
 
@@ -496,7 +567,9 @@ export default function Login() {
                     {isSubmitting ? (
                       <>
                         <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                        {mode === 'signup' ? 'Creating your account...' : t('auth.pleaseWait', { defaultValue: 'Please wait...' })}
+                        {mode === 'signup'
+                          ? 'Creating your account...'
+                          : t('auth.pleaseWait', { defaultValue: 'Please wait...' })}
                       </>
                     ) : (
                       <>
@@ -513,7 +586,10 @@ export default function Login() {
                 <div className="fade-up mt-6 flex items-start gap-2.5 rounded-xl border border-ink-100 bg-ink-50/60 px-3.5 py-3">
                   <ShieldCheck size={14} className="mt-0.5 shrink-0 text-forest-700" />
                   <p className="text-[10px] leading-5 text-ink-500">
-                    {t('auth.securityNote', { defaultValue: 'Your account settings and saved environmental locations are associated with your account.' })}
+                    {t('auth.securityNote', {
+                      defaultValue:
+                        'Your account settings and saved environmental locations are associated with your account.',
+                    })}
                   </p>
                 </div>
               </div>
@@ -522,7 +598,10 @@ export default function Login() {
 
           {/* Back home */}
           <div className="mt-5 text-center">
-            <Link to="/" className="text-xs font-medium text-ink-500 transition-colors hover:text-forest-700">
+            <Link
+              to="/"
+              className="text-xs font-medium text-ink-500 transition-colors hover:text-forest-700"
+            >
               {t('auth.backToAirGuard', { defaultValue: '← Back to AirGuard' })}
             </Link>
           </div>

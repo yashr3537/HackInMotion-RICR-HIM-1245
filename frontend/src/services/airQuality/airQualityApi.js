@@ -5,7 +5,12 @@ const AIR_QUALITY_API = BACKEND_URL
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast'
 
 export async function getAirQuality(latitude, longitude) {
-  if (latitude === undefined || longitude === undefined || latitude === null || longitude === null) {
+  if (
+    latitude === undefined ||
+    longitude === undefined ||
+    latitude === null ||
+    longitude === null
+  ) {
     return null
   }
 
@@ -54,7 +59,12 @@ export async function getAirQuality(latitude, longitude) {
 }
 
 export async function getWeather(latitude, longitude) {
-  if (latitude === undefined || longitude === undefined || latitude === null || longitude === null) {
+  if (
+    latitude === undefined ||
+    longitude === undefined ||
+    latitude === null ||
+    longitude === null
+  ) {
     return null
   }
 
@@ -79,7 +89,8 @@ export async function getWeather(latitude, longitude) {
 
     return {
       temperature: data.current.temperature_2m !== undefined ? data.current.temperature_2m : null,
-      humidity: data.current.relative_humidity_2m !== undefined ? data.current.relative_humidity_2m : null,
+      humidity:
+        data.current.relative_humidity_2m !== undefined ? data.current.relative_humidity_2m : null,
       pressure: data.current.surface_pressure !== undefined ? data.current.surface_pressure : null,
       windSpeed: data.current.wind_speed_10m !== undefined ? data.current.wind_speed_10m : null,
     }
@@ -90,7 +101,12 @@ export async function getWeather(latitude, longitude) {
 }
 
 export async function getAirQualityForecast(latitude, longitude) {
-  if (latitude === undefined || longitude === undefined || latitude === null || longitude === null) {
+  if (
+    latitude === undefined ||
+    longitude === undefined ||
+    latitude === null ||
+    longitude === null
+  ) {
     return []
   }
 
@@ -132,7 +148,12 @@ export async function getAirQualityForecast(latitude, longitude) {
 }
 
 export async function getAirQualityHistory(latitude, longitude, timeRange = '24h') {
-  if (latitude === undefined || longitude === undefined || latitude === null || longitude === null) {
+  if (
+    latitude === undefined ||
+    longitude === undefined ||
+    latitude === null ||
+    longitude === null
+  ) {
     return null
   }
 
@@ -165,7 +186,20 @@ export async function getAirQualityHistory(latitude, longitude, timeRange = '24h
     const pastSnapshots = []
     const step = timeRange === '30d' ? 24 : timeRange === '7d' ? 6 : 2
 
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ]
 
     for (let i = 0; i < times.length; i += step) {
       if (aqis[i] !== null && aqis[i] !== undefined && !isNaN(aqis[i])) {
@@ -212,7 +246,7 @@ export async function getAirQualityHistory(latitude, longitude, timeRange = '24h
     const lastAqi = validAqis[validAqis.length - 1]
 
     let changePercent = 0
-    if (validSnapshots.length > 1 && firstAqi > 0) {
+    if (pastSnapshots.length > 1 && firstAqi > 0) {
       changePercent = Math.round(((lastAqi - firstAqi) / firstAqi) * 100)
     }
 

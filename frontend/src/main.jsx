@@ -6,8 +6,7 @@ import { I18nProvider } from './i18n/index.jsx'
 import './index.css'
 import './App.css'
 
-const savedDarkMode =
-  window.localStorage.getItem('airguard-dark-mode') === 'true'
+const savedDarkMode = window.localStorage.getItem('airguard-dark-mode') === 'true'
 
 if (savedDarkMode) {
   document.documentElement.classList.add('dark')
@@ -24,5 +23,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
       </I18nProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode>
 )

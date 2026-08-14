@@ -16,7 +16,7 @@ export default function VoiceAssistantTrigger() {
           aria-label="Open Voice Assistant"
         >
           <span className="absolute -inset-1 rounded-full bg-forest-400/20 blur-md transition-opacity duration-300 group-hover:opacity-100" />
-          
+
           <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-forest-700 text-forest-200">
             <Bot size={18} className="transition-transform group-hover:rotate-12" />
           </span>
@@ -33,10 +33,7 @@ export default function VoiceAssistantTrigger() {
       </div>
 
       {/* Unified Voice Assistant Modal */}
-      <VoiceAssistantModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
+      <VoiceAssistantModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   )
 }

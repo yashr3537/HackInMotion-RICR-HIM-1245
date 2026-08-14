@@ -8,13 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import {
-  TrendingDown,
-  TrendingUp,
-  Minus,
-  Activity,
-  CalendarDays,
-} from 'lucide-react'
+import { TrendingDown, TrendingUp, Minus, Activity, CalendarDays } from 'lucide-react'
 import { fetchHistoricalSnapshots } from '../services/supabase/supabaseService'
 import { useAuth } from '../auth'
 
@@ -25,20 +19,51 @@ const RANGES = [
 ]
 
 function generateFallbackTrendData(rangeKey) {
-  const hoursLabels = ['12am', '2am', '4am', '6am', '8am', '10am', '12pm', '2pm', '4pm', '6pm', '8pm', '10pm']
+  const hoursLabels = [
+    '12am',
+    '2am',
+    '4am',
+    '6am',
+    '8am',
+    '10am',
+    '12pm',
+    '2pm',
+    '4pm',
+    '6pm',
+    '8pm',
+    '10pm',
+  ]
   const daysLabels7 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   const daysLabels30 = Array.from({ length: 30 }, (_, i) => `${i + 1}`)
 
   if (rangeKey === '7d') {
     const seed7 = [74, 81, 88, 95, 90, 79, 82]
-    return daysLabels7.map((label, i) => ({ label, aqi: seed7[i], pm25: Math.round(seed7[i] * 0.34), pm10: Math.round(seed7[i] * 0.66) }))
+    return daysLabels7.map((label, i) => ({
+      label,
+      aqi: seed7[i],
+      pm25: Math.round(seed7[i] * 0.34),
+      pm10: Math.round(seed7[i] * 0.66),
+    }))
   }
   if (rangeKey === '30d') {
-    const seed30 = [95, 92, 88, 84, 90, 96, 101, 98, 93, 87, 82, 79, 84, 90, 95, 99, 93, 88, 82, 78, 75, 79, 84, 88, 92, 87, 81, 76, 79, 82]
-    return daysLabels30.map((label, i) => ({ label, aqi: seed30[i], pm25: Math.round(seed30[i] * 0.34), pm10: Math.round(seed30[i] * 0.66) }))
+    const seed30 = [
+      95, 92, 88, 84, 90, 96, 101, 98, 93, 87, 82, 79, 84, 90, 95, 99, 93, 88, 82, 78, 75, 79, 84,
+      88, 92, 87, 81, 76, 79, 82,
+    ]
+    return daysLabels30.map((label, i) => ({
+      label,
+      aqi: seed30[i],
+      pm25: Math.round(seed30[i] * 0.34),
+      pm10: Math.round(seed30[i] * 0.66),
+    }))
   }
   const seed24 = [58, 52, 48, 46, 55, 68, 79, 88, 92, 85, 74, 62]
-  return hoursLabels.map((label, i) => ({ label, aqi: seed24[i], pm25: Math.round(seed24[i] * 0.34), pm10: Math.round(seed24[i] * 0.66) }))
+  return hoursLabels.map((label, i) => ({
+    label,
+    aqi: seed24[i],
+    pm25: Math.round(seed24[i] * 0.34),
+    pm10: Math.round(seed24[i] * 0.66),
+  }))
 }
 
 export default function TrendChart() {
@@ -81,9 +106,7 @@ export default function TrendChart() {
             <Activity size={14} />
             Trend Analysis
           </div>
-          <h3 className="font-display text-lg font-semibold text-ink-900">
-            Air Quality Over Time
-          </h3>
+          <h3 className="font-display text-lg font-semibold text-ink-900">Air Quality Over Time</h3>
         </div>
 
         <div className="flex items-center gap-1.5 rounded-xl border border-ink-100 bg-ink-50/60 p-1">
@@ -125,7 +148,14 @@ export default function TrendChart() {
                 fontSize: '12px',
               }}
             />
-            <Area type="monotone" dataKey="aqi" stroke="#22A85F" strokeWidth={2.5} fillOpacity={1} fill="url(#aqiGrad)" />
+            <Area
+              type="monotone"
+              dataKey="aqi"
+              stroke="#22A85F"
+              strokeWidth={2.5}
+              fillOpacity={1}
+              fill="url(#aqiGrad)"
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>

@@ -30,9 +30,12 @@ export function useAlertMonitor(userId) {
     checkAlertsNow()
 
     // Poll every 15 minutes (15 * 60 * 1000 ms)
-    const interval = setInterval(() => {
-      checkAlertsNow()
-    }, 15 * 60 * 1000)
+    const interval = setInterval(
+      () => {
+        checkAlertsNow()
+      },
+      15 * 60 * 1000
+    )
 
     return () => clearInterval(interval)
   }, [userId, checkAlertsNow])

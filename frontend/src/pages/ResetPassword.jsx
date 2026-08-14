@@ -23,7 +23,8 @@ export default function ResetPassword() {
   useEffect(() => {
     // Read token from URL or sessionStorage so refresh works during the session
     const urlToken = query.get('token') || ''
-    const sessionToken = typeof window !== 'undefined' ? window.sessionStorage.getItem('airguard_reset_token') : null
+    const sessionToken =
+      typeof window !== 'undefined' ? window.sessionStorage.getItem('airguard_reset_token') : null
     const effectiveToken = urlToken || sessionToken || ''
 
     if (urlToken) {
@@ -64,7 +65,9 @@ export default function ResetPassword() {
       await resetPassword(token, password)
       setStatus('success')
       // Clear stored token after successful reset
-      try { if (typeof window !== 'undefined') window.sessionStorage.removeItem('airguard_reset_token') } catch (e) {}
+      try {
+        if (typeof window !== 'undefined') window.sessionStorage.removeItem('airguard_reset_token')
+      } catch (e) {}
     } catch (err) {
       // Map known backend/demo errors to friendly translated messages
       const msg = String(err?.message || '')
@@ -72,7 +75,10 @@ export default function ResetPassword() {
         setError(t('auth.invalidResetToken'))
       } else if (msg.toLowerCase().includes('expired')) {
         setError(t('auth.resetTokenExpired'))
-      } else if (msg.toLowerCase().includes('no account') || msg.toLowerCase().includes('not found')) {
+      } else if (
+        msg.toLowerCase().includes('no account') ||
+        msg.toLowerCase().includes('not found')
+      ) {
         setError(t('auth.resetFailed'))
       } else {
         setError(t('auth.resetFailed'))
@@ -88,12 +94,19 @@ export default function ResetPassword() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <CheckCircle2 className="mx-auto text-forest-700" />
-            <h2 className="mt-6 text-2xl font-semibold text-ink-900">{t('auth.passwordUpdated')}</h2>
+            <h2 className="mt-6 text-2xl font-semibold text-ink-900">
+              {t('auth.passwordUpdated')}
+            </h2>
             <p className="mt-2 text-sm text-ink-600">{t('auth.passwordResetSuccess')}</p>
           </div>
 
           <div className="bg-surface p-6 rounded-2xl border border-ink-100 shadow-soft text-center">
-            <Link to="/login" className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forest-800">{t('auth.backToSignIn')}</Link>
+            <Link
+              to="/login"
+              className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forest-800"
+            >
+              {t('auth.backToSignIn')}
+            </Link>
           </div>
         </div>
       </div>
@@ -104,13 +117,22 @@ export default function ResetPassword() {
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-canvas">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-ink-900">{t('auth.resetPassword')}</h2>
-          <p className="mt-2 text-center text-sm text-ink-600">{t('auth.resetPasswordDescription')}</p>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-ink-900">
+            {t('auth.resetPassword')}
+          </h2>
+          <p className="mt-2 text-center text-sm text-ink-600">
+            {t('auth.resetPasswordDescription')}
+          </p>
         </div>
 
-        <form className="mt-8 space-y-6 bg-surface p-6 rounded-2xl border border-ink-100 shadow-soft" onSubmit={handleSubmit}>
+        <form
+          className="mt-8 space-y-6 bg-surface p-6 rounded-2xl border border-ink-100 shadow-soft"
+          onSubmit={handleSubmit}
+        >
           <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-ink-700">{t('auth.newPassword')}</label>
+            <label htmlFor="newPassword" className="block text-sm font-medium text-ink-700">
+              {t('auth.newPassword')}
+            </label>
             <div className="mt-1 relative">
               <input
                 id="newPassword"
@@ -121,14 +143,20 @@ export default function ResetPassword() {
                 className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 text-sm text-ink-900 outline-none"
                 placeholder={t('auth.newPasswordPlaceholder')}
               />
-              <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-2 top-2 text-ink-500">
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-2 top-2 text-ink-500"
+              >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>
             </div>
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-ink-700">{t('auth.confirmNewPassword')}</label>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-ink-700">
+              {t('auth.confirmNewPassword')}
+            </label>
             <div className="mt-1 relative">
               <input
                 id="confirmPassword"
@@ -139,7 +167,11 @@ export default function ResetPassword() {
                 className="w-full rounded-xl border border-ink-200 bg-ink-50/60 px-3.5 py-3 text-sm text-ink-900 outline-none"
                 placeholder={t('auth.confirmNewPasswordPlaceholder')}
               />
-              <button type="button" onClick={() => setShowConfirm((v) => !v)} className="absolute right-2 top-2 text-ink-500">
+              <button
+                type="button"
+                onClick={() => setShowConfirm((v) => !v)}
+                className="absolute right-2 top-2 text-ink-500"
+              >
                 {showConfirm ? <EyeOff /> : <Eye />}
               </button>
             </div>
@@ -153,8 +185,13 @@ export default function ResetPassword() {
           )}
 
           <div className="flex items-center justify-between">
-            <Link to="/login" className="text-sm text-ink-600 hover:text-forest-700">{t('auth.backToSignIn')}</Link>
-            <button type="submit" className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forest-800">
+            <Link to="/login" className="text-sm text-ink-600 hover:text-forest-700">
+              {t('auth.backToSignIn')}
+            </Link>
+            <button
+              type="submit"
+              className="btn-premium inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-forest-800"
+            >
               {t('auth.resetPassword')}
             </button>
           </div>

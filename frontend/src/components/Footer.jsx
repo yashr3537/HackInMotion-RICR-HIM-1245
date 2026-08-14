@@ -156,8 +156,7 @@ export default function Footer() {
       <div className="relative z-10 border-t border-forest-900/90">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 sm:px-8 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-2 text-xs text-forest-400">
-            <Wind size={12} className="text-forest-300/70" />
-            © {currentYear} AirGuard
+            <Wind size={12} className="text-forest-300/70" />© {currentYear} AirGuard
           </div>
 
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-forest-400/70">

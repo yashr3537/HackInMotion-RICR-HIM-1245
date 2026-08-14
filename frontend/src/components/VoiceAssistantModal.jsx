@@ -104,7 +104,9 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
           setInterimTranscript('')
 
           if (event.error === 'not-allowed') {
-            setErrorMessage('Microphone access denied. Please grant permission in browser settings.')
+            setErrorMessage(
+              'Microphone access denied. Please grant permission in browser settings.'
+            )
           } else if (event.error === 'no-speech') {
             setErrorMessage('No speech detected. Please try speaking again.')
           } else if (event.error === 'network') {
@@ -141,7 +143,9 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
     setIsSpeaking(false)
 
     if (!recognitionRef.current) {
-      setErrorMessage('Speech recognition is not supported in this browser. Please use text input instead.')
+      setErrorMessage(
+        'Speech recognition is not supported in this browser. Please use text input instead.'
+      )
       return
     }
 
@@ -200,8 +204,13 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
 
     try {
       // Pass active website language to query processor
-      const response = await processVoiceAssistantQuery(trimmed, sessionContext, currentUser?.id, language)
-      
+      const response = await processVoiceAssistantQuery(
+        trimmed,
+        sessionContext,
+        currentUser?.id,
+        language
+      )
+
       const assistantMsg = {
         id: `assistant-${Date.now()}`,
         sender: 'assistant',
@@ -225,7 +234,7 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
       const errorMsg = {
         id: `assistant-err-${Date.now()}`,
         sender: 'assistant',
-        text: "I encountered an issue retrieving real environmental data. Please try again in a moment.",
+        text: 'I encountered an issue retrieving real environmental data. Please try again in a moment.',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         understood: false,
       }
@@ -249,7 +258,7 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
       {
         id: `welcome-${Date.now()}`,
         sender: 'assistant',
-        text: "Conversation reset! How can I assist you with air quality or weather data?",
+        text: 'Conversation reset! How can I assist you with air quality or weather data?',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ])
@@ -292,9 +301,7 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
                   <Sparkles size={10} /> Live Data
                 </span>
               </div>
-              <p className="text-xs text-forest-200/70">
-                AirGuard AI • Environmental Intelligence
-              </p>
+              <p className="text-xs text-forest-200/70">AirGuard AI • Environmental Intelligence</p>
             </div>
           </div>
 
@@ -412,7 +419,9 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
                   <Mic size={20} />
                 </div>
               </div>
-              <p className="text-xs font-semibold text-forest-800 dark:text-forest-200">Listening to your voice...</p>
+              <p className="text-xs font-semibold text-forest-800 dark:text-forest-200">
+                Listening to your voice...
+              </p>
               <p className="text-[11px] text-forest-600 dark:text-forest-400 italic mt-1 px-4 text-center">
                 {interimTranscript || 'Speak clearly into your microphone...'}
               </p>
@@ -439,7 +448,9 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
 
         {/* Quick Suggestion Chips */}
         <div className="px-4 py-2 bg-surface border-t border-ink-100 dark:border-ink-800 flex items-center gap-2 overflow-x-auto text-xs no-scrollbar">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-400 shrink-0">Try asking:</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-400 shrink-0">
+            Try asking:
+          </span>
           {[
             'Betul ka AQI kaisa hai?',
             'Betul ka weather?',

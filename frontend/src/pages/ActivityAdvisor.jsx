@@ -82,7 +82,10 @@ export default function ActivityAdvisor() {
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          {t('advisor.subtitle', { defaultValue: 'Select an outdoor activity to analyze real-time environmental risk based on your location and health profile.' })}
+          {t('advisor.subtitle', {
+            defaultValue:
+              'Select an outdoor activity to analyze real-time environmental risk based on your location and health profile.',
+          })}
         </p>
       </section>
 
@@ -163,7 +166,10 @@ export default function ActivityAdvisor() {
                 {loading ? (
                   <Loader2 size={13} className="animate-spin" />
                 ) : (
-                  <span className="live-dot h-1.5 w-1.5 rounded-full" style={{ backgroundColor: category.color }} />
+                  <span
+                    className="live-dot h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: category.color }}
+                  />
                 )}
                 {liveData?.name ? `Live data for ${liveData.name}` : 'Live AQI conditions'}
               </div>
@@ -185,9 +191,7 @@ export default function ActivityAdvisor() {
                       Why this recommendation?
                     </p>
 
-                    <p className="mt-2 text-sm leading-6 text-ink-700">
-                      {result.reason}
-                    </p>
+                    <p className="mt-2 text-sm leading-6 text-ink-700">{result.reason}</p>
                   </div>
                 </div>
               </div>
@@ -203,9 +207,7 @@ export default function ActivityAdvisor() {
                   What this means
                 </p>
 
-                <p className="mt-2 text-sm font-semibold text-ink-900">
-                  {recommendationText}
-                </p>
+                <p className="mt-2 text-sm font-semibold text-ink-900">{recommendationText}</p>
 
                 <div className="mt-5 flex flex-col gap-3">
                   <div className="flex items-center gap-2 text-xs text-ink-600">
@@ -233,7 +235,8 @@ export default function ActivityAdvisor() {
             <div className="mt-7 flex items-start gap-2.5 rounded-xl border border-ink-100 bg-white/70 px-4 py-3">
               <Info size={15} className="mt-0.5 shrink-0 text-ink-500" />
               <p className="text-xs leading-5 text-ink-500">
-                This environmental recommendation is calculated using live Open-Meteo AQI measurements. Individual responses to air pollution vary.
+                This environmental recommendation is calculated using live Open-Meteo AQI
+                measurements. Individual responses to air pollution vary.
               </p>
             </div>
           </div>

@@ -123,7 +123,12 @@ export function useLiveAirQuality(overrideLocation = null, options = {}) {
     } finally {
       setLoading(false)
     }
-  }, [overrideLocation?.latitude, overrideLocation?.longitude, overrideLocation?.name, overrideLocation?.region])
+  }, [
+    overrideLocation?.latitude,
+    overrideLocation?.longitude,
+    overrideLocation?.name,
+    overrideLocation?.region,
+  ])
 
   useEffect(() => {
     fetchLiveAQI()

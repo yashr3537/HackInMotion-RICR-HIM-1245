@@ -18,14 +18,86 @@ function cleanText(text) {
 
 // Stop words across English, Hindi, Hinglish, Spanish, French
 const STOP_WORDS = new Set([
-  'ka', 'ki', 'ke', 'ko', 'me', 'mein', 'par', 'se', 'hai', 'hain', 'kaisa', 'kaisi',
-  'kya', 'aur', 'and', 'or', 'in', 'at', 'of', 'for', 'the', 'is', 'are', 'what', 'how', 'show',
-  'tell', 'get', 'check', 'batao', 'bataiye', 'dekho', 'status', 'aqi', 'air', 'quality',
-  'weather', 'mausam', 'temp', 'temperature', 'humidity', 'wind', 'pollution', 'risk',
-  'running', 'cycling', 'walking', 'walk', 'run', 'sports', 'safe', 'outdoor', 'activity',
-  'mere', 'meri', 'mera', 'my', 'area', 'current', 'location', 'place', 'places', 'saved',
-  'compare', 'vs', 'versus', 'karo', 'el', 'la', 'los', 'las', 'de', 'del', 'en', 'que',
-  'le', 'les', 'du', 'des', 'est'
+  'ka',
+  'ki',
+  'ke',
+  'ko',
+  'me',
+  'mein',
+  'par',
+  'se',
+  'hai',
+  'hain',
+  'kaisa',
+  'kaisi',
+  'kya',
+  'aur',
+  'and',
+  'or',
+  'in',
+  'at',
+  'of',
+  'for',
+  'the',
+  'is',
+  'are',
+  'what',
+  'how',
+  'show',
+  'tell',
+  'get',
+  'check',
+  'batao',
+  'bataiye',
+  'dekho',
+  'status',
+  'aqi',
+  'air',
+  'quality',
+  'weather',
+  'mausam',
+  'temp',
+  'temperature',
+  'humidity',
+  'wind',
+  'pollution',
+  'risk',
+  'running',
+  'cycling',
+  'walking',
+  'walk',
+  'run',
+  'sports',
+  'safe',
+  'outdoor',
+  'activity',
+  'mere',
+  'meri',
+  'mera',
+  'my',
+  'area',
+  'current',
+  'location',
+  'place',
+  'places',
+  'saved',
+  'compare',
+  'vs',
+  'versus',
+  'karo',
+  'el',
+  'la',
+  'los',
+  'las',
+  'de',
+  'del',
+  'en',
+  'que',
+  'le',
+  'les',
+  'du',
+  'des',
+  'est',
 ])
 
 function extractLocationCandidates(query) {
@@ -45,13 +117,16 @@ function extractLocationCandidates(query) {
         return [match[1].trim(), match[2].trim()]
       }
       const candidate = match[1].trim()
-      const filtered = candidate.split(' ').filter(w => !STOP_WORDS.has(w.toLowerCase())).join(' ')
+      const filtered = candidate
+        .split(' ')
+        .filter((w) => !STOP_WORDS.has(w.toLowerCase()))
+        .join(' ')
       if (filtered.length >= 2) return [filtered]
     }
   }
 
   const words = cleaned.split(' ')
-  const candidates = words.filter(w => !STOP_WORDS.has(w) && w.length >= 3)
+  const candidates = words.filter((w) => !STOP_WORDS.has(w) && w.length >= 3)
   return candidates
 }
 
@@ -83,17 +158,17 @@ async function getCurrentUserLocation() {
 
 // Fallback messages for unknown queries per language
 const UNKNOWN_FALLBACKS = {
-  hi: "मुझे वह अनुरोध समझ नहीं आया। कृपया AQI, मौसम, प्रदूषण, जोखिम, सहेजी गई लोकेशन, या बाहरी गतिविधियों के बारे में पूछें।",
-  mr: "मला ती विनंती समजली नाही. कृपया AQI, हवामान, प्रदूषण, धोका, जतन केलेली ठिकाणे किंवा मैदानी क्रियाकलापांबद्दल विचारून पहा.",
-  bn: "আমি সেই অনুরোধটি বুঝতে পারিনি। দয়া করে AQI, আবহাওয়া, দূষণ, ঝুঁকি, সংরক্ষিত স্থান বা আউটডোর কার্যক্রম সম্পর্কে জিজ্ঞাসা করার চেষ্টা করুন।",
-  ta: "எனக்கு அந்த கோரிக்கை புரியவில்லை. தயவுசெய்து AQI, வானிலை, மாசுபாடு, அபாயம், சேமிக்கப்பட்ட இடங்கள் அல்லது வெளிப்புற நடவடிக்கைகள் பற்றி கேட்கவும்.",
-  te: "నాకు ఆ అభ్యర్థన అర్థం కాలేదు. దయచేసి AQI, వాతావరణం, కాలుష్యం, ప్రమాదం, సేవ్ చేసిన ప్రదేశాలు లేదా అవుట్‌డోర్ కార్యకలాపాల గురించి అడగండి.",
-  gu: "મને તે વિનંતી સમજાઈ નથી. કૃપા કરીને AQI, હવામાન, પ્રદૂષણ, જોખમ, સાચવેલ સ્થાનો અથવા આઉટડોર પ્રવૃત્તિઓ વિશે પૂછવાનો પ્રયાસ કરો.",
-  kn: "ನನಗೆ ಆ ವಿನಂತಿ ಅರ್ಥವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು AQI, ಹವಾಮಾನ, ಮಾಲಿನ್ಯ, ಅಪಾಯ, ಉಳಿಸಿದ ಸ್ಥಳಗಳು ಅಥವಾ ಹೊರಾಂಗಣ ಚಟುವಟಿಕೆಗಳ ಬಗ್ಗೆ ಕೇಳಲು ಪ್ರಯತ್ನಿಸಿ.",
-  ml: "എനിക്ക് ആ അഭ്യർത്ഥന മനസ്സിലായില്ല. AQI, കാലാവസ്ഥ, മലിനീകരണം, അപകടസാധ്യത, സംരക്ഷിച്ച ലൊക്കേഷനുകൾ അല്ലെങ്കിൽ ഔട്ട്ഡോർ പ്രവർത്തനങ്ങൾ എന്നിവയെക്കുറിച്ച് ചോദിക്കാൻ ശ്രമിക്കുക.",
-  pa: "ਮੈਨੂੰ ਉਹ ਬੇਨਤੀ ਸਮਝ ਨਹੀਂ ਆਈ। ਕਿਰਪਾ ਕਰਕੇ AQI, ਮੌਸਮ, ਪ੍ਰਦੂਸ਼ਣ, ਜੋਖਮ, ਸੰਭਾਲੀਆਂ ਥਾਵਾਂ ਜਾਂ ਬਾਹਰੀ ਗਤੀਵਿਧੀਆਂ ਬਾਰੇ ਪੁੱਛਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
-  ur: "مجھے وہ درخواست سمجھ نہیں آئی۔ برائے مہربانی AQI، موسم، آلودگی، خطرہ، محفوظ کردہ مقامات، یا بیرونی سرگرمیوں کے بارے میں پوچھیں۔",
-  es: "No entendí esa solicitud. Por favor intente preguntar sobre el AQI, clima, contaminación, riesgo, ubicaciones guardadas o actividades al aire libre.",
+  hi: 'मुझे वह अनुरोध समझ नहीं आया। कृपया AQI, मौसम, प्रदूषण, जोखिम, सहेजी गई लोकेशन, या बाहरी गतिविधियों के बारे में पूछें।',
+  mr: 'मला ती विनंती समजली नाही. कृपया AQI, हवामान, प्रदूषण, धोका, जतन केलेली ठिकाणे किंवा मैदानी क्रियाकलापांबद्दल विचारून पहा.',
+  bn: 'আমি সেই অনুরোধটি বুঝতে পারিনি। দয়া করে AQI, আবহাওয়া, দূষণ, ঝুঁকি, সংরক্ষিত স্থান বা আউটডোর কার্যক্রম সম্পর্কে জিজ্ঞাসা করার চেষ্টা করুন।',
+  ta: 'எனக்கு அந்த கோரிக்கை புரியவில்லை. தயவுசெய்து AQI, வானிலை, மாசுபாடு, அபாயம், சேமிக்கப்பட்ட இடங்கள் அல்லது வெளிப்புற நடவடிக்கைகள் பற்றி கேட்கவும்.',
+  te: 'నాకు ఆ అభ్యర్థన అర్థం కాలేదు. దయచేసి AQI, వాతావరణం, కాలుష్యం, ప్రమాదం, సేవ్ చేసిన ప్రదేశాలు లేదా అవుట్‌డోర్ కార్యకలాపాల గురించి అడగండి.',
+  gu: 'મને તે વિનંતી સમજાઈ નથી. કૃપા કરીને AQI, હવામાન, પ્રદૂષણ, જોખમ, સાચવેલ સ્થાનો અથવા આઉટડોર પ્રવૃત્તિઓ વિશે પૂછવાનો પ્રયાસ કરો.',
+  kn: 'ನನಗೆ ಆ ವಿನಂತಿ ಅರ್ಥವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು AQI, ಹವಾಮಾನ, ಮಾಲಿನ್ಯ, ಅಪಾಯ, ಉಳಿಸಿದ ಸ್ಥಳಗಳು ಅಥವಾ ಹೊರಾಂಗಣ ಚಟುವಟಿಕೆಗಳ ಬಗ್ಗೆ ಕೇಳಲು ಪ್ರಯತ್ನಿಸಿ.',
+  ml: 'എനിക്ക് ആ അഭ്യർത്ഥന മനസ്സിലായില്ല. AQI, കാലാവസ്ഥ, മലിനീകരണം, അപകടസാധ്യത, സംരക്ഷിച്ച ലൊക്കേഷനുകൾ അല്ലെങ്കിൽ ഔട്ട്ഡോർ പ്രവർത്തനങ്ങൾ എന്നിവയെക്കുറിച്ച് ചോദിക്കാൻ ശ്രമിക്കുക.',
+  pa: 'ਮੈਨੂੰ ਉਹ ਬੇਨਤੀ ਸਮਝ ਨਹੀਂ ਆਈ। ਕਿਰਪਾ ਕਰਕੇ AQI, ਮੌਸਮ, ਪ੍ਰਦੂਸ਼ਣ, ਜੋਖਮ, ਸੰਭਾਲੀਆਂ ਥਾਵਾਂ ਜਾਂ ਬਾਹਰੀ ਗਤੀਵਿਧੀਆਂ ਬਾਰੇ ਪੁੱਛਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+  ur: 'مجھے وہ درخواست سمجھ نہیں آئی۔ برائے مہربانی AQI، موسم، آلودگی، خطرہ، محفوظ کردہ مقامات، یا بیرونی سرگرمیوں کے بارے میں پوچھیں۔',
+  es: 'No entendí esa solicitud. Por favor intente preguntar sobre el AQI, clima, contaminación, riesgo, ubicaciones guardadas o actividades al aire libre.',
   fr: "Je n'ai pas compris cette demande. Veuillez essayer de poser des questions sur l'IQA, la météo, la pollution, les risques, les lieux enregistrés ou les activités de plein air.",
   en: "I didn't understand that request. Please try asking about AQI, weather, pollution, risk, saved locations, or outdoor activity.",
 }
@@ -102,35 +177,50 @@ const UNKNOWN_FALLBACKS = {
  * Voice Assistant Intent Processor
  * Accepts user language and synchronizes output language dynamically.
  */
-export async function processVoiceAssistantQuery(userQuery, context = {}, userId = null, lang = 'en') {
+export async function processVoiceAssistantQuery(
+  userQuery,
+  context = {},
+  userId = null,
+  lang = 'en'
+) {
   const query = cleanText(userQuery)
-  const currentLang = String(lang || 'en').toLowerCase().split('-')[0]
+  const currentLang = String(lang || 'en')
+    .toLowerCase()
+    .split('-')[0]
 
   if (!query) {
     return {
-      text: currentLang === 'hi'
-        ? "कृपया वायु गुणवत्ता, मौसम, या सुरक्षा के बारे में प्रश्न पूछें या बोलें।"
-        : currentLang === 'es'
-          ? "Por favor haga una pregunta sobre la calidad del aire o el clima."
-          : currentLang === 'fr'
-            ? "Veuillez poser une question sur la qualité de l'air ou la météo."
-            : "Please ask or speak a question about air quality, weather, outdoor safety, or saved locations.",
+      text:
+        currentLang === 'hi'
+          ? 'कृपया वायु गुणवत्ता, मौसम, या सुरक्षा के बारे में प्रश्न पूछें या बोलें।'
+          : currentLang === 'es'
+            ? 'Por favor haga una pregunta sobre la calidad del aire o el clima.'
+            : currentLang === 'fr'
+              ? "Veuillez poser une question sur la qualité de l'air ou la météo."
+              : 'Please ask or speak a question about air quality, weather, outdoor safety, or saved locations.',
       context,
       understood: true,
     }
   }
 
   // Check 1: SAVED LOCATIONS STATUS
-  if (query.includes('saved location') || query.includes('saved places') || query.includes('saved') || query.includes('lugares guardados') || query.includes('lieux enregistrés')) {
+  if (
+    query.includes('saved location') ||
+    query.includes('saved places') ||
+    query.includes('saved') ||
+    query.includes('lugares guardados') ||
+    query.includes('lieux enregistrés')
+  ) {
     const saved = await fetchSavedLocations(userId)
     if (!saved || saved.length === 0) {
-      const emptyMsg = currentLang === 'hi'
-        ? "आपकी कोई सहेजी गई लोकेशन नहीं है। क्विक ट्रैकिंग के लिए आप डैशबोर्ड पर लोकेशन सेव कर सकते हैं।"
-        : currentLang === 'es'
-          ? "No tienes ubicaciones guardadas."
-          : currentLang === 'fr'
-            ? "Vous n'avez aucun lieu enregistré."
-            : "You have no saved locations. You can save locations from the Dashboard."
+      const emptyMsg =
+        currentLang === 'hi'
+          ? 'आपकी कोई सहेजी गई लोकेशन नहीं है। क्विक ट्रैकिंग के लिए आप डैशबोर्ड पर लोकेशन सेव कर सकते हैं।'
+          : currentLang === 'es'
+            ? 'No tienes ubicaciones guardadas.'
+            : currentLang === 'fr'
+              ? "Vous n'avez aucun lieu enregistré."
+              : 'You have no saved locations. You can save locations from the Dashboard.'
 
       return { text: emptyMsg, context, understood: true }
     }
@@ -147,13 +237,14 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
       })
     )
 
-    const prefix = currentLang === 'hi'
-      ? "आपकी सहेजी गई लोकेशन का स्टेटस"
-      : currentLang === 'es'
-        ? "Estado de tus ubicaciones guardadas"
-        : currentLang === 'fr'
-          ? "Statut de vos lieux enregistrés"
-          : "Your saved locations status"
+    const prefix =
+      currentLang === 'hi'
+        ? 'आपकी सहेजी गई लोकेशन का स्टेटस'
+        : currentLang === 'es'
+          ? 'Estado de tus ubicaciones guardadas'
+          : currentLang === 'fr'
+            ? 'Statut de vos lieux enregistrés'
+            : 'Your saved locations status'
 
     return {
       text: `${prefix}: ${statuses.join('. ')}.`,
@@ -163,13 +254,18 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
   }
 
   // Check 2: COMPARE LOCATIONS
-  if (query.includes('compare') || query.includes('comparar') || query.includes('comparer') || (query.includes('aur') && (query.includes('aqi') || query.includes('hawa')))) {
+  if (
+    query.includes('compare') ||
+    query.includes('comparar') ||
+    query.includes('comparer') ||
+    (query.includes('aur') && (query.includes('aqi') || query.includes('hawa')))
+  ) {
     const candidates = extractLocationCandidates(userQuery)
     if (candidates.length >= 2) {
       const [name1, name2] = candidates
       const [res1, res2] = await Promise.all([
-        searchLocation(name1).then(r => r[0]),
-        searchLocation(name2).then(r => r[0]),
+        searchLocation(name1).then((r) => r[0]),
+        searchLocation(name2).then((r) => r[0]),
       ])
 
       if (res1 && res2) {
@@ -204,10 +300,18 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
   }
 
   // Check 3: OUTDOOR ACTIVITY SAFETY
-  const isActivityQuery = query.includes('running') || query.includes('run') || query.includes('cycling') ||
-    query.includes('walking') || query.includes('walk') || query.includes('sports') ||
-    query.includes('safe') || query.includes('outdoors') || query.includes('outdoor') ||
-    query.includes('correr') || query.includes('courir')
+  const isActivityQuery =
+    query.includes('running') ||
+    query.includes('run') ||
+    query.includes('cycling') ||
+    query.includes('walking') ||
+    query.includes('walk') ||
+    query.includes('sports') ||
+    query.includes('safe') ||
+    query.includes('outdoors') ||
+    query.includes('outdoor') ||
+    query.includes('correr') ||
+    query.includes('courir')
 
   if (isActivityQuery) {
     let locName = ''
@@ -271,7 +375,13 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
   }
 
   // Check 4: WEATHER QUERY
-  const isWeatherQuery = query.includes('weather') || query.includes('mausam') || query.includes('temperature') || query.includes('temp') || query.includes('clima') || query.includes('météo')
+  const isWeatherQuery =
+    query.includes('weather') ||
+    query.includes('mausam') ||
+    query.includes('temperature') ||
+    query.includes('temp') ||
+    query.includes('clima') ||
+    query.includes('météo')
   if (isWeatherQuery) {
     let targetLoc = null
     const candidates = extractLocationCandidates(userQuery)
@@ -284,7 +394,11 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
     }
 
     if (!targetLoc && context.lastLocation) {
-      targetLoc = { name: context.lastLocation.name, latitude: context.lastLocation.lat, longitude: context.lastLocation.lon }
+      targetLoc = {
+        name: context.lastLocation.name,
+        latitude: context.lastLocation.lat,
+        longitude: context.lastLocation.lon,
+      }
     }
 
     if (!targetLoc) {
@@ -325,7 +439,13 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
   }
 
   // Check 5: CURRENT AREA / MERE AREA AQI
-  const isCurrentAreaQuery = query.includes('mere area') || query.includes('my area') || query.includes('current location') || query.includes('yahan ka') || query.includes('mi área') || query.includes('ma zone')
+  const isCurrentAreaQuery =
+    query.includes('mere area') ||
+    query.includes('my area') ||
+    query.includes('current location') ||
+    query.includes('yahan ka') ||
+    query.includes('mi área') ||
+    query.includes('ma zone')
   if (isCurrentAreaQuery) {
     const currentLoc = await getCurrentUserLocation()
     const aq = await getAirQuality(currentLoc.latitude, currentLoc.longitude)
@@ -345,7 +465,12 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
 
     const nextContext = {
       ...context,
-      lastLocation: { name: currentLoc.name, lat: currentLoc.latitude, lon: currentLoc.longitude, aqi: aq.aqi },
+      lastLocation: {
+        name: currentLoc.name,
+        lat: currentLoc.latitude,
+        lon: currentLoc.longitude,
+        aqi: aq.aqi,
+      },
     }
 
     return { text, context: nextContext, understood: true }
@@ -372,29 +497,33 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
 
     let advice = ''
     if (currentLang === 'hi') {
-      advice = aq.aqi <= 50
-        ? 'वायु गुणवत्ता अच्छी है।'
-        : aq.aqi <= 100
-          ? 'वायु गुणवत्ता Moderate श्रेणी में है। संवेदनशील उपयोगकर्ता outdoor गतिविधि सीमित रखें।'
-          : 'वायु गुणवत्ता खराब श्रेणी में है। बाहर रहने से बचें।'
+      advice =
+        aq.aqi <= 50
+          ? 'वायु गुणवत्ता अच्छी है।'
+          : aq.aqi <= 100
+            ? 'वायु गुणवत्ता Moderate श्रेणी में है। संवेदनशील उपयोगकर्ता outdoor गतिविधि सीमित रखें।'
+            : 'वायु गुणवत्ता खराब श्रेणी में है। बाहर रहने से बचें।'
     } else if (currentLang === 'es') {
-      advice = aq.aqi <= 50
-        ? 'La calidad del aire es buena.'
-        : aq.aqi <= 100
-          ? 'La calidad del aire es Moderada. Usuarios sensibles deben limitar actividad exterior.'
-          : 'La calidad del aire es dañina. Evite actividades al aire libre.'
+      advice =
+        aq.aqi <= 50
+          ? 'La calidad del aire es buena.'
+          : aq.aqi <= 100
+            ? 'La calidad del aire es Moderada. Usuarios sensibles deben limitar actividad exterior.'
+            : 'La calidad del aire es dañina. Evite actividades al aire libre.'
     } else if (currentLang === 'fr') {
-      advice = aq.aqi <= 50
-        ? "La qualité de l'air est bonne."
-        : aq.aqi <= 100
-          ? "La qualité de l'air est Modérée."
-          : "La qualité de l'air est mauvaise. Évitez les activités extérieures."
+      advice =
+        aq.aqi <= 50
+          ? "La qualité de l'air est bonne."
+          : aq.aqi <= 100
+            ? "La qualité de l'air est Modérée."
+            : "La qualité de l'air est mauvaise. Évitez les activités extérieures."
     } else {
-      advice = aq.aqi <= 50
-        ? 'Air quality is Good.'
-        : aq.aqi <= 100
-          ? 'Air quality is in Moderate category. Sensitive users should limit prolonged outdoor activity.'
-          : 'Air quality is Unhealthy. Avoid outdoor exertion.'
+      advice =
+        aq.aqi <= 50
+          ? 'Air quality is Good.'
+          : aq.aqi <= 100
+            ? 'Air quality is in Moderate category. Sensitive users should limit prolonged outdoor activity.'
+            : 'Air quality is Unhealthy. Avoid outdoor exertion.'
     }
 
     let text = ''
@@ -417,18 +546,22 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
   }
 
   // Fallback for context-based location query
-  if ((query.includes('aqi') || query.includes('hawa') || query.includes('air')) && context.lastLocation) {
+  if (
+    (query.includes('aqi') || query.includes('hawa') || query.includes('air')) &&
+    context.lastLocation
+  ) {
     const loc = context.lastLocation
     const aq = await getAirQuality(loc.lat, loc.lon)
     const cat = getAqiCategory(aq.aqi)
 
-    const text = currentLang === 'hi'
-      ? `${loc.name} का वर्तमान AQI ${aq.aqi} (${cat.label}) है।`
-      : currentLang === 'es'
-        ? `El AQI actual de ${loc.name} es ${aq.aqi} (${cat.label}).`
-        : currentLang === 'fr'
-          ? `L'IQA actuel de ${loc.name} est ${aq.aqi} (${cat.label}).`
-          : `${loc.name}'s current AQI is ${aq.aqi} (${cat.label}).`
+    const text =
+      currentLang === 'hi'
+        ? `${loc.name} का वर्तमान AQI ${aq.aqi} (${cat.label}) है।`
+        : currentLang === 'es'
+          ? `El AQI actual de ${loc.name} es ${aq.aqi} (${cat.label}).`
+          : currentLang === 'fr'
+            ? `L'IQA actuel de ${loc.name} est ${aq.aqi} (${cat.label}).`
+            : `${loc.name}'s current AQI is ${aq.aqi} (${cat.label}).`
 
     return { text, context, understood: true }
   }

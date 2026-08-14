@@ -20,7 +20,9 @@ export default function LanguageSelector({ compact = false }) {
 
   return (
     <div className={`inline-flex items-center gap-2 ${compact ? 'text-sm' : ''}`}>
-      <label htmlFor="ag-language" className="sr-only">{t('common.language')}</label>
+      <label htmlFor="ag-language" className="sr-only">
+        {t('common.language')}
+      </label>
       <select
         id="ag-language"
         value={language}
@@ -29,7 +31,9 @@ export default function LanguageSelector({ compact = false }) {
         className="rounded-md border border-ink-200 bg-surface px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-forest-500"
       >
         {OPTIONS.map((o) => (
-          <option key={o.code} value={o.code}>{o.label}</option>
+          <option key={o.code} value={o.code}>
+            {o.label}
+          </option>
         ))}
       </select>
     </div>

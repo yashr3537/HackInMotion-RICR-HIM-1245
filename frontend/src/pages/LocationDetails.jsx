@@ -38,8 +38,18 @@ const HEALTH_PROFILES = [
   { key: 'general', labelKey: 'profile.general', defaultLabel: 'General', icon: User },
   { key: 'child', labelKey: 'profile.child', defaultLabel: 'Child', icon: Baby },
   { key: 'elderly', labelKey: 'profile.elderly', defaultLabel: 'Elderly', icon: UserCheck },
-  { key: 'respiratory', labelKey: 'profile.respiratory', defaultLabel: 'Respiratory Sensitive', icon: Stethoscope },
-  { key: 'outdoor-worker', labelKey: 'profile.outdoorWorker', defaultLabel: 'Outdoor Worker', icon: Briefcase },
+  {
+    key: 'respiratory',
+    labelKey: 'profile.respiratory',
+    defaultLabel: 'Respiratory Sensitive',
+    icon: Stethoscope,
+  },
+  {
+    key: 'outdoor-worker',
+    labelKey: 'profile.outdoorWorker',
+    defaultLabel: 'Outdoor Worker',
+    icon: Briefcase,
+  },
 ]
 
 function getHealthGuidance(aqi, profileKey) {
@@ -100,17 +110,27 @@ export default function LocationDetails() {
   const { t } = useLanguage()
   const { currentUser } = useAuth()
 
-  // 1. Resolve location cleanly from user saved locations OR exploreResults
-  const resolvedLocation = useMemo(() => {
+  const [resolvedLocation, setResolvedLocation] = useState(
+    routerLocation.state?.location || null
+  )
+
+  useEffect(() => {
     if (routerLocation.state?.location) {
-      return routerLocation.state.location
+      setResolvedLocation(routerLocation.state.location)
+      return
     }
-    const userSaved = loadUserSavedLocations(currentUser?.id)
-    if (locationId) {
-      const matchSaved = userSaved.find((loc) => String(loc.id) === String(locationId))
-      if (matchSaved) return matchSaved
+
+    let isMounted = true
+    if (currentUser?.id && locationId) {
+      fetchSavedLocations(currentUser.id).then((saved) => {
+        if (!isMounted) return
+        const match = (saved || []).find((loc) => String(loc.id) === String(locationId))
+        if (match) setResolvedLocation(match)
+      })
     }
-    return null
+    return () => {
+      isMounted = false
+    }
   }, [locationId, routerLocation.state, currentUser?.id])
 
   const [airQuality, setAirQuality] = useState(null)
@@ -120,54 +140,60 @@ export default function LocationDetails() {
   const [activeProfile, setActiveProfile] = useState('general')
   const [lastUpdated, setLastUpdated] = useState('Just now')
 
-  const loadData = useCallback(async (silent = false) => {
-    if (!resolvedLocation) {
-      setLoading(false)
-      setError('Location information is missing or location has been removed.')
-      return
-    }
+  const loadData = useCallback(
+    async (silent = false) => {
+      if (!resolvedLocation) {
+        setLoading(false)
+        setError('Location information is missing or location has been removed.')
+        return
+      }
 
-    const lat = Number(resolvedLocation.latitude)
-    const lon = Number(resolvedLocation.longitude)
+      const lat = Number(resolvedLocation.latitude)
+      const lon = Number(resolvedLocation.longitude)
 
-    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-      setLoading(false)
-      setError('Invalid coordinates for this location.')
-      return
-    }
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+        setLoading(false)
+        setError('Invalid coordinates for this location.')
+        return
+      }
 
-    try {
-      if (!silent) setLoading(true)
-      setError('')
+      try {
+        if (!silent) setLoading(true)
+        setError('')
 
-      const [aqData, weatherData] = await Promise.all([
-        getAirQuality(lat, lon),
-        getWeather(lat, lon),
-      ])
+        const [aqData, weatherData] = await Promise.all([
+          getAirQuality(lat, lon),
+          getWeather(lat, lon),
+        ])
 
-      setAirQuality(aqData)
-      setWeather(weatherData)
+        setAirQuality(aqData)
+        setWeather(weatherData)
 
-      const formattedTime = aqData.time
-        ? new Date(aqData.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        const formattedTime = aqData.time
+          ? new Date(aqData.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
-      setLastUpdated(formattedTime)
-    } catch (err) {
-      console.error('Location details fetch error:', err)
-      setError('Live air quality data is currently unavailable.')
-    } finally {
-      if (!silent) setLoading(false)
-    }
-  }, [resolvedLocation])
+        setLastUpdated(formattedTime)
+      } catch (err) {
+        console.error('Location details fetch error:', err)
+        setError('Live air quality data is currently unavailable.')
+      } finally {
+        if (!silent) setLoading(false)
+      }
+    },
+    [resolvedLocation]
+  )
 
   useEffect(() => {
     loadData()
 
     // Auto refresh every 15 minutes
-    const interval = setInterval(() => {
-      loadData(true)
-    }, 15 * 60 * 1000)
+    const interval = setInterval(
+      () => {
+        loadData(true)
+      },
+      15 * 60 * 1000
+    )
 
     return () => clearInterval(interval)
   }, [loadData])
@@ -183,7 +209,9 @@ export default function LocationDetails() {
           {t('common.locationNotFound', { defaultValue: 'Location not found' })}
         </h1>
         <p className="mt-2 text-sm text-ink-500 max-w-sm">
-          {t('common.locationNotFoundDesc', { defaultValue: 'The requested saved location could not be loaded or has been deleted.' })}
+          {t('common.locationNotFoundDesc', {
+            defaultValue: 'The requested saved location could not be loaded or has been deleted.',
+          })}
         </p>
         <button
           type="button"
@@ -202,7 +230,6 @@ export default function LocationDetails() {
 
   return (
     <div className="page-enter flex flex-col gap-6 pb-12 sm:gap-8">
-
       {/* =====================================================
           TOP BAR & NAVIGATION
       ===================================================== */}
@@ -268,10 +295,13 @@ export default function LocationDetails() {
         <div className="flex min-h-[320px] flex-col items-center justify-center rounded-2xl border border-ink-100 bg-surface p-8 shadow-card text-center">
           <Loader2 size={36} className="text-forest-700 animate-spin mb-3" />
           <p className="text-sm font-semibold text-ink-900">
-            {t('common.loadingLiveData', { defaultValue: 'Fetching live air quality & weather data...' })}
+            {t('common.loadingLiveData', {
+              defaultValue: 'Fetching live air quality & weather data...',
+            })}
           </p>
           <p className="text-xs text-ink-500 mt-1">
-            {t('common.connectingApi', { defaultValue: 'Retrieving current measurements for' })} {resolvedLocation.name}
+            {t('common.connectingApi', { defaultValue: 'Retrieving current measurements for' })}{' '}
+            {resolvedLocation.name}
           </p>
         </div>
       )}
@@ -283,11 +313,11 @@ export default function LocationDetails() {
         <div className="rounded-2xl border border-amber-200 bg-surface p-8 shadow-card text-center flex flex-col items-center justify-center min-h-[280px]">
           <AlertCircle size={40} className="text-amber-600 mb-3" />
           <h3 className="font-display text-lg font-semibold text-ink-900">
-            {t('common.liveDataUnavailable', { defaultValue: 'Live air quality data is currently unavailable.' })}
+            {t('common.liveDataUnavailable', {
+              defaultValue: 'Live air quality data is currently unavailable.',
+            })}
           </h3>
-          <p className="mt-1 max-w-md text-xs leading-relaxed text-ink-600">
-            {error}
-          </p>
+          <p className="mt-1 max-w-md text-xs leading-relaxed text-ink-600">{error}</p>
           <button
             type="button"
             onClick={() => loadData(false)}
@@ -418,10 +448,14 @@ export default function LocationDetails() {
                   <div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-forest-100 bg-forest-50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-800 mb-2">
                       <ShieldCheck size={12} className="text-forest-700" />
-                      {t('common.healthGuidanceTitle', { defaultValue: 'Personalized Risk Intelligence' })}
+                      {t('common.healthGuidanceTitle', {
+                        defaultValue: 'Personalized Risk Intelligence',
+                      })}
                     </div>
                     <h2 className="font-display text-xl font-semibold text-ink-900 sm:text-2xl">
-                      {t('common.tailoredHealthAdvice', { defaultValue: 'Health Advice by Sensitivity Profile' })}
+                      {t('common.tailoredHealthAdvice', {
+                        defaultValue: 'Health Advice by Sensitivity Profile',
+                      })}
                     </h2>
                   </div>
 
@@ -429,7 +463,10 @@ export default function LocationDetails() {
                     className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold uppercase"
                     style={{ backgroundColor: band.bg, color: band.color }}
                   >
-                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: band.color }} />
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ backgroundColor: band.color }}
+                    />
                     {band.label}
                   </span>
                 </div>
@@ -479,7 +516,8 @@ export default function LocationDetails() {
                   <Info size={15} className="shrink-0 mt-0.5 text-amber-700" />
                   <span>
                     {t('common.disclaimerText', {
-                      defaultValue: 'This guidance is based on general air quality standards (AQI) and environmental data. It does not constitute formal medical diagnosis or advice.',
+                      defaultValue:
+                        'This guidance is based on general air quality standards (AQI) and environmental data. It does not constitute formal medical diagnosis or advice.',
                     })}
                   </span>
                 </div>
@@ -507,7 +545,6 @@ export default function LocationDetails() {
           </section>
         </>
       )}
-
     </div>
   )
 }

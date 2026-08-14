@@ -22,17 +22,24 @@ import { getUserPollutionReports } from '../services/pollutionReportService'
 
 const SEVERITY_BADGES = {
   low: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
-  medium: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800',
+  medium:
+    'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800',
   high: 'bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-800',
-  critical: 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800',
+  critical:
+    'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800',
 }
 
 const STATUS_BADGES = {
-  pending: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800',
-  under_review: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800',
-  in_progress: 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800',
-  resolved: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
-  rejected: 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800',
+  pending:
+    'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+  under_review:
+    'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800',
+  in_progress:
+    'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800',
+  resolved:
+    'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+  rejected:
+    'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800',
 }
 
 export default function MyReports() {
@@ -89,9 +96,7 @@ export default function MyReports() {
           <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-ink-900">
             {t('myReports.title')}
           </h1>
-          <p className="text-sm text-ink-500 mt-1">
-            {t('myReports.subtitle')}
-          </p>
+          <p className="text-sm text-ink-500 mt-1">{t('myReports.subtitle')}</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -120,20 +125,22 @@ export default function MyReports() {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-surface p-4 rounded-xl border border-ink-100 dark:border-ink-800/80">
         {/* Status Filter Tabs */}
         <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 scrollbar-none">
-          {['all', 'pending', 'under_review', 'in_progress', 'resolved', 'rejected'].map((stKey) => (
-            <button
-              key={stKey}
-              type="button"
-              onClick={() => setStatusFilter(stKey)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
-                statusFilter === stKey
-                  ? 'bg-forest-800 text-white shadow-xs'
-                  : 'text-ink-600 hover:bg-ink-100 dark:hover:bg-ink-800'
-              }`}
-            >
-              {stKey === 'all' ? 'All Reports' : t(`status.${stKey}`)}
-            </button>
-          ))}
+          {['all', 'pending', 'under_review', 'in_progress', 'resolved', 'rejected'].map(
+            (stKey) => (
+              <button
+                key={stKey}
+                type="button"
+                onClick={() => setStatusFilter(stKey)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                  statusFilter === stKey
+                    ? 'bg-forest-800 text-white shadow-xs'
+                    : 'text-ink-600 hover:bg-ink-100 dark:hover:bg-ink-800'
+                }`}
+              >
+                {stKey === 'all' ? 'All Reports' : t(`status.${stKey}`)}
+              </button>
+            )
+          )}
         </div>
 
         {/* Search Field */}
@@ -177,9 +184,7 @@ export default function MyReports() {
             <h3 className="font-display font-semibold text-lg text-ink-900">
               {t('myReports.noReports')}
             </h3>
-            <p className="text-sm text-ink-500">
-              {t('myReports.noReportsDesc')}
-            </p>
+            <p className="text-sm text-ink-500">{t('myReports.noReportsDesc')}</p>
           </div>
           <Link
             to="/report"
@@ -234,12 +239,16 @@ export default function MyReports() {
                         {t(`report.cat_${report.issue_category}`) || report.issue_category}
                       </td>
                       <td className="py-4 px-4">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${severityClass}`}>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${severityClass}`}
+                        >
                           {t(`report.sev_${report.severity}`) || report.severity}
                         </span>
                       </td>
                       <td className="py-4 px-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusClass}`}>
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusClass}`}
+                        >
                           <Clock size={12} />
                           {t(`status.${report.status}`) || report.status}
                         </span>
@@ -278,7 +287,9 @@ export default function MyReports() {
                     <span className="font-mono text-xs font-bold text-forest-700 dark:text-forest-400 bg-forest-50 dark:bg-forest-950 px-2 py-0.5 rounded border border-forest-200 dark:border-forest-800">
                       {report.report_id}
                     </span>
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${statusClass}`}>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${statusClass}`}
+                    >
                       <Clock size={11} />
                       {t(`status.${report.status}`) || report.status}
                     </span>
@@ -287,15 +298,16 @@ export default function MyReports() {
                   <div>
                     <h4 className="font-semibold text-sm text-ink-900 flex items-center gap-1.5">
                       <MapPin size={14} className="text-forest-600 shrink-0" />
-                      {report.city || 'Detected Location'} {report.region ? `, ${report.region}` : ''}
+                      {report.city || 'Detected Location'}{' '}
+                      {report.region ? `, ${report.region}` : ''}
                     </h4>
-                    <p className="text-xs text-ink-500 mt-1 line-clamp-2">
-                      {report.description}
-                    </p>
+                    <p className="text-xs text-ink-500 mt-1 line-clamp-2">{report.description}</p>
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between pt-2 border-t border-ink-100 text-xs">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${severityClass}`}>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${severityClass}`}
+                    >
                       {t(`report.sev_${report.severity}`) || report.severity}
                     </span>
 

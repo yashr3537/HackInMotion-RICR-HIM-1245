@@ -1,7 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n/index.jsx'
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Compass, MapPin, History, Bell, User, Settings, Leaf, GitCompare, Footprints, AlertOctagon, FileText } from 'lucide-react'
+import {
+  LayoutDashboard,
+  Compass,
+  MapPin,
+  History,
+  Bell,
+  User,
+  Settings,
+  Leaf,
+  GitCompare,
+  Footprints,
+  AlertOctagon,
+  FileText,
+} from 'lucide-react'
 import { fetchUserAlerts } from '../services/supabase/supabaseService'
 import { useAuth } from '../auth'
 import LanguageSelector from './LanguageSelector.jsx'
@@ -85,9 +98,7 @@ export default function Sidebar() {
 
       <div className="p-4 border-t border-ink-100 space-y-3">
         <LanguageSelector />
-        <p className="text-[10px] text-ink-400 text-center">
-          AirGuard Risk Platform v2.0
-        </p>
+        <p className="text-[10px] text-ink-400 text-center">AirGuard Risk Platform v2.0</p>
       </div>
     </aside>
   )

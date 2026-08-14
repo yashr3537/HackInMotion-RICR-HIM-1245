@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'காற்று தரத்தை சரிபார்',
     language: 'மொழி',
     live: 'நேரடி',
-    monitoring: 'கண்காணிப்பு'
+    monitoring: 'கண்காணிப்பு',
   },
 
   nav: {
@@ -33,7 +33,8 @@ export default {
   },
 
   sidebar: {
-    footerNotice: 'காற்று தரவு தானாகவே புது நிலையில் மாறுகிறது. டெமோ பில்டு — பேக்க்எண்ட் இன்னும் இணைக்கப்படவில்லை.'
+    footerNotice:
+      'காற்று தரவு தானாகவே புது நிலையில் மாறுகிறது. டெமோ பில்டு — பேக்க்எண்ட் இன்னும் இணைக்கப்படவில்லை.',
   },
 
   dashboard: {
@@ -50,7 +51,7 @@ export default {
     language: 'மொழி',
     voiceAlerts: 'குரல் எச்சரிக்கைகள்',
     darkMode: 'இருண்ட முறை',
-    applicationPreferences: 'மென்பொருள் முன்னுரிமைகள்'
+    applicationPreferences: 'மென்பொருள் முன்னுரிமைகள்',
   },
 
   alerts: {
@@ -58,7 +59,7 @@ export default {
     critical: 'நிரந்தர',
     warning: 'எச்சரிக்கை',
     information: 'தகவல்',
-    aqiMessage: '{location} க்கு காற்று தர எச்சரிக்கை. தற்போதைய AQI {aqi}.'
+    aqiMessage: '{location} க்கு காற்று தர எச்சரிக்கை. தற்போதைய AQI {aqi}.',
   },
 
   aqi: {
@@ -71,7 +72,7 @@ export default {
 
   pollutant: {
     relativeLevel: 'சார்பான நிலை',
-    environmentalMetric: 'சுற்றுச்சூழல் அளவுகோல்'
+    environmentalMetric: 'சுற்றுச்சூழல் அளவுகோல்',
   },
 
   recommendation: {
@@ -80,7 +81,7 @@ export default {
     profile: 'சுயவிவரம்',
     activity: 'செயல்பாடு',
     basedOn: 'தற்போதைய சுற்றுப்புற நிலைகளின் அடிப்படையில்',
-    checkActivity: 'செயல்பாட்டு அபாயம் சரிபார்க்கவும்'
+    checkActivity: 'செயல்பாட்டு அபாயம் சரிபார்க்கவும்',
   },
 
   dominant: {
@@ -92,9 +93,9 @@ export default {
     higherAttention: 'மேலும் கவனம் தேவை',
     monitorConditions: 'தற்போதைய நிலைகளை கண்காணிக்கவும்',
     withinRange: 'தற்போதைய நிலை எதிர்பார்க்கப்பட்ட வரம்பில் உள்ளது',
-    indicatorInfo: 'இந்த குறியீடு தற்போதைய மாசுபடுதல் நிலை மற்றும் அதன் கட்டமைக்கப்பட்ட குறிப்பு வரம்பின் அடிப்படையில் உருவாக்கப்படுகிறது.'
+    indicatorInfo:
+      'இந்த குறியீடு தற்போதைய மாசுபடுதல் நிலை மற்றும் அதன் கட்டமைக்கப்பட்ட குறிப்பு வரம்பின் அடிப்படையில் உருவாக்கப்படுகிறது.',
   },
-
 
   auth: {
     login: 'உள்நுழை',
@@ -118,7 +119,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -127,14 +129,15 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   landing: {
     realtimeIntelligence: 'நேரடி சுற்றுச்சூழல் நுண்ணறிவு',
     heroTitlePart1: 'காற்றை அறிந்துகொள்ளுங்கள்',
     heroTitlePart2: 'உங்கள் சுற்றுப்புறத்தில்.',
-    heroDescription: 'சிக்கலான சுற்றுச்சூழல் தரவை தெளிவான, தனிப்பட்ட செயல்களில் மாற்றவும். உங்கள் காற்று தரம், உங்கள் அபாயம் மற்றும் அடுத்து என்ன செய்ய வேண்டும் என்பதை புரிந்துகொள்ளுங்கள்.',
+    heroDescription:
+      'சிக்கலான சுற்றுச்சூழல் தரவை தெளிவான, தனிப்பட்ட செயல்களில் மாற்றவும். உங்கள் காற்று தரம், உங்கள் அபாயம் மற்றும் அடுத்து என்ன செய்ய வேண்டும் என்பதை புரிந்துகொள்ளுங்கள்.',
     checkAirQuality: 'காற்று தரத்தை சரிபார்',
     exploreFeatures: 'அம்சங்களை ஆராயுங்கள்',
     liveEnvironmentalData: 'நேரடி சுற்றுச்சூழல் தரவு',
@@ -145,60 +148,67 @@ export default {
     liveMonitoring: 'நேரடி கண்காணிப்பு',
     features: 'அம்சங்கள்',
     featuresHeadline: 'உங்கள் காற்றை புரிந்துகொள்ள தேவையான அனைத்தும்',
-    featuresDescription: 'நேரடி நிலைகளில் இருந்து வரலாற்று போக்குகள் மற்றும் தனிப்பட்ட வழிகாட்டுதலுக்கு, AirGuard தகவலை எளிமையாகவும் பயனுள்ளதாகவும் வைத்திருக்கிறது.',
+    featuresDescription:
+      'நேரடி நிலைகளில் இருந்து வரலாற்று போக்குகள் மற்றும் தனிப்பட்ட வழிகாட்டுதலுக்கு, AirGuard தகவலை எளிமையாகவும் பயனுள்ளதாகவும் வைத்திருக்கிறது.',
     exploreCapability: 'சாத்தியத்தை ஆராயவும்',
     howItWorksTitle: 'இದು எப்படி வேலை செய்கிறது',
     howItWorksHeadline: 'இடத்திலிருந்து செயலுக்கு, நான்கு படிகள்',
     premiumAwareness: 'சுற்றுச்சூழல் அறிவு, தனிப்பட்ட',
     builtForPeople: 'ஒவ்வொரு நாளும் அதே காற்றை சுவாசிக்கும் மனிதர்களுக்காக உருவாக்கப்பட்டது.',
-    premiumDescription: 'AirGuard ஒரு ஹேகத்தான் திட்டமாக உருவாக்கப்பட்டது, சுற்றுச்சூழல் அபாயத்தை தனிப்பட்ட, தெளிவான மற்றும் செயல்திறன் மிக்கதாக மாற்ற.',
-    ctaCheckAirQuality: 'காற்று தரத்தை சரிபார்'
+    premiumDescription:
+      'AirGuard ஒரு ஹேகத்தான் திட்டமாக உருவாக்கப்பட்டது, சுற்றுச்சூழல் அபாயத்தை தனிப்பட்ட, தெளிவான மற்றும் செயல்திறன் மிக்கதாக மாற்ற.',
+    ctaCheckAirQuality: 'காற்று தரத்தை சரிபார்',
   },
 
   features: {
     live: {
       title: 'நேரடி காற்று தரம்',
-      description: 'எந்த இடத்திற்கும் நேரடி காற்று தரத்தை கண்காணிக்கவும்.'
+      description: 'எந்த இடத்திற்கும் நேரடி காற்று தரத்தை கண்காணிக்கவும்.',
     },
     risk: {
       title: 'அபாய நுண்ணறிவு',
-      description: 'சிக்கலான மாசு தரவை எளிதில் புரிந்துகொள்ளக்கூடிய அபாய நிலைக்காக மாற்றவும்.'
+      description: 'சிக்கலான மாசு தரவை எளிதில் புரிந்துகொள்ளக்கூடிய அபாய நிலைக்காக மாற்றவும்.',
     },
     guidance: {
       title: 'தனிப்பட்ட வழிகாட்டுதல்',
-      description: 'உங்கள் சுற்றுச்சூழல் உணர்வு அடிப்படையில் பரிந்துரைகள் பெறுங்கள்.'
+      description: 'உங்கள் சுற்றுச்சூழல் உணர்வு அடிப்படையில் பரிந்துரைகள் பெறுங்கள்.',
     },
     trends: {
       title: 'வரலாறு போக்குகள்',
-      description: 'காற்று தரம் மேம்பட்டு கொண்டிருக்கிறதா அல்லது மோசமடைகிறதா என்பதைப் புரிந்து கொள்ளுங்கள்.'
+      description:
+        'காற்று தரம் மேம்பட்டு கொண்டிருக்கிறதா அல்லது மோசமடைகிறதா என்பதைப் புரிந்து கொள்ளுங்கள்.',
     },
     alerts: {
       title: 'ஸ்மார்ட் எச்சரிக்கைகள்',
-      description: 'உங்கள் சேமிக்கப்பட்ட இடங்கள் எப்போது அபாயத்தில் இருக்கும் என்பதை அறியுங்கள்.'
+      description: 'உங்கள் சேமிக்கப்பட்ட இடங்கள் எப்போது அபாயத்தில் இருக்கும் என்பதை அறியுங்கள்.',
     },
     activity: {
       title: 'செயல்பாட்டுக் கடும் அபாய ஆலோசகர்',
-      description: 'இப்போது ஓட்டம், சைக்கிள் ஓட்டுதல் அல்லது வெளிப்புற நடவடிக்கைகள் பொருத்தமாக உள்ளனவா என்று சரிபார்க்கவும்.'
-    }
+      description:
+        'இப்போது ஓட்டம், சைக்கிள் ஓட்டுதல் அல்லது வெளிப்புற நடவடிக்கைகள் பொருத்தமாக உள்ளனவா என்று சரிபார்க்கவும்.',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'இடத்தைத் தேர்வு செய்க',
-      description: 'தொடங்க எந்த நகரத்தையும் தேடுங்கள் அல்லது உங்கள் தற்போதைய இடத்தை பயன்படுத்தவும்.'
+      description:
+        'தொடங்க எந்த நகரத்தையும் தேடுங்கள் அல்லது உங்கள் தற்போதைய இடத்தை பயன்படுத்தவும்.',
     },
     step2: {
       title: 'நேரடி தரவைப் பெறுங்கள்',
-      description: 'AirGuard அந்த இடத்திற்கான புதிய மாசு வாசிப்புகளை இழுக்கும்.'
+      description: 'AirGuard அந்த இடத்திற்கான புதிய மாசு வாசிப்புகளை இழுக்கும்.',
     },
     step3: {
       title: 'உங்கள் அபாயத்தை புரிந்து கொள்ளுங்கள்',
-      description: 'உங்கள் சுற்றுச்சூழல் சுயவிவரத்தின் அடிப்படையில் ஒரு தெளிவான அபாய நிலையைப் பாருங்கள்.'
+      description:
+        'உங்கள் சுற்றுச்சூழல் சுயவிவரத்தின் அடிப்படையில் ஒரு தெளிவான அபாய நிலையைப் பாருங்கள்.',
     },
     step4: {
       title: 'நடவடிக்கை எடுக்கவும்',
-      description: 'செயல்பாடு, வெளிப்பாடு மற்றும் எச்சரிக்கைகள் தொடர்பாக தனிப்பயனாக்கப்பட்ட வழிகாட்டுதலைப் பின்பற்றவும்.'
-    }
+      description:
+        'செயல்பாடு, வெளிப்பாடு மற்றும் எச்சரிக்கைகள் தொடர்பாக தனிப்பயனாக்கப்பட்ட வழிகாட்டுதலைப் பின்பற்றவும்.',
+    },
   },
 
   report: {
@@ -302,5 +312,5 @@ export default {
     in_progress: 'செயல்பாட்டில் உள்ளது',
     resolved: 'தர்க்கப்பட்டது',
     rejected: 'நிராகரிக்கப்பட்டது',
-  }
+  },
 }

@@ -1,5 +1,7 @@
 export function validateEmail(email) {
-  const trimmed = String(email || '').trim().toLowerCase()
+  const trimmed = String(email || '')
+    .trim()
+    .toLowerCase()
   if (!trimmed) {
     return { isValid: false, error: 'Email address is required.' }
   }

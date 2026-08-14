@@ -11,12 +11,54 @@ export const fallbackCurrentLocation = {
 }
 
 export const fallbackPollutants = [
-  { key: 'pm25', label: 'PM2.5', value: 28, unit: 'µg/m³', status: 'moderate', description: 'Fine particulate matter' },
-  { key: 'pm10', label: 'PM10', value: 54, unit: 'µg/m³', status: 'moderate', description: 'Coarse particulate matter' },
-  { key: 'no2', label: 'NO₂', value: 19, unit: 'µg/m³', status: 'good', description: 'Nitrogen dioxide' },
-  { key: 'o3', label: 'O₃', value: 31, unit: 'µg/m³', status: 'good', description: 'Ground-level ozone' },
-  { key: 'so2', label: 'SO₂', value: 8, unit: 'µg/m³', status: 'good', description: 'Sulfur dioxide' },
-  { key: 'co', label: 'CO', value: 0.4, unit: 'mg/m³', status: 'good', description: 'Carbon monoxide' },
+  {
+    key: 'pm25',
+    label: 'PM2.5',
+    value: 28,
+    unit: 'µg/m³',
+    status: 'moderate',
+    description: 'Fine particulate matter',
+  },
+  {
+    key: 'pm10',
+    label: 'PM10',
+    value: 54,
+    unit: 'µg/m³',
+    status: 'moderate',
+    description: 'Coarse particulate matter',
+  },
+  {
+    key: 'no2',
+    label: 'NO₂',
+    value: 19,
+    unit: 'µg/m³',
+    status: 'good',
+    description: 'Nitrogen dioxide',
+  },
+  {
+    key: 'o3',
+    label: 'O₃',
+    value: 31,
+    unit: 'µg/m³',
+    status: 'good',
+    description: 'Ground-level ozone',
+  },
+  {
+    key: 'so2',
+    label: 'SO₂',
+    value: 8,
+    unit: 'µg/m³',
+    status: 'good',
+    description: 'Sulfur dioxide',
+  },
+  {
+    key: 'co',
+    label: 'CO',
+    value: 0.4,
+    unit: 'mg/m³',
+    status: 'good',
+    description: 'Carbon monoxide',
+  },
 ]
 
 export const fallbackSavedLocations = [

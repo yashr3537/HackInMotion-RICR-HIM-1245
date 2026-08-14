@@ -55,14 +55,8 @@ export default function AlertCard({ alert }) {
   return (
     <div
       className={`card-hover card-glow group relative overflow-hidden rounded-xl border p-4 transition-all duration-500 sm:p-5 ${
-        alert.read
-          ? 'border-ink-100 bg-surface shadow-soft'
-          : 'border-ink-200 bg-white shadow-soft'
-      } ${
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'translate-y-3 opacity-0'
-      }`}
+        alert.read ? 'border-ink-100 bg-surface shadow-soft' : 'border-ink-200 bg-white shadow-soft'
+      } ${visible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'}`}
       style={{
         borderLeftWidth: '3px',
         borderLeftColor: meta.color,
@@ -86,11 +80,7 @@ export default function AlertCard({ alert }) {
             borderColor: meta.border,
           }}
         >
-          <Icon
-            size={18}
-            style={{ color: meta.color }}
-            strokeWidth={2.2}
-          />
+          <Icon size={18} style={{ color: meta.color }} strokeWidth={2.2} />
 
           {/* Unread pulse */}
           {!alert.read && (
@@ -115,9 +105,7 @@ export default function AlertCard({ alert }) {
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="truncate text-sm font-semibold text-ink-900">
-                  {alert.title}
-                </p>
+                <p className="truncate text-sm font-semibold text-ink-900">{alert.title}</p>
 
                 <span
                   className="rounded-full border px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em]"
@@ -145,9 +133,7 @@ export default function AlertCard({ alert }) {
           </div>
 
           {/* Message */}
-          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-700">
-            {alert.message}
-          </p>
+          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-700">{alert.message}</p>
 
           {/* Metadata */}
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-500">
@@ -159,9 +145,7 @@ export default function AlertCard({ alert }) {
             {alert.aqi !== undefined && alert.aqi !== null && (
               <span className="inline-flex items-center gap-1.5">
                 <Activity size={12} className="text-ink-400" />
-                <span className="font-mono font-semibold text-ink-700">
-                  AQI {alert.aqi}
-                </span>
+                <span className="font-mono font-semibold text-ink-700">AQI {alert.aqi}</span>
               </span>
             )}
 

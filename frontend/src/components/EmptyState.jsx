@@ -1,4 +1,12 @@
-import { Inbox, MapPinOff, BellOff, LineChart, WifiOff, ServerCrash, LocateFixed } from 'lucide-react'
+import {
+  Inbox,
+  MapPinOff,
+  BellOff,
+  LineChart,
+  WifiOff,
+  ServerCrash,
+  LocateFixed,
+} from 'lucide-react'
 
 const ICONS = {
   default: Inbox,

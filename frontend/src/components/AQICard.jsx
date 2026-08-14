@@ -38,9 +38,12 @@ export default function AQICard({ location, loading, error, onRetry }) {
     return (
       <section className="card-hover relative overflow-hidden rounded-xl2 border border-amber-200/60 bg-surface p-8 shadow-card flex flex-col items-center justify-center text-center min-h-[280px]">
         <AlertCircle size={38} className="text-amber-600 mb-3" />
-        <h3 className="font-display text-lg font-semibold text-ink-900">Live air quality data is currently unavailable</h3>
+        <h3 className="font-display text-lg font-semibold text-ink-900">
+          Live air quality data is currently unavailable
+        </h3>
         <p className="mt-1 max-w-md text-xs leading-relaxed text-ink-600">
-          {error || 'Could not retrieve live AQI readings for this location. Please check your network connection or try again.'}
+          {error ||
+            'Could not retrieve live AQI readings for this location. Please check your network connection or try again.'}
         </p>
         {onRetry && (
           <button
@@ -57,13 +60,10 @@ export default function AQICard({ location, loading, error, onRetry }) {
 
   const band = getAqiBand(location.aqi)
 
-
   return (
     <section
       className={`card-hover card-glow relative overflow-hidden rounded-xl2 border bg-surface shadow-card transition-all duration-700 ${
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'translate-y-4 opacity-0'
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
       }`}
       style={{
         borderColor: `${band.color}22`,
@@ -122,32 +122,19 @@ export default function AQICard({ location, loading, error, onRetry }) {
               style={{ animationDelay: '100ms' }}
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-forest-50">
-                <MapPin
-                  size={15}
-                  className="text-forest-600"
-                />
+                <MapPin size={15} className="text-forest-600" />
               </div>
 
               <div>
-                <p className="font-medium text-ink-900">
-                  {location.name}
-                </p>
+                <p className="font-medium text-ink-900">{location.name}</p>
 
-                <p className="text-xs text-ink-500">
-                  {location.region}
-                </p>
+                <p className="text-xs text-ink-500">{location.region}</p>
               </div>
             </div>
 
             {/* Risk */}
-            <div
-              className="fade-up mt-5"
-              style={{ animationDelay: '160ms' }}
-            >
-              <RiskBadge
-                aqi={location.aqi}
-                size="lg"
-              />
+            <div className="fade-up mt-5" style={{ animationDelay: '160ms' }}>
+              <RiskBadge aqi={location.aqi} size="lg" />
             </div>
 
             {/* Main guidance */}
@@ -162,10 +149,7 @@ export default function AQICard({ location, loading, error, onRetry }) {
                     backgroundColor: `${band.color}12`,
                   }}
                 >
-                  <ShieldCheck
-                    size={15}
-                    style={{ color: band.color }}
-                  />
+                  <ShieldCheck size={15} style={{ color: band.color }} />
                 </div>
 
                 <div>
@@ -173,9 +157,7 @@ export default function AQICard({ location, loading, error, onRetry }) {
                     What this means
                   </p>
 
-                  <p className="mt-1.5 text-sm leading-6 text-ink-700">
-                    {band.advice}
-                  </p>
+                  <p className="mt-1.5 text-sm leading-6 text-ink-700">{band.advice}</p>
                 </div>
               </div>
             </div>
@@ -200,10 +182,7 @@ export default function AQICard({ location, loading, error, onRetry }) {
                   Status
                 </p>
 
-                <p
-                  className="mt-1 text-sm font-semibold"
-                  style={{ color: band.color }}
-                >
+                <p className="mt-1 text-sm font-semibold" style={{ color: band.color }}>
                   {band.label}
                 </p>
               </div>
@@ -227,9 +206,7 @@ export default function AQICard({ location, loading, error, onRetry }) {
             >
               <div className="flex items-center gap-1.5 text-xs text-ink-500">
                 <Clock size={13} />
-                <span>
-                  Last updated: {location.lastUpdated}
-                </span>
+                <span>Last updated: {location.lastUpdated}</span>
               </div>
 
               <button
@@ -250,11 +227,8 @@ export default function AQICard({ location, loading, error, onRetry }) {
               visible ? 'opacity-100' : 'opacity-0'
             }`}
             style={{
-              transition:
-                'opacity 800ms ease, transform 900ms cubic-bezier(0.22,1,0.36,1)',
-              transform: visible
-                ? 'translateY(0) scale(1)'
-                : 'translateY(12px) scale(0.96)',
+              transition: 'opacity 800ms ease, transform 900ms cubic-bezier(0.22,1,0.36,1)',
+              transform: visible ? 'translateY(0) scale(1)' : 'translateY(12px) scale(0.96)',
             }}
           >
             <div className="relative">
@@ -268,10 +242,7 @@ export default function AQICard({ location, loading, error, onRetry }) {
               />
 
               <div className="relative rounded-[28px] border border-white/50 bg-white/30 p-3 backdrop-blur-sm">
-                <AQIGauge
-                  aqi={location.aqi}
-                  size={210}
-                />
+                <AQIGauge aqi={location.aqi} size={210} />
               </div>
 
               {/* Gauge label */}
@@ -280,10 +251,7 @@ export default function AQICard({ location, loading, error, onRetry }) {
                   Environmental Risk
                 </p>
 
-                <p
-                  className="mt-1 text-sm font-semibold"
-                  style={{ color: band.color }}
-                >
+                <p className="mt-1 text-sm font-semibold" style={{ color: band.color }}>
                   {band.label}
                 </p>
               </div>
@@ -307,10 +275,7 @@ export default function AQICard({ location, loading, error, onRetry }) {
             Environmental monitoring active
           </span>
 
-          <span
-            className="flex items-center gap-2 font-semibold"
-            style={{ color: band.color }}
-          >
+          <span className="flex items-center gap-2 font-semibold" style={{ color: band.color }}>
             <span
               className="h-1.5 w-1.5 rounded-full"
               style={{
@@ -318,7 +283,6 @@ export default function AQICard({ location, loading, error, onRetry }) {
                 boxShadow: `0 0 8px ${band.color}66`,
               }}
             />
-
             AQI {location.aqi}
           </span>
         </div>

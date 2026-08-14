@@ -74,18 +74,30 @@ export async function createPollutionReport(reportData, user) {
     region: reportData.region || null,
     country: reportData.country || null,
     address: reportData.address || null,
-    latitude: reportData.latitude !== undefined && reportData.latitude !== null && reportData.latitude !== '' ? Number(reportData.latitude) : null,
-    longitude: reportData.longitude !== undefined && reportData.longitude !== null && reportData.longitude !== '' ? Number(reportData.longitude) : null,
+    latitude:
+      reportData.latitude !== undefined &&
+      reportData.latitude !== null &&
+      reportData.latitude !== ''
+        ? Number(reportData.latitude)
+        : null,
+    longitude:
+      reportData.longitude !== undefined &&
+      reportData.longitude !== null &&
+      reportData.longitude !== ''
+        ? Number(reportData.longitude)
+        : null,
     issue_category: reportData.issueCategory,
     severity: reportData.severity,
     description: String(reportData.description || '').trim(),
     health_problems: Array.isArray(reportData.healthProblems) ? reportData.healthProblems : [],
     image_path: imagePath,
     video_path: videoPath,
-    report_date: reportData.reportDate ? new Date(reportData.reportDate).toISOString() : new Date().toISOString(),
-    contact_name: reportData.isAnonymous ? null : (reportData.contactName || null),
-    contact_email: reportData.isAnonymous ? null : (reportData.contactEmail || null),
-    contact_phone: reportData.isAnonymous ? null : (reportData.contactPhone || null),
+    report_date: reportData.reportDate
+      ? new Date(reportData.reportDate).toISOString()
+      : new Date().toISOString(),
+    contact_name: reportData.isAnonymous ? null : reportData.contactName || null,
+    contact_email: reportData.isAnonymous ? null : reportData.contactEmail || null,
+    contact_phone: reportData.isAnonymous ? null : reportData.contactPhone || null,
     is_anonymous: Boolean(reportData.isAnonymous),
     status: 'pending',
     created_at: new Date().toISOString(),
@@ -133,7 +145,7 @@ export async function getPollutionReportById(reportId, userId) {
   if (!reportId) return null
 
   let query = supabase.from('community_reports').select('*')
-  
+
   if (reportId.includes('-')) {
     query = query.eq('report_id', reportId)
   } else {

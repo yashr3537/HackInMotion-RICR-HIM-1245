@@ -112,7 +112,8 @@ export default function AppLayout() {
               new Notification(
                 `${newAlert.severity === 'critical' ? '🚨 Critical' : '⚠️ Warning'} Air Alert: ${newAlert.location_name}`,
                 {
-                  body: newAlert.message || `AQI at ${newAlert.location_name} reached ${newAlert.aqi}`,
+                  body:
+                    newAlert.message || `AQI at ${newAlert.location_name} reached ${newAlert.aqi}`,
                   icon: '/favicon.ico',
                 }
               )
@@ -159,9 +160,7 @@ export default function AppLayout() {
                         AQI {activeToast.aqi}
                       </span>
                     </div>
-                    <p className="mt-1 text-xs text-white/90 leading-snug">
-                      {activeToast.message}
-                    </p>
+                    <p className="mt-1 text-xs text-white/90 leading-snug">{activeToast.message}</p>
                   </div>
                 </div>
 
@@ -212,4 +211,3 @@ export default function AppLayout() {
     </div>
   )
 }
-

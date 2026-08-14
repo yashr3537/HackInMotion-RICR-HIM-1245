@@ -1,20 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n/index.jsx'
-import {
-  CircleDot,
-  AlertTriangle,
-  Activity,
-  ShieldCheck,
-} from 'lucide-react'
+import { CircleDot, AlertTriangle, Activity, ShieldCheck } from 'lucide-react'
 
 export default function DominantPollutantCard({ data }) {
   const [visible, setVisible] = useState(false)
   const [progress, setProgress] = useState(0)
 
-  const targetPercent = Math.min(
-    Math.max(Number(data?.percentOfLimit) || 0, 0),
-    100,
-  )
+  const targetPercent = Math.min(Math.max(Number(data?.percentOfLimit) || 0, 0), 100)
 
   useEffect(() => {
     setVisible(false)
@@ -70,18 +62,17 @@ export default function DominantPollutantCard({ data }) {
       <div className="card-hover relative overflow-hidden rounded-xl2 border border-ink-100 bg-surface p-6 shadow-soft flex flex-col items-center justify-center text-center min-h-[220px]">
         <Activity size={24} className="text-forest-600 mb-2" />
         <p className="text-xs font-semibold text-ink-900">Dominant Pollutant</p>
-        <p className="text-[11px] text-ink-500 mt-1">Live pollutant measurements needed to compute dominant risk factor.</p>
+        <p className="text-[11px] text-ink-500 mt-1">
+          Live pollutant measurements needed to compute dominant risk factor.
+        </p>
       </div>
     )
   }
 
-
   return (
     <div
       className={`card-hover card-glow group relative overflow-hidden rounded-xl2 border border-ink-100 bg-surface p-6 shadow-soft transition-all duration-700 ${
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'translate-y-4 opacity-0'
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
       }`}
     >
       {/* Ambient glow */}
@@ -101,9 +92,7 @@ export default function DominantPollutantCard({ data }) {
               {t('dominant.main')}
             </p>
 
-            <p className="mt-1 text-xs text-ink-400">
-              {t('dominant.currentMetric')}
-            </p>
+            <p className="mt-1 text-xs text-ink-400">{t('dominant.currentMetric')}</p>
           </div>
 
           <span
@@ -114,21 +103,14 @@ export default function DominantPollutantCard({ data }) {
               borderColor: status.border,
             }}
           >
-            {targetPercent >= 85 ? (
-              <AlertTriangle size={10} />
-            ) : (
-              <ShieldCheck size={10} />
-            )}
+            {targetPercent >= 85 ? <AlertTriangle size={10} /> : <ShieldCheck size={10} />}
 
             {status.label}
           </span>
         </div>
 
         {/* Pollutant title */}
-        <div
-          className="fade-up mt-6 flex items-center gap-3"
-          style={{ animationDelay: '100ms' }}
-        >
+        <div className="fade-up mt-6 flex items-center gap-3" style={{ animationDelay: '100ms' }}>
           <div
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 group-hover:scale-105 group-hover:-rotate-2"
             style={{
@@ -136,10 +118,7 @@ export default function DominantPollutantCard({ data }) {
               borderColor: status.border,
             }}
           >
-            <CircleDot
-              size={21}
-              style={{ color: status.color }}
-            />
+            <CircleDot size={21} style={{ color: status.color }} />
           </div>
 
           <div className="min-w-0">
@@ -163,10 +142,7 @@ export default function DominantPollutantCard({ data }) {
         </p>
 
         {/* Percentage */}
-        <div
-          className="fade-up mt-6"
-          style={{ animationDelay: '220ms' }}
-        >
+        <div className="fade-up mt-6" style={{ animationDelay: '220ms' }}>
           <div className="mb-2.5 flex items-end justify-between gap-3">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
@@ -183,9 +159,7 @@ export default function DominantPollutantCard({ data }) {
 
             <div className="text-right text-[10px] text-ink-400">
               <div>{t('dominant.reference')}</div>
-              <div className="mt-1 font-medium text-ink-600">
-                100%
-              </div>
+              <div className="mt-1 font-medium text-ink-600">100%</div>
             </div>
           </div>
 
@@ -193,15 +167,9 @@ export default function DominantPollutantCard({ data }) {
           <div className="relative h-3 overflow-hidden rounded-full bg-ink-100">
             {/* threshold markers */}
             <div className="pointer-events-none absolute inset-0">
-              <span
-                className="absolute top-0 h-full w-px bg-white/80"
-                style={{ left: '60%' }}
-              />
+              <span className="absolute top-0 h-full w-px bg-white/80" style={{ left: '60%' }} />
 
-              <span
-                className="absolute top-0 h-full w-px bg-white/80"
-                style={{ left: '85%' }}
-              />
+              <span className="absolute top-0 h-full w-px bg-white/80" style={{ left: '85%' }} />
             </div>
 
             <div
@@ -218,10 +186,7 @@ export default function DominantPollutantCard({ data }) {
           <div className="mt-2 flex justify-between text-[10px] text-ink-400">
             <span>0%</span>
 
-            <span
-              className="font-medium"
-              style={{ color: status.color }}
-            >
+            <span className="font-medium" style={{ color: status.color }}>
               {targetPercent}% of limit
             </span>
 
@@ -239,15 +204,9 @@ export default function DominantPollutantCard({ data }) {
             style={{ backgroundColor: status.bg }}
           >
             {targetPercent >= 85 ? (
-              <AlertTriangle
-                size={14}
-                style={{ color: status.color }}
-              />
+              <AlertTriangle size={14} style={{ color: status.color }} />
             ) : (
-              <ShieldCheck
-                size={14}
-                style={{ color: status.color }}
-              />
+              <ShieldCheck size={14} style={{ color: status.color }} />
             )}
           </div>
 
@@ -259,10 +218,8 @@ export default function DominantPollutantCard({ data }) {
                   ? t('dominant.monitorConditions')
                   : t('dominant.withinRange')}
             </p>
- 
-            <p className="mt-1 text-[11px] leading-5 text-ink-500">
-              {t('dominant.indicatorInfo')}
-            </p>
+
+            <p className="mt-1 text-[11px] leading-5 text-ink-500">{t('dominant.indicatorInfo')}</p>
           </div>
         </div>
       </div>

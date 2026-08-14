@@ -159,15 +159,15 @@
   pointer-events: none;
 
   mask:
-  linear-gradient(#000 0 0) content-box,
-  linear-gradient(#000 0 0);
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
 
--webkit-mask:
-  linear-gradient(#000 0 0) content-box,
-  linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
 
--webkit-mask-composite: xor;
-mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
 .card-glow:hover::before {
@@ -196,12 +196,7 @@ mask-composite: exclude;
   left: -130%;
   width: 70%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.18),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
   transform: skewX(-20deg);
   transition: left 650ms var(--ag-ease);
   pointer-events: none;
@@ -299,12 +294,7 @@ mask-composite: exclude;
   position: absolute;
   inset: 0;
   transform: translateX(-120%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.08),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
   animation: agShimmer 1.8s linear infinite;
   pointer-events: none;
 }
@@ -320,12 +310,7 @@ mask-composite: exclude;
   position: absolute;
   inset: 0;
   transform: translateX(-120%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.07),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
   animation: agShimmer 1.7s linear infinite;
 }
 
@@ -561,22 +546,10 @@ mask-composite: exclude;
 
 .environment-grid {
   background-image:
-    linear-gradient(
-      rgba(255, 255, 255, 0.035) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.035) 1px,
-      transparent 1px
-    );
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: 32px 32px;
-  mask-image: linear-gradient(
-    to bottom,
-    black 0%,
-    rgba(0, 0, 0, 0.8) 55%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.8) 55%, transparent 100%);
   -webkit-mask-image: linear-gradient(
     to bottom,
     black 0%,
@@ -598,12 +571,7 @@ mask-composite: exclude;
 }
 
 .text-gradient {
-  background: linear-gradient(
-    110deg,
-    #ffffff 10%,
-    #dffaf2 45%,
-    #35d6b0 90%
-  );
+  background: linear-gradient(110deg, #ffffff 10%, #dffaf2 45%, #35d6b0 90%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1138,18 +1106,15 @@ html.dark body {
   background: #07111a;
   color: #e6f0eb;
   html.dark,
-html.dark body,
-html.dark #root {
-  min-height: 100%;
-  background: #07111A !important;
-  html.dark body {
-  color: #eaf5f1 !important;
+  html.dark body,
+  html.dark #root {
+    min-height: 100%;
+    background: #07111a !important;
+    html.dark body {
+      color: #eaf5f1 !important;
+    }
+  }
 }
-}
-
-}
-
-
 
 /* Main custom backgrounds */
 html.dark .bg-canvas {
@@ -1305,18 +1270,15 @@ html.dark input[type='range'] {
 
 /* Shadow adjustments */
 html.dark .shadow-soft {
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.28) !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28) !important;
 }
 
 html.dark .shadow-card {
-  box-shadow:
-    0 20px 55px rgba(0, 0, 0, 0.34) !important;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.34) !important;
 }
 
 html.dark .shadow-lift {
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.32) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32) !important;
 }
 
 /* Premium hover surfaces */
@@ -1339,8 +1301,7 @@ html.dark .search-premium input {
 
 /* Glass cards */
 html.dark .card-glow {
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
 }
 
 /* Footer */
@@ -1432,7 +1393,7 @@ html.dark header .bg-surface {
 }
 
 html.dark header .border-ink-200 {
-  border-color: rgba(255, 255, 255, 0.10) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 html.dark header .border-ink-100 {

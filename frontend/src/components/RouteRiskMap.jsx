@@ -49,33 +49,21 @@ function FitRoute({ positions }) {
   return null
 }
 
-export default function RouteRiskMap({
-  route = [],
-  start,
-  end,
-  riskSegments = [],
-}) {
+export default function RouteRiskMap({ route = [], start, end, riskSegments = [] }) {
   const positions = useMemo(() => {
     if (route?.length) return route
     return [DEFAULT_CENTER]
   }, [route])
 
   const segmentPoints = useMemo(() => {
-    return riskSegments.flatMap((segment) =>
-      segment.point ? [segment.point] : [],
-    )
+    return riskSegments.flatMap((segment) => (segment.point ? [segment.point] : []))
   }, [riskSegments])
 
   return (
     <div className="relative h-[360px] overflow-hidden rounded-2xl border border-ink-200 bg-ink-100 shadow-soft sm:h-[460px]">
-      <MapContainer
-        center={DEFAULT_CENTER}
-        zoom={12}
-        scrollWheelZoom
-        className="h-full w-full"
-      >
+      <MapContainer center={DEFAULT_CENTER} zoom={12} scrollWheelZoom className="h-full w-full">
         <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
+          attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
@@ -106,10 +94,7 @@ export default function RouteRiskMap({
         )}
 
         {start && (
-          <Marker
-            position={start.position}
-            icon={startIcon}
-          >
+          <Marker position={start.position} icon={startIcon}>
             <Popup>
               <strong>Start</strong>
               <br />
@@ -119,10 +104,7 @@ export default function RouteRiskMap({
         )}
 
         {end && (
-          <Marker
-            position={end.position}
-            icon={endIcon}
-          >
+          <Marker position={end.position} icon={endIcon}>
             <Popup>
               <strong>Destination</strong>
               <br />
@@ -137,21 +119,15 @@ export default function RouteRiskMap({
             center={point}
             radius={10}
             pathOptions={{
-              color:
-                riskSegments[index]?.color || '#D6A70C',
-              fillColor:
-                riskSegments[index]?.color || '#D6A70C',
+              color: riskSegments[index]?.color || '#D6A70C',
+              fillColor: riskSegments[index]?.color || '#D6A70C',
               fillOpacity: 0.28,
               weight: 2,
             }}
           >
             <Popup>
-              <strong>
-                {riskSegments[index]?.label || 'Route risk area'}
-              </strong>
-              {riskSegments[index]?.aqi
-                ? ` — AQI ${riskSegments[index].aqi}`
-                : ''}
+              <strong>{riskSegments[index]?.label || 'Route risk area'}</strong>
+              {riskSegments[index]?.aqi ? ` — AQI ${riskSegments[index].aqi}` : ''}
             </Popup>
           </CircleMarker>
         ))}

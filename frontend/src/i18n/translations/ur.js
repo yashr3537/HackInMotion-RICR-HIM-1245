@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'ہوا کا معیار چیک کریں',
     language: 'زبان',
     live: 'براہ راست',
-    monitoring: 'مانیٹرنگ'
+    monitoring: 'مانیٹرنگ',
   },
 
   nav: {
@@ -46,7 +46,7 @@ export default {
     language: 'زبان',
     voiceAlerts: 'وائس الرٹس',
     darkMode: 'ڈارک موڈ',
-    applicationPreferences: 'ایپ ترجیحات'
+    applicationPreferences: 'ایپ ترجیحات',
   },
 
   alerts: {
@@ -54,7 +54,7 @@ export default {
     critical: 'سنگین',
     warning: 'انتباہ',
     information: 'معلومات',
-    aqiMessage: '{location} کے لئے فضائی معیار کی انتباہ۔ موجودہ AQI {aqi}.'
+    aqiMessage: '{location} کے لئے فضائی معیار کی انتباہ۔ موجودہ AQI {aqi}.',
   },
 
   aqi: {
@@ -67,7 +67,7 @@ export default {
 
   pollutant: {
     relativeLevel: 'نسبتی سطح',
-    environmentalMetric: 'ماحولیاتی میٹرک'
+    environmentalMetric: 'ماحولیاتی میٹرک',
   },
 
   recommendation: {
@@ -76,7 +76,7 @@ export default {
     profile: 'پروفائل',
     activity: 'سرگرمی',
     basedOn: 'موجودہ ماحولیاتی صورتحال کی بنیاد پر',
-    checkActivity: 'سرگرمی کا خطرہ چیک کریں'
+    checkActivity: 'سرگرمی کا خطرہ چیک کریں',
   },
 
   dominant: {
@@ -88,20 +88,16 @@ export default {
     higherAttention: 'زیادہ توجہ کی سفارش',
     monitorConditions: 'موجودہ حالات کی نگرانی کریں',
     withinRange: 'موجودہ سطح متوقع حد کے اندر ہے',
-    indicatorInfo: 'یہ اشارہ موجودہ آلودگی کی سطح اور اس کی ترتیب شدہ حوالہ حد کی بنیاد پر ہے.'
+    indicatorInfo: 'یہ اشارہ موجودہ آلودگی کی سطح اور اس کی ترتیب شدہ حوالہ حد کی بنیاد پر ہے.',
   },
 
-
-  auth: {
-    login: 'لاگ ان',
-    signup: 'سائن اپ'
-  },
 
   landing: {
     realtimeIntelligence: 'حقیقی وقت ماحولیاتی ذہانت',
     heroTitlePart1: 'ہوا جانیں',
     heroTitlePart2: 'آپ کے آس پاس۔',
-    heroDescription: 'پیچیدہ ماحولیاتی ڈیٹا کو واضح، ذاتی اقدامات میں تبدیل کریں۔ اپنی ہوا کا معیار، اپنا خطرہ، اور اگلا قدم سمجھیں۔',
+    heroDescription:
+      'پیچیدہ ماحولیاتی ڈیٹا کو واضح، ذاتی اقدامات میں تبدیل کریں۔ اپنی ہوا کا معیار، اپنا خطرہ، اور اگلا قدم سمجھیں۔',
     checkAirQuality: 'ہوا کا معیار چیک کریں',
     exploreFeatures: 'خصوصیات تلاش کریں',
     liveEnvironmentalData: 'براہِ راست ماحولیاتی ڈیٹا',
@@ -112,64 +108,68 @@ export default {
     liveMonitoring: 'براہِ راست نگرانی',
     features: 'خصوصیات',
     featuresHeadline: 'آپ کی ہوا کو سمجھنے کے لئے ہر چیز',
-    featuresDescription: 'براہِ راست حالات سے تاریخی رجحانات اور ذاتی رہنمائی تک، AirGuard معلومات کو سادہ اور مفید رکھتا ہے۔',
+    featuresDescription:
+      'براہِ راست حالات سے تاریخی رجحانات اور ذاتی رہنمائی تک، AirGuard معلومات کو سادہ اور مفید رکھتا ہے۔',
     exploreCapability: 'صلاحیت دریافت کریں',
     howItWorksTitle: 'یہ کیسے کام کرتا ہے',
     howItWorksHeadline: 'مقام سے عمل تک، چار مراحل میں',
     premiumAwareness: 'ماحولیاتی بیداری، ذاتی',
     builtForPeople: 'ان لوگوں کے لیے بنایا گیا ہے جو ہر روز ایک ہی ہوا میں سانس لیتے ہیں۔',
-    premiumDescription: 'AirGuard ایک ہیکاتھون پروجیکٹ کے طور پر بنایا گیا تھا تاکہ ماحولیاتی خطرے کو ذاتی، واضح، اور قابل عمل بنایا جا سکے۔',
-    ctaCheckAirQuality: 'ہوا کا معیار چیک کریں'
+    premiumDescription:
+      'AirGuard ایک ہیکاتھون پروجیکٹ کے طور پر بنایا گیا تھا تاکہ ماحولیاتی خطرے کو ذاتی، واضح، اور قابل عمل بنایا جا سکے۔',
+    ctaCheckAirQuality: 'ہوا کا معیار چیک کریں',
   },
 
   features: {
     live: {
       title: 'براہِ راست ہوا کا معیار',
-      description: 'کسی بھی مقام کے لیے حقیقی وقت میں ہوا کا معیار مانیٹر کریں۔'
+      description: 'کسی بھی مقام کے لیے حقیقی وقت میں ہوا کا معیار مانیٹر کریں۔',
     },
     risk: {
       title: 'خطرہ ذہانت',
-      description: 'پیچیدہ آلودگی کے ڈیٹا کو آسانی سے سمجھ آنے والے خطرے کی سطح میں تبدیل کریں۔'
+      description: 'پیچیدہ آلودگی کے ڈیٹا کو آسانی سے سمجھ آنے والے خطرے کی سطح میں تبدیل کریں۔',
     },
     guidance: {
       title: 'ذاتی رہنمائی',
-      description: 'اپنی ماحولیاتی حساسیت کی بنیاد پر سفارشات حاصل کریں۔'
+      description: 'اپنی ماحولیاتی حساسیت کی بنیاد پر سفارشات حاصل کریں۔',
     },
     trends: {
       title: 'تاریخی رجحانات',
-      description: 'سمجھیں کہ آیا ہوا کا معیار بہتر ہو رہا ہے یا خراب۔'
+      description: 'سمجھیں کہ آیا ہوا کا معیار بہتر ہو رہا ہے یا خراب۔',
     },
     alerts: {
       title: 'اسمارٹ انتباہات',
-      description: 'جانیں کہ آپ کے محفوظ مقامات کب خطرے میں آ رہے ہیں۔'
+      description: 'جانیں کہ آپ کے محفوظ مقامات کب خطرے میں آ رہے ہیں۔',
     },
     activity: {
       title: 'سرگرمی خطرے کا مشیر',
-      description: 'جانچیں کہ آیا دوڑنا، سائیکل چلانا یا بیرونی سرگرمیاں فی الحال موزوں ہیں یا نہیں۔'
-    }
+      description:
+        'جانچیں کہ آیا دوڑنا، سائیکل چلانا یا بیرونی سرگرمیاں فی الحال موزوں ہیں یا نہیں۔',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'مقام منتخب کریں',
-      description: 'شروع کرنے کے لیے کسی بھی شہر کو تلاش کریں یا اپنا موجودہ مقام استعمال کریں۔'
+      description: 'شروع کرنے کے لیے کسی بھی شہر کو تلاش کریں یا اپنا موجودہ مقام استعمال کریں۔',
     },
     step2: {
       title: 'براہِ راست ڈیٹا حاصل کریں',
-      description: 'AirGuard اس مقام کے لیے تازہ ترین آلودگی ریڈنگز کھینچے گا۔'
+      description: 'AirGuard اس مقام کے لیے تازہ ترین آلودگی ریڈنگز کھینچے گا۔',
     },
     step3: {
       title: 'اپنا خطرہ سمجھیں',
-      description: 'اپنے ماحولیاتی پروفائل کی بنیاد پر ایک واضح خطرے کی سطح دیکھیں۔'
+      description: 'اپنے ماحولیاتی پروفائل کی بنیاد پر ایک واضح خطرے کی سطح دیکھیں۔',
     },
     step4: {
       title: 'عمل کریں',
-      description: 'سرگرمی، نمائش، اور احتیاط کے بارے میں حسبِ ضرورت رہنمائی پر عمل کریں۔'
-    }
+      description: 'سرگرمی، نمائش، اور احتیاط کے بارے میں حسبِ ضرورت رہنمائی پر عمل کریں۔',
+    },
   },
 
   sidebar: {
-    footerNotice: 'ہوا کے معیار کا ڈیٹا خود بخود تازہ ہوتا ہے۔ ڈیمو بلڈ — بیک اینڈ ابھی تک منسلک نہیں ہے۔'
+    footerNotice:
+      'ہوا کے معیار کا ڈیٹا خود بخود تازہ ہوتا ہے۔ ڈیمو بلڈ — بیک اینڈ ابھی تک منسلک نہیں ہے۔',
   },
 
   auth: {
@@ -194,7 +194,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -203,7 +204,7 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   report: {
@@ -304,5 +305,5 @@ export default {
     in_progress: 'جاری ہے',
     resolved: 'حل شدہ',
     rejected: 'مسترد',
-  }
+  },
 }

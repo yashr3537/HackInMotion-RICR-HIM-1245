@@ -29,24 +29,21 @@ const INITIAL_ROWS = [
     key: 'notifications',
     icon: Bell,
     title: 'Push Notifications',
-    description:
-      'Receive alerts when air quality changes at saved locations.',
+    description: 'Receive alerts when air quality changes at saved locations.',
     enabled: true,
   },
   {
     key: 'darkMode',
     icon: Moon,
     title: 'Dark Mode',
-    description:
-      'Use a darker color scheme across the AeroGuard application.',
+    description: 'Use a darker color scheme across the AeroGuard application.',
     enabled: false,
   },
   {
     key: 'voiceAlerts',
     icon: Volume2,
     title: 'Voice Alerts',
-    description:
-      'Speak important air-quality alerts aloud in your selected language.',
+    description: 'Speak important air-quality alerts aloud in your selected language.',
     enabled: true,
   },
 ]
@@ -69,28 +66,19 @@ const INFO_ROWS = [
 function applyDarkMode(enabled) {
   document.documentElement.classList.toggle('dark', enabled)
 
-  document.documentElement.style.colorScheme = enabled
-    ? 'dark'
-    : 'light'
+  document.documentElement.style.colorScheme = enabled ? 'dark' : 'light'
 
-  window.localStorage.setItem(
-    'airguard-dark-mode',
-    String(enabled),
-  )
+  window.localStorage.setItem('airguard-dark-mode', String(enabled))
 }
 
 function getStoredDarkMode() {
-  const stored = window.localStorage.getItem(
-    'airguard-dark-mode',
-  )
+  const stored = window.localStorage.getItem('airguard-dark-mode')
 
   return stored === 'true'
 }
 
 function getStoredSettings() {
-  const stored = window.localStorage.getItem(
-    'airguard-settings',
-  )
+  const stored = window.localStorage.getItem('airguard-settings')
 
   if (!stored) return {}
 
@@ -143,9 +131,7 @@ export default function Settings() {
     }))
   })
 
-  const [voiceLanguage, setVoiceLanguageState] = useState(
-    getStoredVoiceLanguage(),
-  )
+  const [voiceLanguage, setVoiceLanguageState] = useState(getStoredVoiceLanguage())
 
   const [saved, setSaved] = useState(false)
   const [voiceMessage, setVoiceMessage] = useState('')
@@ -168,7 +154,7 @@ export default function Settings() {
             : typeof settings[row.key] === 'boolean'
               ? settings[row.key]
               : row.enabled,
-      })),
+      }))
     )
 
     applyDarkMode(darkMode)
@@ -211,16 +197,13 @@ export default function Settings() {
       return acc
     }, {})
 
-    window.localStorage.setItem(
-      'airguard-settings',
-      JSON.stringify(values),
-    )
+    window.localStorage.setItem('airguard-settings', JSON.stringify(values))
   }
 
   function toggleSetting(key) {
     if (key === 'notifications' && typeof window !== 'undefined' && 'Notification' in window) {
-      if (Notification.permission === 'default') {
-        Notification.requestPermission()
+      if (window.Notification.permission === 'default') {
+        window.Notification.requestPermission()
       }
     }
 
@@ -254,50 +237,53 @@ export default function Settings() {
     setVoiceLanguage(language)
     setSaved(false)
 
-      // recalculate available voice info
-      if (voiceSupported) {
-        const voices = window.speechSynthesis.getVoices() || []
-        const best = voices.find((v) => {
+    // recalculate available voice info
+    if (voiceSupported) {
+      const voices = window.speechSynthesis.getVoices() || []
+      const best =
+        voices.find((v) => {
           const lang = (v.lang || '').toLowerCase()
           const base = language.split('-')[0].toLowerCase()
           return lang === language.toLowerCase() || lang === base || lang.startsWith(base)
         }) || null
 
-        setAvailableVoiceInfo(best)
-      }
+      setAvailableVoiceInfo(best)
     }
+  }
 
   async function handleTestVoice() {
     if (!voiceSupported) {
-        setVoiceMessage('Voice playback is not supported by this browser.')
-        return
-      }
-
-      setVoiceMessage('Testing voice...')
-
-      try {
-        const result = await testVoiceAlert(voiceLanguage)
-        if (!result || result.success === false) {
-          setVoiceMessage('Voice playback was blocked or unavailable. Please interact with the page and try Test Voice again.')
-        } else {
-          setVoiceMessage('Test voice played successfully.')
-        }
-      } catch (e) {
-        setVoiceMessage('Voice playback failed. Please try Test Voice after interacting with the page.')
-      }
-
-      window.setTimeout(() => {
-        setVoiceMessage('')
-      }, 2400)
+      setVoiceMessage('Voice playback is not supported by this browser.')
+      return
     }
+
+    setVoiceMessage('Testing voice...')
+
+    try {
+      const result = await testVoiceAlert(voiceLanguage)
+      if (!result || result.success === false) {
+        setVoiceMessage(
+          'Voice playback was blocked or unavailable. Please interact with the page and try Test Voice again.'
+        )
+      } else {
+        setVoiceMessage('Test voice played successfully.')
+      }
+    } catch (e) {
+      setVoiceMessage(
+        'Voice playback failed. Please try Test Voice after interacting with the page.'
+      )
+    }
+
+    window.setTimeout(() => {
+      setVoiceMessage('')
+    }, 2400)
+  }
 
   function saveSettings() {
     persistRows(rows)
     setVoiceLanguage(voiceLanguage)
 
-    const darkModeEnabled =
-      rows.find((row) => row.key === 'darkMode')
-        ?.enabled || false
+    const darkModeEnabled = rows.find((row) => row.key === 'darkMode')?.enabled || false
 
     applyDarkMode(darkModeEnabled)
 
@@ -308,13 +294,9 @@ export default function Settings() {
     }, 2200)
   }
 
-  const darkModeEnabled =
-    rows.find((row) => row.key === 'darkMode')
-      ?.enabled || false
+  const darkModeEnabled = rows.find((row) => row.key === 'darkMode')?.enabled || false
 
-  const voiceAlertsEnabled =
-    rows.find((row) => row.key === 'voiceAlerts')
-      ?.enabled || false
+  const voiceAlertsEnabled = rows.find((row) => row.key === 'voiceAlerts')?.enabled || false
 
   return (
     <div className="page-enter flex max-w-3xl flex-col gap-7 pb-8 sm:gap-9">
@@ -322,16 +304,16 @@ export default function Settings() {
       <section className="fade-down">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-forest-100 bg-forest-50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-800">
           <Settings2 size={12} />
-        {t('settings.applicationPreferences')}
+          {t('settings.applicationPreferences')}
         </div>
 
         <h1 className="font-display text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
-        {t('settings.title')}
+          {t('settings.title')}
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          Customize notifications, appearance, voice alerts and privacy
-          preferences for your AeroGuard experience.
+          Customize notifications, appearance, voice alerts and privacy preferences for your
+          AeroGuard experience.
         </p>
       </section>
 
@@ -342,7 +324,10 @@ export default function Settings() {
             <div className="flex-1">
               <p className="text-sm font-semibold text-ink-900">{t('settings.language')}</p>
 
-              <p className="mt-1 text-xs text-ink-500">{t('settings.languageDescription') || 'Choose the language used across the AirGuard interface.'}</p>
+              <p className="mt-1 text-xs text-ink-500">
+                {t('settings.languageDescription') ||
+                  'Choose the language used across the AirGuard interface.'}
+              </p>
             </div>
 
             <div>
@@ -359,17 +344,11 @@ export default function Settings() {
 
           <div className="relative flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-forest-700 shadow-sm">
-              {darkModeEnabled ? (
-                <Moon size={17} />
-              ) : (
-                <Sun size={17} />
-              )}
+              {darkModeEnabled ? <Moon size={17} /> : <Sun size={17} />}
             </div>
 
             <div className="flex-1">
-              <p className="text-sm font-semibold text-ink-900">
-                Appearance
-              </p>
+              <p className="text-sm font-semibold text-ink-900">Appearance</p>
 
               <p className="mt-1 text-xs text-ink-500">
                 AeroGuard is currently using{' '}
@@ -395,9 +374,7 @@ export default function Settings() {
             Experience
           </p>
 
-          <h2 className="mt-1 font-display text-lg font-semibold text-ink-900">
-            App preferences
-          </h2>
+          <h2 className="mt-1 font-display text-lg font-semibold text-ink-900">App preferences</h2>
         </div>
 
         <div className="overflow-hidden rounded-[24px] border border-ink-100 bg-surface shadow-soft">
@@ -419,9 +396,7 @@ export default function Settings() {
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-ink-900">
-                        {row.title}
-                      </p>
+                      <p className="text-sm font-semibold text-ink-900">{row.title}</p>
 
                       {row.enabled && (
                         <span className="hidden rounded-full border border-forest-200 bg-forest-50 px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.12em] text-forest-800 sm:inline-flex">
@@ -430,9 +405,7 @@ export default function Settings() {
                       )}
                     </div>
 
-                    <p className="mt-1 text-xs leading-5 text-ink-500">
-                      {row.description}
-                    </p>
+                    <p className="mt-1 text-xs leading-5 text-ink-500">{row.description}</p>
                   </div>
 
                   <Toggle
@@ -456,29 +429,20 @@ export default function Settings() {
             <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
-                  {voiceAlertsEnabled ? (
-                    <Volume2 size={18} />
-                  ) : (
-                    <VolumeX size={18} />
-                  )}
+                  {voiceAlertsEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
                 </div>
 
                 <div>
-                  <h2 className="font-display text-lg font-semibold text-ink-900">
-                    Voice Alerts
-                  </h2>
+                  <h2 className="font-display text-lg font-semibold text-ink-900">Voice Alerts</h2>
 
                   <p className="mt-1 max-w-xl text-xs leading-5 text-ink-500">
-                    Important air-quality alerts can be spoken aloud in your
-                    selected language.
+                    Important air-quality alerts can be spoken aloud in your selected language.
                   </p>
                 </div>
 
                 <Toggle
                   enabled={voiceAlertsEnabled}
-                  onToggle={() =>
-                    toggleSetting('voiceAlerts')
-                  }
+                  onToggle={() => toggleSetting('voiceAlerts')}
                   label="Voice Alerts"
                 />
               </div>
@@ -490,9 +454,7 @@ export default function Settings() {
                     : 'border-amber-200 bg-amber-50 text-amber-700'
                 }`}
               >
-                {voiceSupported
-                  ? 'Browser voice available'
-                  : 'Voice not supported'}
+                {voiceSupported ? 'Browser voice available' : 'Voice not supported'}
               </div>
             </div>
 
@@ -518,16 +480,11 @@ export default function Settings() {
                     disabled={!voiceAlertsEnabled}
                     className="w-full appearance-none rounded-xl border border-ink-200 bg-ink-50/70 px-3.5 py-3 pl-10 text-sm font-medium text-ink-900 outline-none transition-all duration-300 focus:border-forest-400 focus:bg-white disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {getVoiceLanguages().map(
-                      (language) => (
-                        <option
-                          key={language.code}
-                          value={language.code}
-                        >
-                          {language.label}
-                        </option>
-                      ),
-                    )}
+                    {getVoiceLanguages().map((language) => (
+                      <option key={language.code} value={language.code}>
+                        {language.label}
+                      </option>
+                    ))}
                   </select>
 
                   <div className="mt-2 text-xs text-ink-500">
@@ -539,11 +496,11 @@ export default function Settings() {
                       <span className="font-semibold">Browser voice:</span>{' '}
                       {loadingVoices && 'Checking available voices...'}
                       {!loadingVoices && !voiceSupported && 'Not supported by browser'}
-                      {!loadingVoices && voiceSupported && (
-                        availableVoiceInfo
-                          ? `${availableVoiceInfo.name} (${availableVoiceInfo.lang})` 
-                          : 'Voice for this language is not available on this device/browser.'
-                      )}
+                      {!loadingVoices &&
+                        voiceSupported &&
+                        (availableVoiceInfo
+                          ? `${availableVoiceInfo.name} (${availableVoiceInfo.lang})`
+                          : 'Voice for this language is not available on this device/browser.')}
                     </div>
                   </div>
                 </div>
@@ -552,10 +509,7 @@ export default function Settings() {
               <button
                 type="button"
                 onClick={handleTestVoice}
-                disabled={
-                  !voiceSupported ||
-                  !voiceAlertsEnabled
-                }
+                disabled={!voiceSupported || !voiceAlertsEnabled}
                 className="btn-premium inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-forest-800 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <Play size={14} />
@@ -580,9 +534,7 @@ export default function Settings() {
             Information & privacy
           </p>
 
-          <h2 className="mt-1 font-display text-lg font-semibold text-ink-900">
-            Data preferences
-          </h2>
+          <h2 className="mt-1 font-display text-lg font-semibold text-ink-900">Data preferences</h2>
         </div>
 
         <div className="overflow-hidden rounded-[24px] border border-ink-100 bg-surface shadow-soft">
@@ -601,13 +553,9 @@ export default function Settings() {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-ink-900">
-                      {row.title}
-                    </p>
+                    <p className="text-sm font-semibold text-ink-900">{row.title}</p>
 
-                    <p className="mt-1 text-xs leading-5 text-ink-500">
-                      {row.description}
-                    </p>
+                    <p className="mt-1 text-xs leading-5 text-ink-500">{row.description}</p>
                   </div>
 
                   <ChevronRight
@@ -643,9 +591,8 @@ export default function Settings() {
       </section>
 
       <p className="fade-up text-[10px] leading-5 text-ink-400">
-        Voice availability depends on the voices installed or provided by the
-        user's browser/device. The application falls back to the closest
-        available voice for the selected language.
+        Voice availability depends on the voices installed or provided by the user's browser/device.
+        The application falls back to the closest available voice for the selected language.
       </p>
     </div>
   )

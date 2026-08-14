@@ -10,7 +10,7 @@ export default {
     checkAirQuality: 'കാറ്റിന്റെ ഗുണനിലവാരം പരിശോധിക്കുക',
     language: 'ഭാഷ',
     live: 'ലाइव',
-    monitoring: 'മോണിറ്ററിംഗ്'
+    monitoring: 'മോണിറ്ററിംഗ്',
   },
 
   nav: {
@@ -46,7 +46,7 @@ export default {
     language: 'ഭാഷ',
     voiceAlerts: 'വോയ്‌സ് അലർട്ടുകൾ',
     darkMode: 'ഡാർക്ക് മോഡ്',
-    applicationPreferences: 'ആപ്ലിക്കേഷൻ മുൻഗണനകൾ'
+    applicationPreferences: 'ആപ്ലിക്കേഷൻ മുൻഗണനകൾ',
   },
 
   alerts: {
@@ -54,7 +54,7 @@ export default {
     critical: 'ഗൗരവമേറിയ',
     warning: 'എಚ್ಚരവൈ',
     information: 'വിവരം',
-    aqiMessage: '{location} നു വേണ്ടി വായു നിലവാരം മുന്നറിയിപ്പ്. നിലവിലെ AQI {aqi}.'
+    aqiMessage: '{location} നു വേണ്ടി വായു നിലവാരം മുന്നറിയിപ്പ്. നിലവിലെ AQI {aqi}.',
   },
 
   aqi: {
@@ -67,7 +67,7 @@ export default {
 
   pollutant: {
     relativeLevel: 'ആപേക്ഷിക നിലവാരം',
-    environmentalMetric: 'പരിസ്ഥിതി മാനദണ്ഡം'
+    environmentalMetric: 'പരിസ്ഥിതി മാനദണ്ഡം',
   },
 
   recommendation: {
@@ -76,7 +76,7 @@ export default {
     profile: 'പ്രൊഫൈൽ',
     activity: 'പ്രവർത്തനം',
     basedOn: 'നിലവിലെ പരിസ്ഥിതി നിലകളുടെ അടിസ്ഥാനത്തിൽ',
-    checkActivity: 'പ്രവർത്തന അപകടം പരിശോധിക്കുക'
+    checkActivity: 'പ്രവർത്തന അപകടം പരിശോധിക്കുക',
   },
 
   dominant: {
@@ -88,20 +88,17 @@ export default {
     higherAttention: 'ഉയർന്ന ശ്രദ്ധാ നിർദ്ദേശം',
     monitorConditions: 'നിലവിലെ സാഹചര്യങ്ങൾ നിരീക്ഷിക്കുക',
     withinRange: 'നിലവിലെ തല പ്രതീക്ഷിക്കുന്ന പരിധിയിലാണി',
-    indicatorInfo: 'ഈ സൂചിക നിലവിലെ മലിനീകരണ നിലക്കും അതിന്റെ സജ്ജീകരിച്ച റഫറൻസ് പരിധിക്കും അടിസ്ഥാനമാക്കിയുള്ളതാണ്.'
+    indicatorInfo:
+      'ഈ സൂചിക നിലവിലെ മലിനീകരണ നിലക്കും അതിന്റെ സജ്ജീകരിച്ച റഫറൻസ് പരിധിക്കും അടിസ്ഥാനമാക്കിയുള്ളതാണ്.',
   },
 
-
-  auth: {
-    login: 'ലോഗിൻ',
-    signup: 'സൈൻ അപ്പ്'
-  },
 
   landing: {
     realtimeIntelligence: 'റியல்-ടൈം പരിസ്ഥിതി ബുദ്ധിമുട്ട്',
     heroTitlePart1: 'വായു അറിയൂ',
     heroTitlePart2: 'നിങ്ങളുടെ ചുറ്റുപാടുകളിൽ.',
-    heroDescription: 'സങ്കീർണ്ണ പരിസ്ഥിതി ഡാറ്റയെ വ്യക്തിഗതമായ, വ്യക്തമായ നടപടികളിലൂടെ മാറ്റുക. നിങ്ങളുടെ വായു ഗുണനം, അപകടം, അടുത്തെന്ത് ചെയ്യണമെന്ന് മനസിലാക്കുക.',
+    heroDescription:
+      'സങ്കീർണ്ണ പരിസ്ഥിതി ഡാറ്റയെ വ്യക്തിഗതമായ, വ്യക്തമായ നടപടികളിലൂടെ മാറ്റുക. നിങ്ങളുടെ വായു ഗുണനം, അപകടം, അടുത്തെന്ത് ചെയ്യണമെന്ന് മനസിലാക്കുക.',
     checkAirQuality: 'വായു ഗുണനിലവാരം പരിശോധിക്കുക',
     exploreFeatures: 'ഫീച്ചറുകൾ പരിശോധിക്കുക',
     liveEnvironmentalData: 'ലൈവ് പരിസ്ഥിതി ഡാറ്റ',
@@ -112,64 +109,72 @@ export default {
     liveMonitoring: 'ലൈവ് നിരീക്ഷണം',
     features: 'ഫീച്ചറുകൾ',
     featuresHeadline: 'നിങ്ങളുടെ വായു മനസ്സിലാക്കാൻ ആവശ്യമായ എല്ലാം',
-    featuresDescription: 'ലീവ് സ്ഥിതികളിൽ നിന്ന് ചരിത്ര ട്രെൻഡുകൾക്കും വ്യക്തിഗത മാർഗ്ഗനിർദേശങ്ങൾക്കുമുള്ളവ까지, AirGuard വിവരങ്ങൾ ലളിതവും പ്രായോഗികവുമാണ്.',
+    featuresDescription:
+      'ലീവ് സ്ഥിതികളിൽ നിന്ന് ചരിത്ര ട്രെൻഡുകൾക്കും വ്യക്തിഗത മാർഗ്ഗനിർദേശങ്ങൾക്കുമുള്ളവ까지, AirGuard വിവരങ്ങൾ ലളിതവും പ്രായോഗികവുമാണ്.',
     exploreCapability: 'ശക്തി പരിശോധിക്കുക',
     howItWorksTitle: 'ഇത് എങ്ങനെ പ്രവർത്തിക്കുന്നു',
     howItWorksHeadline: 'സ്ഥലത്തു നിന്ന് പ്രവർത്തി വരെ, നാല് ഘട്ടങ്ങളിൽ',
     premiumAwareness: 'പരിസ്ഥിതി ജാഗ്രത, വ്യക്തിഗത',
     builtForPeople: 'പ്രതിദിനം sama മേൽശ്വാസമുള്ള ആളുകൾക്ക് നിർമിച്ചതാണ്.',
-    premiumDescription: 'AirGuard ഒരു ഹാക്കത്തോൺ പ്രോജക്ടായി നിർമ്മിച്ചിരിക്കുന്നു, പരിസ്ഥിതിവാരിയം വ്യക്തിഗതവും വിശദവുമായും പ്രവർത്തനക്ഷമവുമായും മാറ്റാൻ.',
-    ctaCheckAirQuality: 'വായു ഗുണനിലവാരം പരിശോധിക്കുക'
+    premiumDescription:
+      'AirGuard ഒരു ഹാക്കത്തോൺ പ്രോജക്ടായി നിർമ്മിച്ചിരിക്കുന്നു, പരിസ്ഥിതിവാരിയം വ്യക്തിഗതവും വിശദവുമായും പ്രവർത്തനക്ഷമവുമായും മാറ്റാൻ.',
+    ctaCheckAirQuality: 'വായു ഗുണനിലവാരം പരിശോധിക്കുക',
   },
 
   features: {
     live: {
       title: 'ലൈവ് വായു ഗുണനിലവാരം',
-      description: 'ഏത് പ്രാവശ്യമായതും റിയൽ-ടൈം വായു ഗുണനിലവാരം നിരീക്ഷിക്കുക.'
+      description: 'ഏത് പ്രാവശ്യമായതും റിയൽ-ടൈം വായു ഗുണനിലവാരം നിരീക്ഷിക്കുക.',
     },
     risk: {
       title: 'റിസ്‌ക് ഇന്റലിജൻസ്',
-      description: 'സങ്കീർണ്ണ മാലിന്യ ഡേറ്റയെ എളുപ്പം മനസ്സിലാക്കാവുന്ന റിസ്‌ക് ലെവലാക്കായി പരിഷ്കരിക്കുക.'
+      description:
+        'സങ്കീർണ്ണ മാലിന്യ ഡേറ്റയെ എളുപ്പം മനസ്സിലാക്കാവുന്ന റിസ്‌ക് ലെവലാക്കായി പരിഷ്കരിക്കുക.',
     },
     guidance: {
       title: 'വ്യക്തിഗത മാർഗ്ഗനിർദേശം',
-      description: 'നിങ്ങളുടെ പരിസ്ഥിതി സെൻസിറ്റിവിറ്റി അടിസ്ഥാനമാക്കിയുള്ള ശുപാർശകൾ ലഭിക്കുക.'
+      description: 'നിങ്ങളുടെ പരിസ്ഥിതി സെൻസിറ്റിവിറ്റി അടിസ്ഥാനമാക്കിയുള്ള ശുപാർശകൾ ലഭിക്കുക.',
     },
     trends: {
       title: 'ചരിത്ര ട്രെൻഡുകൾ',
-      description: 'വായു ഗുണനിലവാരം മെച്ചപ്പെടുന്നുണ്ടോ അല്ലെങ്കിൽ പോവുകയാണോ എന്ന് മനസ്സിലാക്കുക.'
+      description: 'വായു ഗുണനിലവാരം മെച്ചപ്പെടുന്നുണ്ടോ അല്ലെങ്കിൽ പോവുകയാണോ എന്ന് മനസ്സിലാക്കുക.',
     },
     alerts: {
       title: 'സ്മാർട്ട് അലർട്ടുകൾ',
-      description: 'നിങ്ങൾ സംരക്ഷിച്ച സ്ഥലങ്ങൾ എപ്പോൾ അപകടത്തിലാകും എന്ന് അറിയുക.'
+      description: 'നിങ്ങൾ സംരക്ഷിച്ച സ്ഥലങ്ങൾ എപ്പോൾ അപകടത്തിലാകും എന്ന് അറിയുക.',
     },
     activity: {
       title: 'പ്രവൃത്തി റിസ്‌ക് ഉപദേധാവ്',
-      description: 'ഇപ്പോഴുള്ള ഓടൽ, സൈക്ലിംഗ് അല്ലെങ്കിൽ പുറത്തുള്ള പ്രവർത്തനങ്ങൾ യോജിച്ചതാണോ എന്ന് പരിശോധിക്കുക.'
-    }
+      description:
+        'ഇപ്പോഴുള്ള ഓടൽ, സൈക്ലിംഗ് അല്ലെങ്കിൽ പുറത്തുള്ള പ്രവർത്തനങ്ങൾ യോജിച്ചതാണോ എന്ന് പരിശോധിക്കുക.',
+    },
   },
 
   howItWorks: {
     step1: {
       title: 'സ്ഥലം തിരഞ്ഞെടുക്കുക',
-      description: 'തുടങ്ങാൻ ഏതെങ്കിലും നഗരത്തെ അന്വേഷിക്കുക അല്ലെങ്കിൽ നിങ്ങളുടെ നിലവിലെ സ്ഥലം ഉപയോഗിക്കുക.'
+      description:
+        'തുടങ്ങാൻ ഏതെങ്കിലും നഗരത്തെ അന്വേഷിക്കുക അല്ലെങ്കിൽ നിങ്ങളുടെ നിലവിലെ സ്ഥലം ഉപയോഗിക്കുക.',
     },
     step2: {
       title: 'ലൈവ് ഡാറ്റ നേടുക',
-      description: 'AirGuard ആ സ്ഥലത്തിനുള്ള ഏറ്റവും പുതിയ മലിനത വായനകൾ എടുക്കും.'
+      description: 'AirGuard ആ സ്ഥലത്തിനുള്ള ഏറ്റവും പുതിയ മലിനത വായനകൾ എടുക്കും.',
     },
     step3: {
       title: 'നിങ്ങളുടെ റിസ്‌ക് മനസ്സിലാക്കുക',
-      description: 'നിങ്ങളുടെ പരിസ്ഥിതി പ്രൊഫൈലിന്റെ അടിസ്ഥാനത്തിൽ ഒരു വ്യക്തമായ റിസ്‌ക് ലെവൽ കാണുക.'
+      description:
+        'നിങ്ങളുടെ പരിസ്ഥിതി പ്രൊഫൈലിന്റെ അടിസ്ഥാനത്തിൽ ഒരു വ്യക്തമായ റിസ്‌ക് ലെവൽ കാണുക.',
     },
     step4: {
       title: 'നടപടികൾ സ്വീകരിക്കുക',
-      description: 'പ്രവൃത്തി, പ്രതിരോധം, മാനദണ്ഡങ്ങളെക്കുറിച്ച് വ്യക്തിഗത മാർഗ്ഗനിർദേശങ്ങൾ പിന്തുടരുക.'
-    }
+      description:
+        'പ്രവൃത്തി, പ്രതിരോധം, മാനദണ്ഡങ്ങളെക്കുറിച്ച് വ്യക്തിഗത മാർഗ്ഗനിർദേശങ്ങൾ പിന്തുടരുക.',
+    },
   },
 
   sidebar: {
-    footerNotice: 'ഗాలి ഗുണനിലവാരം ഡാറ്റ സ്വയം പുതുക്കും. ഡെമോ ബിൽഡ് — ബാക്ക്‌എൻഡ് ഇനിയും ബന്ധിപ്പിച്ചിട്ടില്ല.'
+    footerNotice:
+      'ഗాలి ഗുണനിലവാരം ഡാറ്റ സ്വയം പുതുക്കും. ഡെമോ ബിൽഡ് — ബാക്ക്‌എൻഡ് ഇനിയും ബന്ധിപ്പിച്ചിട്ടില്ല.',
   },
 
   auth: {
@@ -194,7 +199,8 @@ export default {
     emailPlaceholder: 'you@example.com',
     sending: 'Sending…',
     demoResetCreated: 'Demo reset created',
-    demoResetNotice: 'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
+    demoResetNotice:
+      'For this demo the reset flow is simulated locally. Use the link below to complete the reset.',
     openResetLink: 'Open reset link',
     resetRequestFailed: 'Unable to create reset request. Please try again.',
     passwordRequired: 'Password is required.',
@@ -203,7 +209,7 @@ export default {
     newPasswordPlaceholder: 'Enter a new password',
     confirmNewPasswordPlaceholder: 'Confirm new password',
     userNotFound: 'No account found with that email address.',
-    resetTokenUsed: 'This reset token has already been used.'
+    resetTokenUsed: 'This reset token has already been used.',
   },
 
   report: {
@@ -238,7 +244,8 @@ export default {
     sev_high: 'ഉയർന്നത്',
     sev_critical: 'അത്യന്തം ഗുരുതരം',
     descriptionLabel: 'പ്രശ്നം വിവരിക്കുക',
-    descriptionPlaceholder: 'ദിവസവും വൈകുന്നേരം 7 മണിക്ക് അടുത്തുള്ള ഫാക്ടറിയിൽ നിന്ന് പുക വരുന്നു...',
+    descriptionPlaceholder:
+      'ദിവസവും വൈകുന്നേരം 7 മണിക്ക് അടുത്തുള്ള ഫാക്ടറിയിൽ നിന്ന് പുക വരുന്നു...',
     descriptionMinErr: 'വിവരണം കുറഞ്ഞത് 10 അക്ഷരങ്ങൾ ഉണ്ടായിരിക്കണം.',
     healthImpactLabel: 'ആരോഗ്യപരമായ ആഘാതം',
     healthNotice: 'വിവര ശേഖരണത്തിനായി മാത്രം.',
@@ -304,5 +311,5 @@ export default {
     in_progress: 'പുരോഗതിയിൽ',
     resolved: 'പരിഹരിച്ചു',
     rejected: 'നിരസിച്ചു',
-  }
+  },
 }

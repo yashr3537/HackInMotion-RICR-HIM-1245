@@ -1,7 +1,18 @@
 import { Link } from 'react-router-dom'
 import {
-  ArrowRight, Activity, Gauge, Compass as CompassIcon, TrendingUp, Bell, Footprints,
-  ShieldCheck, MapPin, Loader2, Sparkles, RefreshCw, AlertCircle,
+  ArrowRight,
+  Activity,
+  Gauge,
+  Compass as CompassIcon,
+  TrendingUp,
+  Bell,
+  Footprints,
+  ShieldCheck,
+  MapPin,
+  Loader2,
+  Sparkles,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -33,7 +44,6 @@ export default function Landing() {
 
       {/* HERO SECTION */}
       <section className="relative overflow-hidden border-b border-ink-100/60 bg-gradient-to-b from-canvas via-surface/30 to-canvas">
-
         {/* Ambient background blur elements */}
         <div className="pointer-events-none absolute left-1/2 top-10 -z-10 h-72 w-[40rem] -translate-x-1/2 rounded-full bg-forest-500/10 blur-3xl" />
         <div className="pointer-events-none absolute right-10 top-40 -z-10 h-60 w-60 rounded-full bg-mist-400/20 blur-3xl animate-float-slow" />
@@ -60,7 +70,6 @@ export default function Landing() {
         </div>
 
         <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-16 grid lg:grid-cols-2 gap-14 items-center">
-
           <div className="animate-rise">
             <div className="inline-flex items-center gap-2 bg-forest-100 text-forest-800 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               <ShieldCheck size={13} />
@@ -121,7 +130,6 @@ export default function Landing() {
           {/* Hero AQI Card Preview */}
           <div className="lg:pl-6">
             <div className="card-hover bg-surface rounded-xl2 border border-ink-100 p-6 sm:p-8 shadow-card relative">
-
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-ink-100">
                 <div className="flex items-center gap-2 min-w-0">
                   <MapPin size={16} className="text-forest-700 shrink-0" />
@@ -146,13 +154,17 @@ export default function Landing() {
               {loadingAQI ? (
                 <div className="flex flex-col items-center justify-center py-14">
                   <Loader2 size={32} className="text-forest-700 animate-spin mb-3" />
-                  <p className="text-xs text-ink-500 font-medium">Fetching live air quality data...</p>
+                  <p className="text-xs text-ink-500 font-medium">
+                    Fetching live air quality data...
+                  </p>
                 </div>
               ) : aqiError || !liveData ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
                   <AlertCircle size={32} className="text-amber-600 mb-3" />
                   <p className="text-sm font-semibold text-ink-900 mb-1">Live data unavailable</p>
-                  <p className="text-xs text-ink-500 max-w-xs mb-4">{aqiError || 'Unable to fetch live AQI for your location.'}</p>
+                  <p className="text-xs text-ink-500 max-w-xs mb-4">
+                    {aqiError || 'Unable to fetch live AQI for your location.'}
+                  </p>
                   <button
                     type="button"
                     onClick={refetch}
@@ -173,23 +185,25 @@ export default function Landing() {
                     <div className="bg-canvas rounded-lg p-3 border border-ink-100">
                       <span className="text-ink-500 block text-[11px] mb-0.5">PM2.5</span>
                       <span className="font-semibold text-ink-900 text-sm">
-                        {liveData.pm25 !== null && liveData.pm25 !== undefined ? `${Math.round(liveData.pm25)} µg/m³` : '—'}
+                        {liveData.pm25 !== null && liveData.pm25 !== undefined
+                          ? `${Math.round(liveData.pm25)} µg/m³`
+                          : '—'}
                       </span>
                     </div>
 
                     <div className="bg-canvas rounded-lg p-3 border border-ink-100">
                       <span className="text-ink-500 block text-[11px] mb-0.5">PM10</span>
                       <span className="font-semibold text-ink-900 text-sm">
-                        {liveData.pm10 !== null && liveData.pm10 !== undefined ? `${Math.round(liveData.pm10)} µg/m³` : '—'}
+                        {liveData.pm10 !== null && liveData.pm10 !== undefined
+                          ? `${Math.round(liveData.pm10)} µg/m³`
+                          : '—'}
                       </span>
                     </div>
                   </div>
 
                   <div className="mt-5 p-3 rounded-lg bg-forest-50 border border-forest-100 text-xs text-forest-900 flex items-start gap-2.5">
                     <ShieldCheck size={16} className="text-forest-700 shrink-0 mt-0.5" />
-                    <span>
-                      {band.advice}
-                    </span>
+                    <span>{band.advice}</span>
                   </div>
                 </>
               )}
@@ -228,7 +242,9 @@ export default function Landing() {
                 </h3>
 
                 <p className="text-sm leading-relaxed text-ink-700">
-                  {t(f.descriptionKey || 'features.' + f.key + '.description', { defaultValue: f.description })}
+                  {t(f.descriptionKey || 'features.' + f.key + '.description', {
+                    defaultValue: f.description,
+                  })}
                 </p>
               </div>
             )
@@ -237,12 +253,8 @@ export default function Landing() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section
-        id="how-it-works"
-        className="bg-forest-50/60 py-20 sm:py-24 scroll-mt-16"
-      >
+      <section id="how-it-works" className="bg-forest-50/60 py-20 sm:py-24 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-
           <div className="max-w-xl mb-14">
             <p className="text-xs font-semibold uppercase tracking-wider text-forest-700 mb-3">
               {t('landing.howItWorksHeading')}
@@ -256,7 +268,6 @@ export default function Landing() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             {howItWorks.map((s, i) => (
               <div key={s.step} className="relative">
-
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-11 h-11 rounded-full bg-forest-700 text-white font-display font-semibold flex items-center justify-center shrink-0">
                     {s.step}
@@ -268,13 +279,16 @@ export default function Landing() {
                 </div>
 
                 <h3 className="font-display mb-1.5 mt-4 font-semibold text-ink-900">
-                  {t(s.titleKey || ('howItWorks.step' + s.step + '.title'), { defaultValue: s.title })}
+                  {t(s.titleKey || 'howItWorks.step' + s.step + '.title', {
+                    defaultValue: s.title,
+                  })}
                 </h3>
 
                 <p className="text-sm leading-relaxed text-ink-700">
-                  {t(s.descriptionKey || ('howItWorks.step' + s.step + '.description'), { defaultValue: s.description })}
+                  {t(s.descriptionKey || 'howItWorks.step' + s.step + '.description', {
+                    defaultValue: s.description,
+                  })}
                 </p>
-
               </div>
             ))}
           </div>
@@ -282,16 +296,11 @@ export default function Landing() {
       </section>
 
       {/* ABOUT / CTA */}
-      <section
-        id="about"
-        className="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24 scroll-mt-16"
-      >
+      <section id="about" className="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24 scroll-mt-16">
         <div className="bg-gradient-to-br from-forest-900 to-forest-700 rounded-xl2 px-6 sm:px-14 py-14 sm:py-16 text-center relative overflow-hidden">
-
           <div className="absolute -left-16 -bottom-16 w-56 h-56 rounded-full bg-forest-500/20 blur-3xl" />
 
           <div className="relative">
-
             <h2 className="font-display font-semibold text-3xl sm:text-4xl text-white tracking-tight max-w-xl mx-auto">
               {t('landing.ctaTitle')}
             </h2>
@@ -307,7 +316,6 @@ export default function Landing() {
               {t('landing.checkAirQuality')}
               <ArrowRight size={16} />
             </Link>
-
           </div>
         </div>
       </section>

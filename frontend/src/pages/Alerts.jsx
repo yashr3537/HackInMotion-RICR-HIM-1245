@@ -54,10 +54,7 @@ export default function Alerts() {
     }
   }, [currentUser?.id])
 
-  const unreadCount = useMemo(
-    () => alerts.filter((alert) => !alert.read).length,
-    [alerts]
-  )
+  const unreadCount = useMemo(() => alerts.filter((alert) => !alert.read).length, [alerts])
 
   const criticalCount = useMemo(
     () => alerts.filter((alert) => alert.severity === 'critical').length,
@@ -71,9 +68,7 @@ export default function Alerts() {
   }, [alerts, filter])
 
   const handleMarkRead = async (id) => {
-    setAlerts((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, read: true } : item))
-    )
+    setAlerts((prev) => prev.map((item) => (item.id === id ? { ...item, read: true } : item)))
     await markAlertReadInDb(id)
   }
 
@@ -97,7 +92,8 @@ export default function Alerts() {
           Please log in to view your alerts
         </h1>
         <p className="mt-2 text-sm text-ink-500 max-w-sm">
-          Sign in to receive real-time air quality notifications and threshold alerts for your saved locations.
+          Sign in to receive real-time air quality notifications and threshold alerts for your saved
+          locations.
         </p>
         <Link
           to="/login"
@@ -124,7 +120,10 @@ export default function Alerts() {
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          {t('alerts.subtitle', { defaultValue: 'Real-time alerts triggered when air quality at your saved locations exceeds threshold limits.' })}
+          {t('alerts.subtitle', {
+            defaultValue:
+              'Real-time alerts triggered when air quality at your saved locations exceeds threshold limits.',
+          })}
         </p>
       </section>
 

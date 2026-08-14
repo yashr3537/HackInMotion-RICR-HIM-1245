@@ -17,7 +17,8 @@ export const AQI_CATEGORIES = [
     color: '#D6A70C',
     bg: '#FBF3D9',
     badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
-    advice: 'Air quality is acceptable; sensitive individuals should consider limiting prolonged exposure.',
+    advice:
+      'Air quality is acceptable; sensitive individuals should consider limiting prolonged exposure.',
   },
   {
     key: 'sensitive',
@@ -70,10 +71,7 @@ export function getAqiCategory(aqi) {
     }
   }
   const val = Number(aqi)
-  return (
-    AQI_CATEGORIES.find((cat) => val <= cat.max) ||
-    AQI_CATEGORIES[AQI_CATEGORIES.length - 1]
-  )
+  return AQI_CATEGORIES.find((cat) => val <= cat.max) || AQI_CATEGORIES[AQI_CATEGORIES.length - 1]
 }
 
 export function getDominantPollutant(pollutantsList) {
@@ -137,7 +135,8 @@ export function getPersonalizedGuidance(aqi, profileType = 'general') {
     if (numAqi > 50) {
       headline = 'Keep inhaler nearby and avoid strenuous outdoor exercise.'
       verdict = 'High Caution'
-      detail = 'As someone with respiratory sensitivities, elevated AQI poses increased symptom risks.'
+      detail =
+        'As someone with respiratory sensitivities, elevated AQI poses increased symptom risks.'
     }
   } else if (profileType === 'elderly' || profileType === 'senior') {
     if (numAqi > 100) {
@@ -187,16 +186,36 @@ export function getActivityRecommendations(aqi, profileType = 'general') {
     }
 
     if (numAqi <= 50) {
-      return { risk: 'good', verdict: 'Great to go', reason: 'Air quality is fresh and safe for this activity.' }
+      return {
+        risk: 'good',
+        verdict: 'Great to go',
+        reason: 'Air quality is fresh and safe for this activity.',
+      }
     } else if (numAqi <= 100) {
       if (activityKey === 'running' || activityKey === 'sports') {
-        return { risk: 'moderate', verdict: 'Use caution', reason: 'Moderate air pollution; monitor intense breathing.' }
+        return {
+          risk: 'moderate',
+          verdict: 'Use caution',
+          reason: 'Moderate air pollution; monitor intense breathing.',
+        }
       }
-      return { risk: 'good', verdict: 'Generally fine', reason: 'Light activity poses low risk right now.' }
+      return {
+        risk: 'good',
+        verdict: 'Generally fine',
+        reason: 'Light activity poses low risk right now.',
+      }
     } else if (numAqi <= 150) {
-      return { risk: 'sensitive', verdict: 'Limit duration', reason: 'Elevated AQI; shorten intense outdoor sessions.' }
+      return {
+        risk: 'sensitive',
+        verdict: 'Limit duration',
+        reason: 'Elevated AQI; shorten intense outdoor sessions.',
+      }
     } else {
-      return { risk: 'unhealthy', verdict: 'Avoid outdoor', reason: 'High pollution risk; switch to indoor activities.' }
+      return {
+        risk: 'unhealthy',
+        verdict: 'Avoid outdoor',
+        reason: 'High pollution risk; switch to indoor activities.',
+      }
     }
   }
 

@@ -38,10 +38,30 @@ const CATEGORIES = [
 ]
 
 const SEVERITIES = [
-  { key: 'low', indicator: '🟢', colorClass: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' },
-  { key: 'medium', indicator: '🟡', colorClass: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' },
-  { key: 'high', indicator: '🟠', colorClass: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800' },
-  { key: 'critical', indicator: '🔴', colorClass: 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800' },
+  {
+    key: 'low',
+    indicator: '🟢',
+    colorClass:
+      'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800',
+  },
+  {
+    key: 'medium',
+    indicator: '🟡',
+    colorClass:
+      'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800',
+  },
+  {
+    key: 'high',
+    indicator: '🟠',
+    colorClass:
+      'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800',
+  },
+  {
+    key: 'critical',
+    indicator: '🔴',
+    colorClass:
+      'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800',
+  },
 ]
 
 const HEALTH_PROBLEMS = [
@@ -278,9 +298,7 @@ export default function ReportIssue() {
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink-900">
               {t('report.successTitle')}
             </h1>
-            <p className="text-sm text-ink-500 max-w-md mx-auto">
-              {t('report.successSubtitle')}
-            </p>
+            <p className="text-sm text-ink-500 max-w-md mx-auto">{t('report.successSubtitle')}</p>
           </div>
 
           <div className="bg-canvas rounded-xl border border-ink-200/80 p-5 max-w-md mx-auto text-left space-y-3">
@@ -372,9 +390,7 @@ export default function ReportIssue() {
             <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-ink-900">
               {t('report.title')}
             </h1>
-            <p className="text-sm text-ink-500 mt-1">
-              {t('report.subtitle')}
-            </p>
+            <p className="text-sm text-ink-500 mt-1">{t('report.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -463,7 +479,9 @@ export default function ReportIssue() {
 
           {(latitude || longitude) && (
             <div className="text-[11px] text-ink-500 font-mono flex items-center gap-3 bg-canvas p-2.5 rounded-lg border border-ink-200/60">
-              <span>GPS: {latitude || 'N/A'}, {longitude || 'N/A'}</span>
+              <span>
+                GPS: {latitude || 'N/A'}, {longitude || 'N/A'}
+              </span>
               <span className="text-emerald-600 font-sans text-[10px] font-semibold uppercase tracking-wider">
                 ✓ Detected
               </span>
@@ -573,9 +591,7 @@ export default function ReportIssue() {
             <h2 className="font-display font-semibold text-lg text-ink-900">
               {t('report.healthImpactLabel')}
             </h2>
-            <p className="text-xs text-ink-400 mt-1">
-              {t('report.healthNotice')}
-            </p>
+            <p className="text-xs text-ink-400 mt-1">{t('report.healthNotice')}</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -662,11 +678,7 @@ export default function ReportIssue() {
 
               {videoPreview ? (
                 <div className="relative rounded-xl border border-ink-200 overflow-hidden bg-canvas aspect-video group">
-                  <video
-                    src={videoPreview}
-                    controls
-                    className="w-full h-full object-cover"
-                  />
+                  <video src={videoPreview} controls className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={handleRemoveVideo}

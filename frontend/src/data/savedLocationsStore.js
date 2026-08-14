@@ -10,20 +10,28 @@ export function getSavedLocationsKey(userId) {
 }
 
 export function loadUserSavedLocations(userId) {
-  console.warn('loadUserSavedLocations is deprecated. Use fetchSavedLocations(userId) from supabaseService.js')
+  console.warn(
+    'loadUserSavedLocations is deprecated. Use fetchSavedLocations(userId) from supabaseService.js'
+  )
   return []
 }
 
 export function saveUserSavedLocations(locations, userId) {
-  console.warn('saveUserSavedLocations is deprecated. Use saveLocationToDb(userId, loc) from supabaseService.js')
+  console.warn(
+    'saveUserSavedLocations is deprecated. Use saveLocationToDb(userId, loc) from supabaseService.js'
+  )
 }
 
 export function removeUserSavedLocation(locationTarget, userId) {
-  console.warn('removeUserSavedLocation is deprecated. Use removeSavedLocationFromDb(userId, id) from supabaseService.js')
+  console.warn(
+    'removeUserSavedLocation is deprecated. Use removeSavedLocationFromDb(userId, id) from supabaseService.js'
+  )
   return []
 }
 
 export function addUserSavedLocation(newLocation, userId) {
-  console.warn('addUserSavedLocation is deprecated. Use saveLocationToDb(userId, loc) from supabaseService.js')
+  console.warn(
+    'addUserSavedLocation is deprecated. Use saveLocationToDb(userId, loc) from supabaseService.js'
+  )
   return []
 }

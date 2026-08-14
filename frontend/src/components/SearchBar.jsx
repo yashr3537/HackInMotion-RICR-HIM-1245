@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  Search,
-  MapPin,
-  X,
-  Navigation,
-  Loader2,
-} from 'lucide-react'
+import { Search, MapPin, X, Navigation, Loader2 } from 'lucide-react'
 
 export default function SearchBar({
   placeholder = 'Search location…',
@@ -47,7 +41,7 @@ export default function SearchBar({
         enableHighAccuracy: true,
         timeout: 8000,
         maximumAge: 30000,
-      },
+      }
     )
   }
 
@@ -71,9 +65,7 @@ export default function SearchBar({
   }, [focused])
 
   return (
-    <div
-      className={`search-premium group relative ${className}`}
-    >
+    <div className={`search-premium group relative ${className}`}>
       {/* Ambient focus glow */}
       <div
         className={`pointer-events-none absolute -inset-1 rounded-2xl bg-forest-400/10 blur-xl transition-all duration-500 ${
@@ -92,9 +84,7 @@ export default function SearchBar({
         {/* Search icon */}
         <div
           className={`absolute left-3.5 flex items-center justify-center transition-all duration-300 ${
-            focused
-              ? 'scale-110 text-forest-700'
-              : 'text-ink-300'
+            focused ? 'scale-110 text-forest-700' : 'text-ink-300'
           }`}
         >
           <Search size={16} />
@@ -139,18 +129,9 @@ export default function SearchBar({
             className="btn-premium flex h-8 items-center gap-1.5 rounded-lg border border-forest-100 bg-forest-50 px-2.5 text-[11px] font-semibold text-forest-800 disabled:cursor-not-allowed disabled:opacity-60"
             aria-label="Use current location"
           >
-            {locating ? (
-              <Loader2
-                size={13}
-                className="animate-spin"
-              />
-            ) : (
-              <Navigation size={13} />
-            )}
+            {locating ? <Loader2 size={13} className="animate-spin" /> : <Navigation size={13} />}
 
-            <span className="hidden sm:inline">
-              {locating ? 'Locating' : 'Use location'}
-            </span>
+            <span className="hidden sm:inline">{locating ? 'Locating' : 'Use location'}</span>
           </button>
         </div>
       </div>
@@ -173,9 +154,7 @@ export default function SearchBar({
 
           <span>+</span>
 
-          <kbd className="rounded border border-ink-200 bg-ink-50 px-1.5 py-0.5 font-mono">
-            K
-          </kbd>
+          <kbd className="rounded border border-ink-200 bg-ink-50 px-1.5 py-0.5 font-mono">K</kbd>
         </div>
       </div>
     </div>
