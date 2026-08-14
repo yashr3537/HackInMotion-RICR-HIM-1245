@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n/index.jsx'
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Compass, MapPin, History, Bell, User, Settings, Leaf, GitCompare, Footprints, AlertOctagon, FileText } from 'lucide-react'
-import { alerts } from '../data/demoData'
+import { fetchUserAlerts } from '../services/supabase/supabaseService'
+import { useAuth } from '../auth'
 import LanguageSelector from './LanguageSelector.jsx'
 
 const NAV = [
@@ -20,51 +22,73 @@ const NAV = [
 
 export default function Sidebar() {
   const { t } = useLanguage()
-  const unread = alerts.filter((a) => !a.read).length
+  const { currentUser } = useAuth()
+  const [unread, setUnread] = useState(0)
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadAlerts() {
+      if (currentUser?.id) {
+        const userAlerts = await fetchUserAlerts(currentUser.id)
+        if (isMounted) setUnread(userAlerts.filter((a) => !a.read).length)
+      } else {
+        if (isMounted) setUnread(0)
+      }
+    }
+    loadAlerts()
+    return () => {
+      isMounted = false
+    }
+  }, [currentUser?.id])
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 bg-forest-950 text-forest-100 px-4 py-6">
-      <div className="flex items-center gap-2.5 px-2 mb-8">
-        <span className="w-8 h-8 rounded-lg bg-forest-500/20 flex items-center justify-center">
+    <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-surface border-r border-ink-100 min-h-screen">
+      <div className="flex items-center gap-2.5 px-6 h-16 border-b border-ink-100">
+        <span className="w-8 h-8 rounded-lg bg-forest-800 flex items-center justify-center shadow-soft">
           <Leaf size={16} className="text-forest-300" />
         </span>
-        <span className="font-display font-semibold text-lg text-white">AirGuard</span>
+        <div>
+          <span className="font-display font-bold text-ink-900 tracking-tight text-lg leading-tight block">
+            AirGuard
+          </span>
+          <span className="text-[10px] text-forest-700 uppercase tracking-widest font-semibold block">
+            Platform
+          </span>
+        </div>
       </div>
 
-      <nav className="flex flex-col gap-1">
+      <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
         {NAV.map(({ to, key, icon: Icon, badge }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive ? 'bg-forest-800 text-white' : 'text-forest-200/80 hover:bg-forest-900 hover:text-white'
+              `flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-forest-50 text-forest-800 font-semibold'
+                  : 'text-ink-600 hover:text-ink-900 hover:bg-ink-50'
               }`
             }
           >
-            <span className="flex items-center gap-3">
-              <Icon size={17} />
-              {t(`nav.${key}`)}
-            </span>
+            <div className="flex items-center gap-3">
+              <Icon size={18} />
+              <span>{t(`nav.${key}`)}</span>
+            </div>
             {badge && unread > 0 && (
-              <span className="bg-forest-400 text-forest-950 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold">
                 {unread}
               </span>
             )}
           </NavLink>
         ))}
-      </nav>
+      </div>
 
-      <div className="mt-auto pt-6 border-t border-forest-900/80 px-2 space-y-4">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-forest-200/70">{t('common.language')}</span>
-          <LanguageSelector compact />
-        </div>
-        <p className="text-xs text-forest-300/70 leading-relaxed">
-          {t('sidebar.footerNotice')}
+      <div className="p-4 border-t border-ink-100 space-y-3">
+        <LanguageSelector />
+        <p className="text-[10px] text-ink-400 text-center">
+          AirGuard Risk Platform v2.0
         </p>
       </div>
     </aside>
   )
 }
-

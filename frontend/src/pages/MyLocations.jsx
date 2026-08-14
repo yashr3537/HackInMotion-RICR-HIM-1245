@@ -18,8 +18,8 @@ import RiskBadge from '../components/RiskBadge'
 import LocationCard from '../components/LocationCard'
 import { EmptyState } from '../components/EmptyState'
 
-import { searchLocation, reverseGeocode } from '../data/locationApi'
-import { getAirQuality } from '../data/airQualityApi'
+import { searchLocation, reverseGeocode } from '../services/location/locationApi'
+import { getAirQuality } from '../services/airQuality/airQualityApi'
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
 import {

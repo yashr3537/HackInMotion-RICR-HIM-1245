@@ -1,4 +1,4 @@
-﻿// Voice alert service: robust browser SpeechSynthesis voice loading and selection
+// Voice alert service: robust browser SpeechSynthesis voice loading, language selection & sequential queueing
 const DEFAULT_LANGUAGE = 'en-IN'
 
 const LANGUAGE_OPTIONS = [
@@ -150,18 +150,14 @@ function findBestVoice(language, voices) {
   const req = String(language).toLowerCase()
   const base = req.split('-')[0]
 
-  // 1. exact
   let match = voices.find((v) => (v.lang || '').toLowerCase() === req)
   if (match) return match
 
-  // 2. same family exact (voice.lang may be 'hi')
   match = voices.find((v) => (v.lang || '').toLowerCase() === base)
   if (match) return match
 
-  // 3. startsWith base
   const baseMatches = voices.filter((v) => (v.lang || '').toLowerCase().startsWith(base))
   if (baseMatches.length) {
-    // 4. prefer Indian voice when requested region is IN
     if (req.includes('-in')) {
       const ind = baseMatches.find((v) => (v.lang || '').toLowerCase().includes('-in') || (v.name || '').toLowerCase().includes('india'))
       if (ind) return ind
@@ -169,7 +165,6 @@ function findBestVoice(language, voices) {
     return baseMatches[0]
   }
 
-  // no compatible voice
   return null
 }
 
@@ -191,6 +186,57 @@ export function buildVoiceAlertMessage({ location, aqi, language = getStoredVoic
   const selectedLanguage = ALERT_MESSAGES[language] ? language : DEFAULT_LANGUAGE
   const severity = getSeverityFromAqi(aqi)
   return ALERT_MESSAGES[selectedLanguage][severity](location, aqi)
+}
+
+// ---------------------------------------------------------------------------
+// Sequential Voice Speech Queue System
+// ---------------------------------------------------------------------------
+
+let speechQueue = []
+let isProcessingQueue = false
+
+async function processSpeechQueue() {
+  if (isProcessingQueue || speechQueue.length === 0) return
+  isProcessingQueue = true
+
+  const item = speechQueue.shift()
+
+  try {
+    if (isVoiceSupported()) {
+      const synth = window.speechSynthesis
+      const utterance = new SpeechSynthesisUtterance(String(item.text))
+      utterance.lang = item.options.language || getStoredVoiceLanguage()
+      utterance.rate = item.options.rate || 0.92
+      utterance.pitch = item.options.pitch || 1
+      utterance.volume = item.options.volume || 1
+
+      const best = await getBestVoiceForLanguage(utterance.lang)
+      if (best) utterance.voice = best
+
+      await new Promise((resolve) => {
+        utterance.onend = () => resolve({ success: true })
+        utterance.onerror = (err) => resolve({ success: false, error: err })
+        try {
+          synth.speak(utterance)
+        } catch (e) {
+          resolve({ success: false, error: e })
+        }
+      })
+    }
+  } catch (err) {
+    console.error('Error in voice queue item:', err)
+  } finally {
+    isProcessingQueue = false
+    if (speechQueue.length > 0) {
+      processSpeechQueue()
+    }
+  }
+}
+
+export function enqueueVoiceAlert({ location, aqi, language = getStoredVoiceLanguage() }) {
+  const text = buildVoiceAlertMessage({ location, aqi, language })
+  speechQueue.push({ text, options: { language, rate: 0.9, pitch: 1, volume: 1 } })
+  processSpeechQueue()
 }
 
 export async function speakText(text, { language = getStoredVoiceLanguage(), rate = 0.92, pitch = 1, volume = 1 } = {}) {
@@ -219,16 +265,21 @@ export async function speakText(text, { language = getStoredVoiceLanguage(), rat
 }
 
 export async function speakAirQualityAlert({ location, aqi, language = getStoredVoiceLanguage() }) {
-  const message = buildVoiceAlertMessage({ location, aqi, language })
-  return speakText(message, { language, rate: 0.9, pitch: 1, volume: 1 })
+  enqueueVoiceAlert({ location, aqi, language })
 }
 
 export function stopVoiceAlert() {
+  speechQueue = []
   if (!isVoiceSupported()) return { success: false }
-  try { window.speechSynthesis.cancel(); return { success: true } } catch (e) { return { success: false, error: e } }
+  try {
+    window.speechSynthesis.cancel()
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: e }
+  }
 }
 
 export async function testVoiceAlert(language = getStoredVoiceLanguage()) {
-  const message = language === 'hi-IN' ? 'यह AeroGuard का परीक्षण वॉयस अलर्ट है। आपकी वॉयस अलर्ट सेवा सही तरीके से काम कर रही है।' : language === 'mr-IN' ? 'हा AeroGuard चा चाचणी व्हॉइस अलर्ट आहे. तुमची व्हॉइस अलर्ट सेवा योग्यरित्या काम करत आहे.' : 'This is an AeroGuard test voice alert. Your voice alert system is working correctly.'
+  const message = language === 'hi-IN' ? 'यह AeroGuard का परीक्षण वॉयس अलर्ट है। आपकी वॉयस अलर्ट सेवा सही तरीके से काम कर रही है।' : language === 'mr-IN' ? 'हा AeroGuard चा चाचणी व्हॉइस अलर्ट आहे. तुमची व्हॉइस अलर्ट सेवा योग्यरित्या काम करत आहे.' : 'This is an AeroGuard test voice alert. Your voice alert system is working correctly.'
   return speakText(message, { language, rate: 0.9, pitch: 1, volume: 1 })
 }

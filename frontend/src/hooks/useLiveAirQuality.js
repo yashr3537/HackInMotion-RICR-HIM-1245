@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getAirQuality } from '../data/airQualityApi'
-import { reverseGeocode } from '../data/locationApi'
+import { getAirQuality } from '../services/airQuality/airQualityApi'
+import { reverseGeocode } from '../services/location/locationApi'
 
 function formatLastUpdated(timeStr) {
   if (!timeStr) {

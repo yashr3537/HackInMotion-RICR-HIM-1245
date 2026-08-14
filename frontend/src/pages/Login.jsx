@@ -18,6 +18,7 @@ import {
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
 import LanguageSelector from '../components/LanguageSelector'
+import { validateEmail, validatePassword, validateFullName } from '../utils/validation/validation'
 
 const initialForm = {
   name: '',
@@ -80,35 +81,34 @@ export default function Login() {
       setIsSubmitting(true)
 
       if (mode === 'signup') {
-        if (!form.name.trim()) {
-          throw new Error(t('auth.fullNameRequired', { defaultValue: 'Please enter your full name.' }))
-        }
+        const nameVal = validateFullName(form.name)
+        if (!nameVal.isValid) throw new Error(nameVal.error)
 
-        if (!form.email.trim()) {
-          throw new Error(t('auth.emailRequired', { defaultValue: 'Please enter your email address.' }))
-        }
+        const emailVal = validateEmail(form.email)
+        if (!emailVal.isValid) throw new Error(emailVal.error)
 
-        if (form.password.length < 6) {
-          throw new Error(t('auth.passwordTooShort', { defaultValue: 'Password must be at least 6 characters.' }))
-        }
+        const passVal = validatePassword(form.password)
+        if (!passVal.isValid) throw new Error(passVal.error)
 
         if (form.password !== form.confirmPassword) {
           throw new Error(t('auth.passwordsDoNotMatch', { defaultValue: 'Passwords do not match.' }))
         }
 
         await signUp({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          password: form.password,
+          name: nameVal.value,
+          email: emailVal.value,
+          password: passVal.value,
         })
       } else {
-        if (!form.email.trim() || !form.password) {
-          throw new Error(t('auth.credentialsRequired', { defaultValue: 'Please enter your email and password.' }))
-        }
+        const emailVal = validateEmail(form.email)
+        if (!emailVal.isValid) throw new Error(emailVal.error)
+
+        const passVal = validatePassword(form.password)
+        if (!passVal.isValid) throw new Error(passVal.error)
 
         await signIn({
-          email: form.email.trim(),
-          password: form.password,
+          email: emailVal.value,
+          password: passVal.value,
         })
       }
 

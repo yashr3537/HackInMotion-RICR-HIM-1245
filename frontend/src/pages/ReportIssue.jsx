@@ -21,7 +21,7 @@ import {
 
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
-import { reverseGeocode } from '../data/locationApi'
+import { reverseGeocode } from '../services/location/locationApi'
 import { createPollutionReport } from '../services/pollutionReportService'
 
 const CATEGORIES = [

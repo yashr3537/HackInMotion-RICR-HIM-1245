@@ -6,8 +6,7 @@ import React, {
   useState,
 } from "react";
 
-import { supabase } from "./lib/supabaseClient";
-import { currentUser as defaultUser } from "./data/demoData";
+import { supabase } from "./services/supabase/supabaseClient";
 
 const AuthContext = createContext(null);
 
@@ -33,41 +32,51 @@ function mapUser(user, profile = null) {
 }
 
 async function getProfile(userId) {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .maybeSingle();
+  if (!userId) return null;
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
 
-  if (error) {
-    console.error("Profile fetch error:", error);
+    if (error) {
+      console.error("Profile fetch error:", error);
+      return null;
+    }
+    return data;
+  } catch (err) {
+    console.error("Error fetching profile:", err);
     return null;
   }
-
-  return data;
 }
 
 async function createProfile(user, name) {
   const fullName = String(name || "").trim();
 
-  const { data, error } = await supabase
-    .from("profiles")
-    .insert({
-      id: user.id,
-      name: fullName.split(" ")[0] || "User",
-      full_name: fullName || "User",
-      profile_type: "general",
-      alert_threshold: 100,
-    })
-    .select()
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .insert({
+        id: user.id,
+        name: fullName.split(" ")[0] || "User",
+        full_name: fullName || "User",
+        profile_type: "general",
+        alert_threshold: 100,
+      })
+      .select()
+      .single();
 
-  if (error) {
-    console.error("Profile creation error:", error);
+    if (error) {
+      console.error("Profile creation error:", error);
+      return null;
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Error creating profile:", err);
     return null;
   }
-
-  return data;
 }
 
 export async function signInUser({ email, password }) {
@@ -150,24 +159,28 @@ export function AuthProvider({ children }) {
     let mounted = true;
 
     async function loadSession() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      if (session?.user) {
-        const profile = await getProfile(session.user.id);
-
-        if (mounted) {
-          setCurrentUser(mapUser(session.user, profile));
+        if (session?.user) {
+          const profile = await getProfile(session.user.id);
+          if (mounted) {
+            setCurrentUser(mapUser(session.user, profile));
+          }
+        } else {
+          if (mounted) {
+            setCurrentUser(null);
+          }
         }
-      } else {
-        setCurrentUser(null);
-      }
-
-      if (mounted) {
-        setLoading(false);
+      } catch (err) {
+        console.error("Auth session load error:", err);
+        if (mounted) setCurrentUser(null);
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
 
@@ -190,14 +203,14 @@ export function AuthProvider({ children }) {
 
     return () => {
       mounted = false;
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, []);
 
   const value = useMemo(
     () => ({
-      currentUser: currentUser || defaultUser,
-      isAuthenticated: Boolean(currentUser || defaultUser),
+      currentUser,
+      isAuthenticated: Boolean(currentUser),
       loading,
 
       signIn: async (credentials) => {

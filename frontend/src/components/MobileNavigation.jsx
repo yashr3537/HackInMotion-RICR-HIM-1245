@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Compass, MapPin, Bell, User, AlertOctagon } from 'lucide-react'
-import { alerts } from '../data/demoData'
+import { LayoutDashboard, Compass, MapPin, Bell, AlertOctagon } from 'lucide-react'
+import { fetchUserAlerts } from '../services/supabase/supabaseService'
+import { useAuth } from '../auth'
 
 const NAV = [
   { to: '/dashboard', label: 'Home', icon: LayoutDashboard },
@@ -11,7 +13,24 @@ const NAV = [
 ]
 
 export default function MobileNavigation() {
-  const unread = alerts.filter((a) => !a.read).length
+  const { currentUser } = useAuth()
+  const [unread, setUnread] = useState(0)
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadAlerts() {
+      if (currentUser?.id) {
+        const userAlerts = await fetchUserAlerts(currentUser.id)
+        if (isMounted) setUnread(userAlerts.filter((a) => !a.read).length)
+      } else {
+        if (isMounted) setUnread(0)
+      }
+    }
+    loadAlerts()
+    return () => {
+      isMounted = false
+    }
+  }, [currentUser?.id])
 
   return (
     <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface/95 backdrop-blur-md border-t border-ink-100 px-2 pb-[env(safe-area-inset-bottom)]">
@@ -26,11 +45,15 @@ export default function MobileNavigation() {
               }`
             }
           >
-            <Icon size={20} />
-            {label}
-            {badge && unread > 0 && (
-              <span className="absolute top-1.5 right-[26%] w-2 h-2 rounded-full bg-forest-600" />
-            )}
+            <div className="relative">
+              <Icon size={20} />
+              {badge && unread > 0 && (
+                <span className="absolute -top-1 -right-2.5 min-w-[14px] h-[14px] px-1 rounded-full bg-rose-600 text-white text-[8px] font-bold flex items-center justify-center">
+                  {unread}
+                </span>
+              )}
+            </div>
+            <span>{label}</span>
           </NavLink>
         ))}
       </div>

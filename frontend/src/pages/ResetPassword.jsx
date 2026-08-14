@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react'
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
+import { validatePassword } from '../utils/validation/validation'
 
 export default function ResetPassword() {
   const { t } = useLanguage()
@@ -43,8 +44,8 @@ export default function ResetPassword() {
 
   function validate() {
     if (!token) return t('auth.invalidResetToken')
-    if (!password) return t('auth.passwordRequired')
-    if (password.length < 6) return t('auth.passwordTooShort')
+    const passVal = validatePassword(password)
+    if (!passVal.isValid) return passVal.error
     if (password !== confirmPassword) return t('auth.passwordsDoNotMatch')
     return null
   }

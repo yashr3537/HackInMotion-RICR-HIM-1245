@@ -1,13 +1,32 @@
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Leaf } from 'lucide-react'
-import { alerts } from '../data/demoData'
+import { fetchUserAlerts } from '../services/supabase/supabaseService'
 import { useAuth } from '../auth'
 import LanguageSelector from './LanguageSelector'
 
 export default function AppHeader() {
   const { currentUser, signOut } = useAuth()
   const navigate = useNavigate()
-  const unread = alerts.filter((a) => !a.read).length
+  const [unread, setUnread] = useState(0)
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadUnreadCount() {
+      if (currentUser?.id) {
+        const userAlerts = await fetchUserAlerts(currentUser.id)
+        if (isMounted) {
+          setUnread(userAlerts.filter((a) => !a.read).length)
+        }
+      } else {
+        if (isMounted) setUnread(0)
+      }
+    }
+    loadUnreadCount()
+    return () => {
+      isMounted = false
+    }
+  }, [currentUser?.id])
 
   function handleSignOut() {
     signOut()
@@ -23,30 +42,58 @@ export default function AppHeader() {
           </span>
         </div>
 
-        <div className="flex items-center gap-3 ml-auto">
-          <LanguageSelector compact />
+        <div className="flex-1" />
+
+        <div className="flex items-center gap-3">
+          <LanguageSelector />
 
           <Link
             to="/alerts"
-            className="relative w-9 h-9 rounded-lg bg-surface border border-ink-100 flex items-center justify-center text-ink-600 hover:text-forest-700 hover:border-forest-300 transition-colors"
-            aria-label="Notifications"
+            className="relative p-2 rounded-xl text-ink-500 hover:text-ink-900 hover:bg-ink-100/60 transition-colors"
+            title="Alerts"
           >
-            <Bell size={17} />
-            {unread > 0 && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-forest-600 ring-2 ring-canvas" />}
+            <Bell size={18} />
+            {unread > 0 && (
+              <span className="absolute top-1.5 right-1.5 min-w-[16px] h-[16px] px-1 rounded-full bg-rose-600 text-white text-[9px] font-bold flex items-center justify-center leading-none">
+                {unread}
+              </span>
+            )}
           </Link>
-          <Link to="/profile" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-forest-700 text-white flex items-center justify-center text-sm font-semibold">
-              {currentUser.name.charAt(0)}
+
+          {currentUser ? (
+            <div className="flex items-center gap-2 pl-2 border-l border-ink-100">
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
+                <div className="w-8 h-8 rounded-full bg-forest-800 text-forest-100 text-xs font-semibold flex items-center justify-center">
+                  {(currentUser.name || 'U').slice(0, 1).toUpperCase()}
+                </div>
+                <div className="hidden md:block text-left">
+                  <p className="text-xs font-semibold text-ink-900 leading-tight">
+                    {currentUser.name}
+                  </p>
+                  <p className="text-[10px] text-ink-400 capitalize">
+                    {currentUser.profileType || 'general'}
+                  </p>
+                </div>
+              </Link>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="text-xs text-ink-400 hover:text-rose-600 ml-2"
+              >
+                Sign out
+              </button>
             </div>
-            <span className="hidden sm:block text-sm font-medium text-ink-900">{currentUser.name}</span>
-          </Link>
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="hidden sm:inline-flex text-xs font-semibold text-ink-600 hover:text-forest-700 transition-colors"
-          >
-            Sign out
-          </button>
+          ) : (
+            <Link
+              to="/login"
+              className="rounded-xl bg-forest-700 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-forest-800 transition-colors"
+            >
+              Sign in
+            </Link>
+          )}
         </div>
       </div>
     </header>
