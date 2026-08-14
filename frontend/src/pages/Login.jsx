@@ -520,18 +520,6 @@ export default function Login() {
             </div>
           )}
 
-          {/* Demo credentials */}
-          <div className="fade-up mt-5 rounded-xl border border-ink-100 bg-surface/70 px-4 py-3 text-center">
-            <p className="text-[10px] uppercase tracking-[0.14em] text-ink-400">
-              {t('auth.demoLoginHeader', { defaultValue: 'Demo login' })}
-            </p>
-            <p className="mt-1 text-xs text-ink-500">
-              <span className="font-medium text-ink-700">yogesh.sharma@example.com</span>
-              <span className="mx-1.5 text-ink-300">/</span>
-              <span className="font-medium text-ink-700">airguard123</span>
-            </p>
-          </div>
-
           {/* Back home */}
           <div className="mt-5 text-center">
             <Link to="/" className="text-xs font-medium text-ink-500 transition-colors hover:text-forest-700">
