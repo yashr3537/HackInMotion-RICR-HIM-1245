@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import AppHeader from './AppHeader'
 import MobileNavigation from './MobileNavigation'
+import VoiceAssistantTrigger from './VoiceAssistantTrigger'
 
 export default function AppLayout() {
   return (
@@ -14,6 +15,8 @@ export default function AppLayout() {
         </main>
       </div>
       <MobileNavigation />
+      <VoiceAssistantTrigger />
     </div>
   )
 }
+
