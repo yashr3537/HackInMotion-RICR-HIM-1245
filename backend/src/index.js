@@ -16,13 +16,16 @@ app.get('/api/health', (req, res) => {
 })
 
 app.get('/api/air-quality', async (req, res) => {
-  const { lat, lng } = req.query
-  if (!lat || !lng) {
+  const { lat, lng, latitude, longitude } = req.query
+  const targetLat = lat || latitude
+  const targetLng = lng || longitude
+
+  if (!targetLat || !targetLng) {
     return res.status(400).json({ error: 'Latitude (lat) and longitude (lng) are required.' })
   }
 
   try {
-    const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&current=us_aqi,pm2_5,pm10,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone&timezone=auto`
+    const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${targetLat}&longitude=${targetLng}&current=us_aqi,pm2_5,pm10,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone&timezone=auto`
     const response = await fetch(url)
     if (!response.ok) throw new Error(`Open-Meteo API returned HTTP ${response.status}`)
     const data = await response.json()
@@ -33,13 +36,15 @@ app.get('/api/air-quality', async (req, res) => {
 })
 
 app.get('/api/locations/search', async (req, res) => {
-  const { query } = req.query
-  if (!query) {
+  const { query, name } = req.query
+  const searchQuery = query || name
+
+  if (!searchQuery) {
     return res.json({ results: [] })
   }
 
   try {
-    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=8&language=en&format=json`
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchQuery)}&count=8&language=en&format=json`
     const response = await fetch(url)
     if (!response.ok) throw new Error(`Geocoding API returned HTTP ${response.status}`)
     const data = await response.json()
