@@ -1,0 +1,2 @@
+-- Migration 001: Initial Schema Setup
+-- Re-exports database setup for Supabase CLI compatibility

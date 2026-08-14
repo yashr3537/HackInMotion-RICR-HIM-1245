@@ -4,6 +4,7 @@ import { BellRing, Volume2, X } from 'lucide-react'
 import Sidebar from './Sidebar'
 import AppHeader from './AppHeader'
 import MobileNavigation from './MobileNavigation'
+import VoiceAssistantTrigger from './VoiceAssistantTrigger'
 
 import { supabase } from '../services/supabase/supabaseClient'
 import { useAuth } from '../auth'
@@ -164,6 +165,8 @@ export default function AppLayout() {
         </main>
       </div>
       <MobileNavigation />
+      <VoiceAssistantTrigger />
     </div>
   )
 }
+
