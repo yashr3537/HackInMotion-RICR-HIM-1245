@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import SearchBar from '../components/SearchBar'
 import RiskBadge from '../components/RiskBadge'
 import { EmptyState } from '../components/EmptyState'
-import { searchLocation } from '../data/locationApi'
-import { getAirQuality } from '../data/airQualityApi'
+import { searchLocation } from '../services/location/locationApi'
+import { getAirQuality } from '../services/airQuality/airQualityApi'
 
 export default function Explore() {
   const navigate = useNavigate()

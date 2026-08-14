@@ -1,76 +1,59 @@
-# AirGuard — Frontend
+# AirGuard — Environmental Risk & Air Quality Platform
 
-Environmental Risk & Air Quality Monitoring Platform.
-**Frontend only** — no backend, database, auth, or real API calls. All data
-comes from `src/data/demoData.js` so it can be swapped for live API
-responses later without touching component code.
+AirGuard is a real-time environmental risk & air quality monitoring platform built with React, Vite, Open-Meteo Live APIs, and Supabase Database & Authentication.
 
-## Tech stack
+## Features & Highlights
 
-- React + Vite
-- Tailwind CSS
-- React Router
-- Recharts (charts)
-- lucide-react (icons)
+- **Real-Time Air Quality & Weather**: Live Open-Meteo API integrations for AQI, PM2.5, PM10, NO₂, SO₂, O₃, CO, temperature, humidity, wind, and pressure.
+- **Supabase Backend Integration**: Real Supabase Auth (Sign In / Register / Session management), User Profiles table (`profiles`), Saved Locations (`saved_locations`), Environmental Snapshots (`air_quality_snapshots`), and Risk Alerts (`alerts`).
+- **Interactive Multi-City Compare**: Live city search with 300ms debouncing, live AQI parallel fetching, duplicate detection, max 6 city limit, and single-click removal.
+- **Risk Intelligence Engine**: Centralized AQI classification, dominant pollutant calculator, personalized sensitivity guidance, and Activity Risk Advisor.
+- **Full Offline Fallbacks**: Graceful fallback states (`src/data/fallbackData.js`) in case live APIs or network calls encounter issues.
 
-## Getting started
+## Tech Stack
 
-```bash
-npm install
-npm run dev
-```
+- **Frontend**: React + Vite
+- **Styling**: Tailwind CSS
+- **Database & Auth**: Supabase (@supabase/supabase-js)
+- **APIs**: Open-Meteo Air Quality & Weather API, Nominatim / BigDataCloud Geocoding
+- **Visualization**: Recharts & Lucide Icons
 
-Then open the printed local URL (usually `http://localhost:5173`).
+## Getting Started
 
-To build for production:
+1. **Environment Setup**:
+   Configure `.env` in the `frontend` folder with your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=https://<your-supabase-id>.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=<your-supabase-publishable-key>
+   ```
 
-```bash
-npm run build
-npm run preview
-```
+2. **Installation & Running**:
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-## Project structure
+3. **Production Build**:
+   ```bash
+   npm run build
+   npm run preview
+   ```
+
+## Project Structure
 
 ```
 src/
-  components/       Reusable UI building blocks (cards, nav, charts, states…)
-  pages/            One file per route (Landing, Dashboard, Alerts, …)
+  auth.jsx                   Consolidated Supabase Auth Provider & Hooks
+  components/                Reusable UI components (AQICard, RiskBadge, LocationCard...)
+  pages/                     Application views (Dashboard, Explore, Compare, Alerts, Activity...)
+  services/
+    airQuality/              Open-Meteo live AQI & 2-day forecast service
+    location/                Geocoding & location search service
+    supabase/                Single Supabase Client & CRUD service
+  utils/
+    riskEngine/              AQI bands, dominant pollutant, guidance & activity risk engine
+    validation/              Form validation utilities (email, password, full name)
   data/
-    demoData.js     Centralized demo/mock data — the ONLY place with hardcoded values
-    aqiUtils.js      AQI band thresholds, colors, and status helpers
-  App.jsx           Route definitions
-  main.jsx          App entry point
+    demoData.js              Static marketing content for Landing page (features, howItWorks)
+    fallbackData.js          Emergency offline fallback values
 ```
-
-## Routes
-
-| Path         | Page                          |
-|--------------|--------------------------------|
-| `/`          | Landing page                   |
-| `/login`     | Login (UI only, no auth logic) |
-| `/dashboard` | Main dashboard                 |
-| `/explore`   | Search any location             |
-| `/locations` | Manage saved locations          |
-| `/compare`   | Compare locations side by side  |
-| `/history`   | Historical analytics            |
-| `/alerts`    | Alerts inbox                    |
-| `/activity`  | Activity Risk Advisor           |
-| `/profile`   | User & environmental profile    |
-| `/settings`  | App settings                    |
-
-## Connecting a real backend later
-
-1. Replace the exported values/functions in `src/data/demoData.js` with API
-   calls (e.g. `fetch`/React Query) — component code doesn't need to change
-   as long as the shape of the data stays the same.
-2. Wire up `/login` with real authentication.
-3. Replace the AQI classification thresholds in `src/data/aqiUtils.js` if
-   your backend uses a different standard (e.g. US EPA vs CPCB India).
-
-## Notes
-
-- All AQI figures, pollutant values, alerts, and locations are illustrative
-  demo data — not live readings.
-- Fully responsive: sidebar collapses to a bottom nav bar on mobile.
-- Activity Risk Advisor intentionally avoids medical claims (see disclaimer
-  on that page).

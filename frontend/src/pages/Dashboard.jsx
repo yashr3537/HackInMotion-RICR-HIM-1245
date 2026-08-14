@@ -21,8 +21,8 @@ import RecommendationCard from '../components/RecommendationCard'
 import DominantPollutantCard from '../components/DominantPollutantCard'
 import TrendChart from '../components/TrendChart'
 import LocationCard from '../components/LocationCard'
-import { alerts } from '../data/demoData'
 import { loadUserSavedLocations, removeUserSavedLocation } from '../data/savedLocationsStore'
+import { fetchUserAlerts, recordAirQualitySnapshot } from '../services/supabase/supabaseService'
 
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
@@ -39,11 +39,35 @@ export default function Dashboard() {
   const { loading, error, data: liveLocation, refetch } = useLiveAirQuality()
 
   const [userSavedLocations, setUserSavedLocations] = useState([])
+  const [alerts, setAlerts] = useState([])
   const [removingLocation, setRemovingLocation] = useState(null)
 
   useEffect(() => {
     setUserSavedLocations(loadUserSavedLocations(currentUser?.id))
   }, [currentUser?.id])
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadAlerts() {
+      if (currentUser?.id) {
+        const dbAlerts = await fetchUserAlerts(currentUser.id)
+        if (isMounted) setAlerts(dbAlerts)
+      } else {
+        if (isMounted) setAlerts([])
+      }
+    }
+    loadAlerts()
+    return () => {
+      isMounted = false
+    }
+  }, [currentUser?.id])
+
+  // Record snapshot when liveLocation is loaded
+  useEffect(() => {
+    if (liveLocation && liveLocation.aqi !== null) {
+      recordAirQualitySnapshot(currentUser?.id, liveLocation, liveLocation)
+    }
+  }, [liveLocation, currentUser?.id])
 
   const handleRemoveRequest = (target) => {
     if (!target) return

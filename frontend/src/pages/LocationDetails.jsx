@@ -28,8 +28,7 @@ import AQIGauge from '../components/AQIGauge'
 import RiskBadge from '../components/RiskBadge'
 import TrendChart from '../components/TrendChart'
 
-import { getAirQuality, getWeather } from '../data/airQualityApi'
-import { savedLocations, exploreResults } from '../data/demoData'
+import { getAirQuality, getWeather } from '../services/airQuality/airQualityApi'
 import { getAqiBand, formatPollutants } from '../data/aqiUtils'
 import { useLanguage } from '../i18n/index.jsx'
 import { useAuth } from '../auth'
@@ -103,26 +102,14 @@ export default function LocationDetails() {
 
   // 1. Resolve location cleanly from user saved locations OR exploreResults
   const resolvedLocation = useMemo(() => {
+    if (routerLocation.state?.location) {
+      return routerLocation.state.location
+    }
     const userSaved = loadUserSavedLocations(currentUser?.id)
-
     if (locationId) {
       const matchSaved = userSaved.find((loc) => String(loc.id) === String(locationId))
       if (matchSaved) return matchSaved
-
-      const matchExplore = exploreResults.find((loc) => String(loc.id) === String(locationId))
-      if (matchExplore) return matchExplore
     }
-
-    if (routerLocation.state?.location) {
-      const passedLoc = routerLocation.state.location
-      const wasSavedBefore = savedLocations.some((s) => String(s.id) === String(passedLoc.id))
-      const isStillSaved = userSaved.some((s) => String(s.id) === String(passedLoc.id))
-      if (wasSavedBefore && !isStillSaved) {
-        return null
-      }
-      return passedLoc
-    }
-
     return null
   }, [locationId, routerLocation.state, currentUser?.id])
 

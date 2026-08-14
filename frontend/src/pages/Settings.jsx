@@ -218,6 +218,12 @@ export default function Settings() {
   }
 
   function toggleSetting(key) {
+    if (key === 'notifications' && typeof window !== 'undefined' && 'Notification' in window) {
+      if (Notification.permission === 'default') {
+        Notification.requestPermission()
+      }
+    }
+
     setRows((current) => {
       const updatedRows = current.map((row) => {
         if (row.key !== key) return row

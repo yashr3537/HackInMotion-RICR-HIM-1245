@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from './supabase/supabaseClient'
 
 /**
  * Generate a unique report ID in format: AQI-YYYY-XXXXXX

@@ -1,4 +1,4 @@
-import { savedLocations as defaultLocations } from './demoData'
+import { fallbackSavedLocations as defaultLocations } from './fallbackData'
 
 export function getSavedLocationsKey(userId) {
   return `airguard_saved_locations_${userId || 'guest'}`

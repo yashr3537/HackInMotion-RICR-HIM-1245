@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Mail, CheckCircle2, AlertCircle } from 'lucide-react'
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
+import { validateEmail } from '../utils/validation/validation'
 
 export default function ForgotPassword() {
   const { t } = useLanguage()
@@ -14,21 +15,13 @@ export default function ForgotPassword() {
   const [status, setStatus] = useState(null) // null | sending | sent
   const [resetToken, setResetToken] = useState(null)
 
-  function validateEmail(value) {
-    if (!value) return t('auth.emailRequired')
-    // basic email regex
-    const re = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
-    if (!re.test(value)) return t('auth.invalidEmail')
-    return null
-  }
-
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
 
-    const validation = validateEmail(email.trim())
-    if (validation) {
-      setError(validation)
+    const val = validateEmail(email)
+    if (!val.isValid) {
+      setError(val.error)
       return
     }
 

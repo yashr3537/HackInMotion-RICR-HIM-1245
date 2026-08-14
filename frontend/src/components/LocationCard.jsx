@@ -12,7 +12,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import RiskBadge from './RiskBadge'
-import { getAirQuality } from '../data/airQualityApi'
+import { getAirQuality } from '../services/airQuality/airQualityApi'
 import { useLanguage } from '../i18n/index.jsx'
 
 const ICONS = {

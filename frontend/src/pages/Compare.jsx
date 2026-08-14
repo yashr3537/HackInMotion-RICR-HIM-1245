@@ -1,55 +1,64 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import {
-  Check,
-  Trophy,
   BarChart3,
   MapPin,
   Activity,
   Wind,
   Thermometer,
   Droplets,
-  ArrowUpRight,
+  Trophy,
   Sparkles,
+  Search,
+  Loader2,
+  X,
 } from 'lucide-react'
 
 import RiskBadge from '../components/RiskBadge'
-import { compareLocations } from '../data/demoData'
-import { getAirQuality } from '../data/airQualityApi'
+import { getAirQuality, getWeather } from '../services/airQuality/airQualityApi'
+import { searchLocation } from '../services/location/locationApi'
+import { fetchSavedLocations } from '../services/supabase/supabaseService'
+import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
 
+const DEFAULT_CITIES = [
+  { id: 'cmp-bhopal', name: 'Bhopal', region: 'Madhya Pradesh', latitude: 23.2599, longitude: 77.4126 },
+  { id: 'cmp-indore', name: 'Indore', region: 'Madhya Pradesh', latitude: 22.7196, longitude: 75.8577 },
+  { id: 'cmp-delhi', name: 'Delhi', region: 'Delhi NCR', latitude: 28.6139, longitude: 77.2090 },
+]
+
 const getRiskMeta = (aqi, t) => {
-  if (aqi <= 50) {
+  if (aqi === null || aqi === undefined) {
+    return { label: 'Unavailable', color: '#6B7280', bg: '#F3F4F6' }
+  }
+  const val = Number(aqi)
+  if (val <= 50) {
     return {
       label: t ? t('aqi.good', { defaultValue: 'Good' }) : 'Good',
       color: '#22A85F',
       bg: '#E6F7EC',
     }
   }
-
-  if (aqi <= 100) {
+  if (val <= 100) {
     return {
       label: t ? t('aqi.moderate', { defaultValue: 'Moderate' }) : 'Moderate',
       color: '#D6A70C',
       bg: '#FBF3D9',
     }
   }
-
-  if (aqi <= 150) {
+  if (val <= 150) {
     return {
       label: t ? t('aqi.sensitive', { defaultValue: 'Sensitive' }) : 'Sensitive',
       color: '#E5822A',
       bg: '#FCEADA',
     }
   }
-
-  if (aqi <= 200) {
+  if (val <= 200) {
     return {
       label: t ? t('aqi.unhealthy', { defaultValue: 'Unhealthy' }) : 'Unhealthy',
       color: '#D8492E',
       bg: '#FBE2DC',
     }
   }
-
   return {
     label: t ? t('aqi.hazardous', { defaultValue: 'Hazardous' }) : 'Hazardous',
     color: '#B92E3D',
@@ -58,146 +67,233 @@ const getRiskMeta = (aqi, t) => {
 }
 
 const getMetricValue = (location, key) => {
-  if (key === 'aqi') return Number(location.aqi || 0)
-  if (key === 'pm25') return Number(location.pm25 || 0)
-  if (key === 'pm10') return Number(location.pm10 || 0)
-  if (key === 'no2') return Number(location.no2 || 0)
-  if (key === 'temperature') return Number(location.temperature || 0)
-  if (key === 'humidity') return Number(location.humidity || 0)
-
-  return 0
+  if (location.loading) return '--'
+  if (key === 'aqi') return location.aqi !== null && location.aqi !== undefined ? location.aqi : '--'
+  if (key === 'pm25') return location.pm25 !== null && location.pm25 !== undefined ? location.pm25 : '--'
+  if (key === 'pm10') return location.pm10 !== null && location.pm10 !== undefined ? location.pm10 : '--'
+  if (key === 'no2') return location.no2 !== null && location.no2 !== undefined ? location.no2 : '--'
+  if (key === 'temperature') return location.temperature !== null && location.temperature !== undefined ? location.temperature : '--'
+  if (key === 'humidity') return location.humidity !== null && location.humidity !== undefined ? location.humidity : '--'
+  return '--'
 }
 
 const METRICS = [
-  {
-    key: 'aqi',
-    label: 'AQI',
-    icon: Activity,
-    unit: '',
-    lowerIsBetter: true,
-  },
-  {
-    key: 'pm25',
-    label: 'PM2.5',
-    icon: Wind,
-    unit: 'µg/m³',
-    lowerIsBetter: true,
-  },
-  {
-    key: 'pm10',
-    label: 'PM10',
-    icon: Wind,
-    unit: 'µg/m³',
-    lowerIsBetter: true,
-  },
-  {
-    key: 'no2',
-    label: 'NO₂',
-    icon: Activity,
-    unit: 'µg/m³',
-    lowerIsBetter: true,
-  },
-  {
-    key: 'temperature',
-    label: 'Temperature',
-    icon: Thermometer,
-    unit: '°C',
-    lowerIsBetter: false,
-  },
-  {
-    key: 'humidity',
-    label: 'Humidity',
-    icon: Droplets,
-    unit: '%',
-    lowerIsBetter: false,
-  },
+  { key: 'aqi', label: 'AQI', icon: Activity, unit: '' },
+  { key: 'pm25', label: 'PM2.5', icon: Wind, unit: 'µg/m³' },
+  { key: 'pm10', label: 'PM10', icon: Wind, unit: 'µg/m³' },
+  { key: 'no2', label: 'NO₂', icon: Activity, unit: 'µg/m³' },
+  { key: 'temperature', label: 'Temperature', icon: Thermometer, unit: '°C' },
+  { key: 'humidity', label: 'Humidity', icon: Droplets, unit: '%' },
 ]
 
 export default function Compare() {
   const { t } = useLanguage()
-  const [locations, setLocations] = useState(compareLocations)
-  const [selected, setSelected] = useState(
-    compareLocations.map((location) => location.id),
-  )
-  const [visible, setVisible] = useState(false)
+  const { currentUser } = useAuth()
+  const [compareList, setCompareList] = useState([])
+  const [loadingInitial, setLoadingInitial] = useState(true)
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchSuggestions, setSearchSuggestions] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [notice, setNotice] = useState(null)
+  const searchRef = useRef(null)
+
+  // Debounced search logic
+  useEffect(() => {
+    const trimmed = searchQuery.trim()
+    if (!trimmed) {
+      setSearchSuggestions([])
+      setIsSearching(false)
+      setShowDropdown(false)
+      return
+    }
+
+    setIsSearching(true)
+    setShowDropdown(true)
+    const timer = setTimeout(async () => {
+      try {
+        const results = await searchLocation(trimmed)
+        setSearchSuggestions(results || [])
+      } catch (err) {
+        console.error('Search error:', err)
+        setSearchSuggestions([])
+      } finally {
+        setIsSearching(false)
+      }
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Auto-dismiss notification toast
+  useEffect(() => {
+    if (notice) {
+      const timer = setTimeout(() => setNotice(null), 4000)
+      return () => clearTimeout(timer)
+    }
+  }, [notice])
+
+  // Initialize locations list on mount
   useEffect(() => {
     let isMounted = true
-    Promise.all(
-      compareLocations.map(async (loc) => {
-        if (loc.latitude && loc.longitude) {
-          try {
-            const data = await getAirQuality(loc.latitude, loc.longitude)
-            if (data.aqi !== null) {
-              return {
-                ...loc,
-                aqi: data.aqi,
-                pm25: data.pm25,
-                pm10: data.pm10,
-                no2: data.no2,
-              }
-            }
-          } catch (e) {
-            console.error(`Compare live fetch failed for ${loc.name}:`, e)
-          }
+    async function loadInitialData() {
+      let baseList = DEFAULT_CITIES
+      if (currentUser?.id) {
+        const saved = await fetchSavedLocations(currentUser.id)
+        if (saved && saved.length > 0) {
+          baseList = saved.slice(0, 4)
         }
-        return loc
-      })
-    ).then((updated) => {
-      if (isMounted) setLocations(updated)
-    })
+      }
 
+      // Fetch live AQI for initial list in parallel
+      const updatedList = await Promise.all(
+        baseList.map(async (city) => {
+          if (city.latitude && city.longitude) {
+            const [aqData, weatherData] = await Promise.all([
+              getAirQuality(city.latitude, city.longitude),
+              getWeather(city.latitude, city.longitude),
+            ])
+            return {
+              ...city,
+              id: city.id || `loc-${city.name.toLowerCase()}`,
+              aqi: aqData?.aqi ?? null,
+              pm25: aqData?.pm25 ?? null,
+              pm10: aqData?.pm10 ?? null,
+              no2: aqData?.no2 ?? null,
+              temperature: weatherData?.temperature ?? null,
+              humidity: weatherData?.humidity ?? null,
+              loading: false,
+            }
+          }
+          return { ...city, loading: false }
+        })
+      )
+
+      if (isMounted) {
+        setCompareList(updatedList)
+        setLoadingInitial(false)
+      }
+    }
+
+    loadInitialData()
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [currentUser?.id])
 
-  const active = useMemo(
-    () =>
-      locations.filter((location) =>
-        selected.includes(location.id),
-      ),
-    [locations, selected],
+  // Add location from search suggestions
+  const handleSelectLocation = async (result) => {
+    setShowDropdown(false)
+    setSearchQuery('')
+
+    // Check maximum limit
+    if (compareList.length >= 6) {
+      setNotice({ type: 'warning', text: 'Maximum 6 cities can be compared. Remove a city to add another.' })
+      return
+    }
+
+    // Check duplicate
+    const isDuplicate = compareList.some(
+      (loc) =>
+        (loc.latitude === result.latitude && loc.longitude === result.longitude) ||
+        (loc.name.toLowerCase() === result.name.toLowerCase() &&
+          (loc.region || '').toLowerCase() === (result.region || '').toLowerCase())
+    )
+
+    if (isDuplicate) {
+      setNotice({ type: 'warning', text: `"${result.name}" is already in your comparison list.` })
+      return
+    }
+
+    const tempId = `loc-${result.name.toLowerCase()}-${Date.now()}`
+    const placeholderCity = {
+      id: tempId,
+      name: result.name,
+      region: result.region || result.country || '',
+      latitude: result.latitude,
+      longitude: result.longitude,
+      loading: true,
+      aqi: null,
+      pm25: null,
+      pm10: null,
+      no2: null,
+      temperature: null,
+      humidity: null,
+    }
+
+    setCompareList((prev) => [...prev, placeholderCity])
+
+    // Fetch live data for selected city
+    try {
+      const [aqData, weatherData] = await Promise.all([
+        getAirQuality(result.latitude, result.longitude),
+        getWeather(result.latitude, result.longitude),
+      ])
+
+      setCompareList((prev) =>
+        prev.map((item) =>
+          item.id === tempId
+            ? {
+                ...item,
+                aqi: aqData?.aqi ?? null,
+                pm25: aqData?.pm25 ?? null,
+                pm10: aqData?.pm10 ?? null,
+                no2: aqData?.no2 ?? null,
+                temperature: weatherData?.temperature ?? null,
+                humidity: weatherData?.humidity ?? null,
+                loading: false,
+              }
+            : item
+        )
+      )
+    } catch (e) {
+      console.error('Failed to load air quality for selected location:', e)
+      setCompareList((prev) =>
+        prev.map((item) => (item.id === tempId ? { ...item, loading: false } : item))
+      )
+    }
+  }
+
+  // Remove city permanently
+  const handleRemoveCity = (idToRemove) => {
+    setCompareList((prev) => prev.filter((city) => city.id !== idToRemove))
+  }
+
+  // Active loaded list sorted by AQI
+  const validList = useMemo(
+    () => compareList.filter((item) => !item.loading && item.aqi !== null && item.aqi !== undefined),
+    [compareList]
   )
 
-  const sortedByAqi = useMemo(
-    () => [...active].sort((a, b) => a.aqi - b.aqi),
-    [active],
-  )
+  const sortedByAqi = useMemo(() => {
+    return [...compareList].sort((a, b) => {
+      if (a.aqi === null) return 1
+      if (b.aqi === null) return -1
+      return Number(a.aqi) - Number(b.aqi)
+    })
+  }, [compareList])
 
-  const best = sortedByAqi.length ? sortedByAqi[0] : null
-  const worst = sortedByAqi.length
-    ? sortedByAqi[sortedByAqi.length - 1]
-    : null
+  const best = useMemo(() => (validList.length > 0 ? [...validList].sort((a, b) => a.aqi - b.aqi)[0] : null), [validList])
+  const worst = useMemo(() => (validList.length > 0 ? [...validList].sort((a, b) => b.aqi - a.aqi)[0] : null), [validList])
 
   const averageAqi = useMemo(() => {
-    if (!active.length) return 0
-
-    return Math.round(
-      active.reduce(
-        (sum, location) => sum + Number(location.aqi || 0),
-        0,
-      ) / active.length,
-    )
-  }, [active])
-
-  useEffect(() => {
-    setVisible(false)
-
-    const timer = window.setTimeout(() => {
-      setVisible(true)
-    }, 70)
-
-    return () => window.clearTimeout(timer)
-  }, [selected.length])
-
-  function toggle(id) {
-    setSelected((prev) =>
-      prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id],
-    )
-  }
+    if (validList.length === 0) return '--'
+    const total = validList.reduce((sum, item) => sum + Number(item.aqi || 0), 0)
+    return Math.round(total / validList.length)
+  }, [validList])
 
   return (
     <div className="page-enter flex flex-col gap-7 pb-8 sm:gap-9">
@@ -213,11 +309,11 @@ export default function Compare() {
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          {t('compare.subtitle', { defaultValue: 'Compare current air-quality conditions across multiple locations and quickly understand which area currently has the lower AQI.' })}
+          {t('compare.subtitle', { defaultValue: 'Compare live air-quality conditions across cities and analyze key environmental metrics side-by-side.' })}
         </p>
       </section>
 
-      {/* LOCATION SELECTOR */}
+      {/* SEARCH AND LOCATION SELECTOR */}
       <section className="fade-up">
         <div className="relative overflow-hidden rounded-2xl border border-ink-100 bg-surface p-5 shadow-soft sm:p-6">
           <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-forest-400/6 blur-3xl float-soft" />
@@ -230,51 +326,124 @@ export default function Compare() {
                 </p>
 
                 <h2 className="mt-1 font-display text-lg font-semibold text-ink-900">
-                  {t('compare.question', { defaultValue: 'What do you want to compare?' })}
+                  {t('compare.question', { defaultValue: 'Search & add cities to compare' })}
                 </h2>
               </div>
 
-              <span className="text-xs text-ink-400">
-                {t('compare.selectedCount', { count: active.length, defaultValue: `${active.length} selected` })}
+              <span className="text-xs font-medium text-ink-400">
+                {compareList.length} / 6 cities compared
               </span>
             </div>
 
-            <div className="stagger-children flex flex-wrap gap-2.5">
-              {compareLocations.map((location) => {
-                const isSelected = selected.includes(location.id)
-
-                return (
+            {/* SEARCH BOX INPUT */}
+            <div ref={searchRef} className="relative mb-5 max-w-xl">
+              <div className="relative flex items-center">
+                <Search size={18} className="absolute left-3.5 text-ink-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => {
+                    if (searchQuery.trim()) setShowDropdown(true)
+                  }}
+                  placeholder="Type city name to add (e.g. Pune, Mumbai, Delhi)..."
+                  className="w-full rounded-xl border border-ink-200 bg-white py-2.5 pl-10 pr-10 text-sm font-medium text-ink-900 placeholder-ink-400 transition-all duration-200 focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20"
+                />
+                {isSearching ? (
+                  <Loader2 size={16} className="absolute right-3.5 animate-spin text-forest-600" />
+                ) : searchQuery ? (
                   <button
-                    key={location.id}
                     type="button"
-                    onClick={() => toggle(location.id)}
-                    className={`btn-premium inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                      isSelected
-                        ? 'border-forest-700 bg-forest-700 text-white shadow-sm'
-                        : 'border-ink-200 bg-white text-ink-700 hover:border-forest-200 hover:text-forest-800'
-                    }`}
+                    onClick={() => {
+                      setSearchQuery('')
+                      setShowDropdown(false)
+                    }}
+                    className="absolute right-3 text-ink-400 hover:text-ink-700"
                   >
-                    {isSelected && (
-                      <Check
-                        size={14}
-                        className="animate-pulse"
-                      />
-                    )}
-
-                    {location.name}
+                    <X size={16} />
                   </button>
-                )
-              })}
+                ) : null}
+              </div>
+
+              {/* SEARCH SUGGESTIONS DROPDOWN */}
+              {showDropdown && (
+                <div className="absolute left-0 right-0 top-full z-30 mt-1.5 overflow-hidden rounded-xl border border-ink-100 bg-white shadow-lg backdrop-blur-md">
+                  {isSearching ? (
+                    <div className="flex items-center gap-2 p-4 text-xs text-ink-500">
+                      <Loader2 size={14} className="animate-spin text-forest-600" />
+                      Searching locations...
+                    </div>
+                  ) : searchSuggestions.length === 0 ? (
+                    <div className="p-4 text-xs text-ink-500">
+                      No locations found matching &quot;{searchQuery}&quot;.
+                    </div>
+                  ) : (
+                    <ul className="max-h-60 overflow-y-auto divide-y divide-ink-50">
+                      {searchSuggestions.map((item) => (
+                        <li key={item.id}>
+                          <button
+                            type="button"
+                            onClick={() => handleSelectLocation(item)}
+                            className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors hover:bg-forest-50/60"
+                          >
+                            <span className="font-semibold text-ink-900">{item.name}</span>
+                            <span className="text-xs text-ink-400">
+                              {item.region ? `${item.region}, ` : ''}{item.country}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* NOTIFICATION NOTICE BANNER */}
+            {notice && (
+              <div
+                className={`mb-4 flex items-center justify-between rounded-xl px-4 py-2.5 text-xs font-medium ${
+                  notice.type === 'warning'
+                    ? 'border border-amber-200 bg-amber-50 text-amber-900'
+                    : 'border border-forest-200 bg-forest-50 text-forest-900'
+                }`}
+              >
+                <span>{notice.text}</span>
+                <button type="button" onClick={() => setNotice(null)} className="ml-2 text-ink-500 hover:text-ink-800">
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+
+            {/* CITY CHIPS WITH REMOVE BUTTON */}
+            <div className="stagger-children flex flex-wrap gap-2.5">
+              {compareList.map((location) => (
+                <div
+                  key={location.id}
+                  className="group inline-flex items-center gap-2 rounded-xl border border-forest-700 bg-forest-700 py-1.5 pl-3.5 pr-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-300"
+                >
+                  <MapPin size={13} className="text-forest-200" />
+                  <span>{location.name}</span>
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCity(location.id)}
+                    title={`Remove ${location.name}`}
+                    className="ml-1 rounded-lg p-1 text-forest-200 hover:bg-forest-800 hover:text-white transition-colors"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-
       {/* =====================================================
           EMPTY STATE
       ====================================================== */}
-      {active.length === 0 ? (
+      {compareList.length === 0 ? (
         <section className="fade-up">
           <div className="rounded-2xl border border-ink-100 bg-surface p-10 text-center shadow-soft">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-forest-50 text-forest-700">
@@ -282,40 +451,39 @@ export default function Compare() {
             </div>
 
             <h2 className="mt-4 font-display text-lg font-semibold text-ink-900">
-              Select at least one location
+              Search and add a city to start comparing
             </h2>
 
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink-500">
-              Choose one or more locations above to begin comparing current
-              environmental conditions.
+              Use the search bar above to select cities and compare live environmental air quality metrics side-by-side.
             </p>
           </div>
         </section>
       ) : (
         <>
           {/* =================================================
-              SUMMARY
+              SUMMARY STATS
           ================================================== */}
           <section className="stagger-children grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
               <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
                 <MapPin size={12} />
-                Selected
+                Compared
               </div>
 
               <div className="mt-2 font-mono text-2xl font-bold text-ink-900">
-                {active.length}
+                {compareList.length}
               </div>
 
               <p className="mt-1 text-[10px] text-ink-500">
-                Locations
+                Cities active
               </p>
             </div>
 
             <div className="card-hover rounded-xl border border-forest-100 bg-forest-50 p-4 shadow-soft">
               <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.13em] text-forest-700">
                 <Trophy size={12} />
-                Best
+                Lowest AQI (Best)
               </div>
 
               <div className="mt-2 font-mono text-2xl font-bold text-forest-800">
@@ -338,14 +506,14 @@ export default function Compare() {
               </div>
 
               <p className="mt-1 text-[10px] text-ink-500">
-                Average AQI
+                Mean AQI
               </p>
             </div>
 
             <div className="card-hover rounded-xl border border-ink-100 bg-surface p-4 shadow-soft">
               <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
                 <Activity size={12} />
-                Highest
+                Highest AQI
               </div>
 
               <div className="mt-2 font-mono text-2xl font-bold text-ink-900">
@@ -359,7 +527,7 @@ export default function Compare() {
           </section>
 
           {/* =================================================
-              LOCATION CARDS
+              LOCATION COMPARISON GRID CARDS
           ================================================== */}
           <section>
             <div className="fade-up mb-4 flex items-end justify-between gap-4">
@@ -369,7 +537,7 @@ export default function Compare() {
                 </p>
 
                 <h2 className="mt-1 font-display text-lg font-semibold text-ink-900 sm:text-xl">
-                  Location comparison
+                  Live location cards
                 </h2>
               </div>
 
@@ -378,133 +546,122 @@ export default function Compare() {
               </span>
             </div>
 
-            <div
-              className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-4 transition-all duration-700 ${
-                visible
-                  ? 'translate-y-0 opacity-100'
-                  : 'translate-y-3 opacity-0'
-              }`}
-            >
-              {sortedByAqi.map((location, index) => {
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {sortedByAqi.map((location) => {
                 const isBest = best?.id === location.id
                 const isWorst = worst?.id === location.id
-                const risk = getRiskMeta(location.aqi)
+                const risk = getRiskMeta(location.aqi, t)
 
                 return (
                   <div
                     key={location.id}
-                    className={`card-hover card-glow group relative overflow-hidden rounded-2xl border p-5 shadow-soft ${
+                    className={`card-hover card-glow group relative overflow-hidden rounded-2xl border p-5 shadow-soft transition-all duration-300 ${
                       isBest
                         ? 'border-forest-200 bg-forest-50'
                         : 'border-ink-100 bg-surface'
                     }`}
-                    style={{
-                      animationDelay: `${index * 80}ms`,
-                    }}
                   >
                     {/* Ambient glow */}
                     <div
                       className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full blur-3xl transition-transform duration-700 group-hover:scale-125"
                       style={{
                         backgroundColor: risk.color,
-                        opacity: 0.05,
+                        opacity: 0.06,
                       }}
                     />
 
-                    <div className="relative z-10">
-                      {isBest && (
-                        <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-forest-200 bg-white px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-forest-800">
-                          <Trophy size={10} />
-                          Best current air
-                        </div>
-                      )}
+                    {/* REMOVE BUTTON ON CARD */}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCity(location.id)}
+                      title={`Remove ${location.name}`}
+                      className="absolute right-3.5 top-3.5 z-20 rounded-full p-1.5 text-ink-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    >
+                      <X size={15} />
+                    </button>
 
-                      {!isBest && isWorst && (
-                        <div
-                          className="mb-4 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em]"
-                          style={{
-                            color: risk.color,
-                            backgroundColor: risk.bg,
-                            borderColor: `${risk.color}25`,
-                          }}
-                        >
-                          Highest AQI
-                        </div>
-                      )}
-
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="truncate font-display text-lg font-semibold text-ink-900">
-                            {location.name}
-                          </p>
-
-                          <p className="mt-1 flex items-center gap-1 text-xs text-ink-500">
-                            <MapPin size={11} />
-                            {location.region}
-                          </p>
-                        </div>
-
-                        <span
-                          className="h-3 w-3 shrink-0 rounded-full"
-                          style={{
-                            backgroundColor: risk.color,
-                            boxShadow: `0 0 10px ${risk.color}55`,
-                          }}
-                        />
+                    {location.loading ? (
+                      <div className="flex h-48 flex-col items-center justify-center gap-3">
+                        <Loader2 size={24} className="animate-spin text-forest-600" />
+                        <span className="text-xs font-medium text-ink-500">Fetching live AQI for {location.name}...</span>
                       </div>
+                    ) : (
+                      <div className="relative z-10">
+                        {isBest && (
+                          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-forest-200 bg-white px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-forest-800">
+                            <Trophy size={10} />
+                            Best current air
+                          </div>
+                        )}
 
-                      <div className="mt-7">
-                        <div className="flex items-end justify-between gap-3">
-                          <div>
-                            <p className="text-[9px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-                              AQI
+                        {!isBest && isWorst && (
+                          <div
+                            className="mb-4 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em]"
+                            style={{
+                              color: risk.color,
+                              backgroundColor: risk.bg,
+                              borderColor: `${risk.color}25`,
+                            }}
+                          >
+                            Highest AQI
+                          </div>
+                        )}
+
+                        <div className="flex items-start justify-between gap-3 pr-6">
+                          <div className="min-w-0">
+                            <p className="truncate font-display text-lg font-semibold text-ink-900">
+                              {location.name}
                             </p>
 
-                            <p
-                              className="mt-1 font-mono text-4xl font-bold tracking-[-0.05em]"
-                              style={{
-                                color: isBest
-                                  ? '#166B3E'
-                                  : '#18221E',
-                              }}
-                            >
-                              {location.aqi}
+                            <p className="mt-1 flex items-center gap-1 text-xs text-ink-500">
+                              <MapPin size={11} />
+                              {location.region || location.country || 'Location'}
                             </p>
                           </div>
-
-                          <RiskBadge
-                            aqi={location.aqi}
-                            size="sm"
-                          />
                         </div>
 
-                        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-ink-100">
-                          <div
-                            className="progress-fill h-full rounded-full"
-                            style={{
-                              width: `${Math.min(
-                                (location.aqi / 300) * 100,
-                                100,
-                              )}%`,
-                              backgroundColor: risk.color,
-                            }}
-                          />
+                        <div className="mt-6">
+                          <div className="flex items-end justify-between gap-3">
+                            <div>
+                              <p className="text-[9px] font-semibold uppercase tracking-[0.13em] text-ink-400">
+                                AQI
+                              </p>
+
+                              <p
+                                className="mt-1 font-mono text-4xl font-bold tracking-[-0.05em]"
+                                style={{
+                                  color: isBest ? '#166B3E' : '#18221E',
+                                }}
+                              >
+                                {location.aqi ?? '--'}
+                              </p>
+                            </div>
+
+                            <RiskBadge aqi={location.aqi} size="sm" />
+                          </div>
+
+                          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-ink-100">
+                            <div
+                              className="progress-fill h-full rounded-full"
+                              style={{
+                                width: `${Math.min(
+                                  ((location.aqi || 0) / 300) * 100,
+                                  100
+                                )}%`,
+                                backgroundColor: risk.color,
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-5 flex items-center justify-between border-t border-ink-100 pt-4 text-[10px] text-ink-400">
+                          <span>Current reading</span>
+                          <span className="font-semibold" style={{ color: risk.color }}>
+                            {risk.label}
+                          </span>
                         </div>
                       </div>
-
-                      <div className="mt-5 flex items-center justify-between border-t border-ink-100 pt-4 text-[10px] text-ink-400">
-                        <span>Current reading</span>
-
-                        <span
-                          className="font-semibold"
-                          style={{
-                            color: risk.color,
-                          }}
-                        >
-                          {risk.label}
-                        </span>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 )
               })}
@@ -512,7 +669,7 @@ export default function Compare() {
           </section>
 
           {/* =================================================
-              METRIC COMPARISON
+              METRIC COMPARISON TABLE
           ================================================== */}
           <section className="fade-up">
             <div className="mb-4">
@@ -521,7 +678,7 @@ export default function Compare() {
               </p>
 
               <h2 className="mt-1 font-display text-lg font-semibold text-ink-900 sm:text-xl">
-                Compare pollutant and weather readings
+                Compare pollutant & weather readings
               </h2>
             </div>
 
@@ -549,10 +706,7 @@ export default function Compare() {
                     const Icon = metric.icon
 
                     return (
-                      <tr
-                        key={metric.key}
-                        className="border-b border-ink-100 last:border-b-0"
-                      >
+                      <tr key={metric.key} className="border-b border-ink-100 last:border-b-0">
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-2.5">
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-forest-50 text-forest-700">
@@ -560,35 +714,18 @@ export default function Compare() {
                             </div>
 
                             <div>
-                              <p className="text-xs font-semibold text-ink-800">
-                                {metric.label}
-                              </p>
-
-                              {metric.unit && (
-                                <p className="text-[9px] text-ink-400">
-                                  {metric.unit}
-                                </p>
-                              )}
+                              <p className="text-xs font-semibold text-ink-800">{metric.label}</p>
+                              {metric.unit && <p className="text-[9px] text-ink-400">{metric.unit}</p>}
                             </div>
                           </div>
                         </td>
 
                         {sortedByAqi.map((location) => {
-                          const value = getMetricValue(
-                            location,
-                            metric.key,
-                          )
-
+                          const val = getMetricValue(location, metric.key)
                           return (
-                            <td
-                              key={`${location.id}-${metric.key}`}
-                              className="px-5 py-4"
-                            >
+                            <td key={`${location.id}-${metric.key}`} className="px-5 py-4">
                               <span className="font-mono text-sm font-semibold text-ink-900">
-                                {value || '--'}
-                                {metric.unit && value
-                                  ? ` ${metric.unit}`
-                                  : ''}
+                                {val} {metric.unit && val !== '--' ? metric.unit : ''}
                               </span>
                             </td>
                           )
@@ -601,42 +738,27 @@ export default function Compare() {
             </div>
           </section>
 
-          {/* =================================================
-              INSIGHT
-          ================================================== */}
-          <section className="fade-up">
-            <div className="relative overflow-hidden rounded-2xl border border-forest-100 bg-forest-50 p-5 sm:p-6">
-              <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-forest-400/10 blur-3xl float-soft" />
+          {/* INSIGHT */}
+          {best && worst && (
+            <section className="fade-up">
+              <div className="relative overflow-hidden rounded-2xl border border-forest-100 bg-forest-50 p-5 sm:p-6">
+                <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-forest-400/10 blur-3xl float-soft" />
 
-              <div className="relative flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-forest-700 shadow-sm">
-                  <Sparkles size={17} />
-                </div>
+                <div className="relative flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-forest-700 shadow-sm">
+                    <Sparkles size={17} />
+                  </div>
 
-                <div>
-                  <p className="text-sm font-semibold text-ink-900">
-                    Current comparison insight
-                  </p>
-
-                  <p className="mt-1 text-xs leading-6 text-ink-600">
-                    {best?.name} currently has the lowest AQI among the
-                    selected locations at {best?.aqi}. {worst?.name} has the
-                    highest at {worst?.aqi}. Conditions can change, so use
-                    live readings again before making an outdoor decision.
-                  </p>
+                  <div>
+                    <p className="text-sm font-semibold text-ink-900">Live comparison insight</p>
+                    <p className="mt-1 text-xs leading-6 text-ink-600">
+                      <strong>{best.name}</strong> currently has the cleanest air among compared cities with an AQI of {best.aqi}. <strong>{worst.name}</strong> records the highest pollution level at {worst.aqi}.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              NOTE
-          ================================================== */}
-          <p className="fade-up text-[10px] leading-5 text-ink-400">
-            Comparison uses the currently available location data in the
-            application. Values are environmental readings and should not be
-            interpreted as a medical assessment.
-          </p>
+            </section>
+          )}
         </>
       )}
     </div>
