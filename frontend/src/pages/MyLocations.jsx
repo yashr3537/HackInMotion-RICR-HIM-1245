@@ -11,6 +11,8 @@ import {
   Check,
   AlertTriangle,
   ArrowUpRight,
+  BellRing,
+  Sliders,
 } from 'lucide-react'
 
 import SearchBar from '../components/SearchBar'
@@ -23,10 +25,11 @@ import { getAirQuality } from '../services/airQuality/airQualityApi'
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
 import {
-  loadUserSavedLocations,
-  removeUserSavedLocation,
-  addUserSavedLocation,
-} from '../data/savedLocationsStore'
+  fetchSavedLocations,
+  saveLocationToDb,
+  removeSavedLocationFromDb,
+  updateSavedLocationThreshold,
+} from '../services/supabase/supabaseService'
 
 export default function MyLocations() {
   const navigate = useNavigate()
@@ -34,27 +37,142 @@ export default function MyLocations() {
   const { t } = useLanguage()
 
   // =========================================================
-  // SAVED LOCATIONS PERSISTENT STATE
+  // SAVED LOCATIONS PERSISTENT STATE (SUPABASE)
   // =========================================================
 
   const [mySavedLocations, setMySavedLocations] = useState([])
+  const [loadingLocations, setLoadingLocations] = useState(true)
   const [removingLocation, setRemovingLocation] = useState(null)
 
+  // THRESHOLD MODAL STATES
+  const [savingLocationModal, setSavingLocationModal] = useState(null)
+  const [savingThreshold, setSavingThreshold] = useState(100)
+  const [editingThresholdLocation, setEditingThresholdLocation] = useState(null)
+  const [editingThresholdValue, setEditingThresholdValue] = useState(100)
+
+  // ERROR FEEDBACK STATE FOR STEP 1 DEBUGGING
+  const [actionError, setActionError] = useState(null)
+
   useEffect(() => {
-    const loaded = loadUserSavedLocations(currentUser?.id)
-    setMySavedLocations(loaded)
+    if (!currentUser?.id) {
+      setMySavedLocations([])
+      setLoadingLocations(false)
+      return
+    }
+
+    let isMounted = true
+    setLoadingLocations(true)
+    setActionError(null)
+
+    fetchSavedLocations(currentUser.id)
+      .then((locations) => {
+        if (isMounted) {
+          setMySavedLocations(locations)
+          setLoadingLocations(false)
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching saved locations:', err)
+        if (isMounted) {
+          setLoadingLocations(false)
+          setActionError(`Failed to fetch locations: ${err.message || String(err)}`)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
   }, [currentUser?.id])
 
   const handleRemoveRequest = (target) => {
     if (!target) return
-    const updated = removeUserSavedLocation(target, currentUser?.id)
-    setMySavedLocations(updated)
-    setRemovingLocation(null)
+    setRemovingLocation(target)
+  }
+
+  const handleConfirmRemove = async () => {
+    if (!removingLocation) return
+    if (!currentUser?.id) {
+      setActionError('Cannot remove: user is not logged in (currentUser.id is undefined).')
+      setRemovingLocation(null)
+      return
+    }
+    const targetId = removingLocation.id
+    try {
+      setActionError(null)
+      console.log('Confirming remove for locationId:', targetId, 'userId:', currentUser.id)
+      const success = await removeSavedLocationFromDb(currentUser.id, targetId)
+      if (success) {
+        setMySavedLocations((prev) => prev.filter((loc) => loc.id !== targetId))
+      }
+    } catch (error) {
+      console.error('Remove location failed:', error)
+      setActionError(`Failed to remove location: ${error.message || String(error)}`)
+    } finally {
+      setRemovingLocation(null)
+    }
   }
 
   const handleSaveLocation = (loc) => {
-    const updated = addUserSavedLocation(loc, currentUser?.id)
-    setMySavedLocations(updated)
+    if (!currentUser?.id) {
+      setActionError('Cannot save: User is not logged in. Please sign in.')
+      navigate('/login')
+      return
+    }
+    setSavingLocationModal(loc)
+    setSavingThreshold(loc.alertThreshold || 100)
+  }
+
+  const confirmSaveWithThreshold = async () => {
+    if (!savingLocationModal) return
+    if (!currentUser?.id) {
+      setActionError('Cannot save: User session ID (currentUser.id) is missing or undefined.')
+      setSavingLocationModal(null)
+      return
+    }
+    try {
+      setActionError(null)
+      const locToSave = {
+        ...savingLocationModal,
+        alertThreshold: savingThreshold,
+      }
+      console.log('Confirming save location payload:', locToSave, 'currentUser:', currentUser)
+      const savedLoc = await saveLocationToDb(currentUser.id, locToSave)
+      if (savedLoc) {
+        setMySavedLocations((prev) => [
+          savedLoc,
+          ...prev.filter((item) => item.id !== savedLoc.id),
+        ])
+      }
+    } catch (error) {
+      console.error('Save location failed:', error)
+      setActionError(`Failed to save location: ${error.message || String(error)}`)
+    } finally {
+      setSavingLocationModal(null)
+    }
+  }
+
+  const handleEditThresholdRequest = (loc) => {
+    setEditingThresholdLocation(loc)
+    setEditingThresholdValue(loc.alertThreshold || 100)
+  }
+
+  const confirmUpdateThreshold = async () => {
+    if (!editingThresholdLocation || !currentUser?.id) return
+    const targetId = editingThresholdLocation.id
+    try {
+      const success = await updateSavedLocationThreshold(currentUser.id, targetId, editingThresholdValue)
+      if (success) {
+        setMySavedLocations((prev) =>
+          prev.map((loc) =>
+            loc.id === targetId ? { ...loc, alertThreshold: editingThresholdValue } : loc
+          )
+        )
+      }
+    } catch (err) {
+      console.error('Failed to update threshold:', err)
+    } finally {
+      setEditingThresholdLocation(null)
+    }
   }
 
   const isLocationSaved = (loc) => {
@@ -302,6 +420,26 @@ export default function MyLocations() {
         </div>
       </section>
 
+      {/* ERROR DEBUG BANNER FOR STEP 1 */}
+      {actionError && (
+        <div className="rounded-2xl border border-red-300 bg-red-50 p-4 text-red-900 shadow-md flex items-start justify-between gap-4 animate-shake">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="text-red-600 shrink-0 mt-0.5" size={20} />
+            <div>
+              <h4 className="font-semibold text-sm">Action Failed (Error details below):</h4>
+              <p className="font-mono text-xs mt-1 text-red-800 break-all">{actionError}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActionError(null)}
+            className="shrink-0 rounded-lg bg-red-200 px-3 py-1.5 text-xs font-semibold text-red-900 hover:bg-red-300 transition-colors"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* =====================================================
           SAVED LOCATIONS SECTION
       ===================================================== */}
@@ -317,7 +455,29 @@ export default function MyLocations() {
           </div>
         </div>
 
-        {mySavedLocations.length > 0 ? (
+        {!currentUser ? (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-6 text-center shadow-soft">
+            <AlertTriangle size={24} className="mx-auto text-amber-600 mb-2" />
+            <h3 className="font-display font-semibold text-ink-900">
+              Log in to save locations and receive alerts
+            </h3>
+            <p className="mt-1 text-xs text-ink-500 max-w-md mx-auto">
+              Guest users cannot save locations or receive voice and air quality threshold alerts. Please log in to sync your saved places and stay protected.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/login')}
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-forest-700 px-4 py-2 text-xs font-semibold text-white hover:bg-forest-800 transition-all shadow-sm"
+            >
+              Log in
+            </button>
+          </div>
+        ) : loadingLocations ? (
+          <div className="flex items-center justify-center p-12 text-ink-400">
+            <Loader2 size={24} className="animate-spin text-forest-700" />
+            <span className="ml-2 text-sm">{t('common.loading', { defaultValue: 'Loading saved locations...' })}</span>
+          </div>
+        ) : mySavedLocations.length > 0 ? (
           <div className="stagger-children grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {mySavedLocations.map((location) => (
               <LocationCard
@@ -325,6 +485,7 @@ export default function MyLocations() {
                 location={location}
                 onRemove={(target) => handleRemoveRequest(target)}
                 onViewDetails={(loc) => handleViewDetails(loc)}
+                onEditThreshold={(loc) => handleEditThresholdRequest(loc)}
               />
             ))}
           </div>
@@ -626,6 +787,178 @@ export default function MyLocations() {
                 className="rounded-xl bg-red-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-red-700 transition-colors"
               >
                 {t('common.remove', { defaultValue: 'Remove Location' })}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================
+          SAVE NEW LOCATION WITH THRESHOLD MODAL
+      ===================================================== */}
+      {savingLocationModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md scale-in rounded-2xl border border-ink-100 bg-surface p-6 shadow-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
+                <BellRing size={20} />
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-semibold text-ink-900">
+                  Set Alert Threshold
+                </h3>
+                <p className="text-xs text-ink-500">
+                  {savingLocationModal.name}{savingLocationModal.region ? `, ${savingLocationModal.region}` : ''}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-ink-600 leading-relaxed mb-4">
+              Set the Air Quality Index (AQI) level at which you want to receive voice and push alerts for this location.
+            </p>
+
+            <div className="space-y-4 rounded-xl border border-ink-100 bg-ink-50/50 p-4">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-ink-700">
+                  AQI Alert Threshold:
+                </label>
+                <span className="font-mono text-base font-bold text-forest-800 bg-forest-50 px-2.5 py-1 rounded-lg border border-forest-200">
+                  {savingThreshold} AQI
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="10"
+                max="300"
+                step="5"
+                value={savingThreshold}
+                onChange={(e) => setSavingThreshold(Number(e.target.value))}
+                className="w-full accent-forest-700 cursor-pointer"
+              />
+
+              <div className="flex gap-2 pt-1">
+                {[10, 50, 100, 150, 200].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setSavingThreshold(preset)}
+                    className={`flex-1 py-1 text-[11px] font-semibold rounded-md border transition-all ${
+                      savingThreshold === preset
+                        ? 'bg-forest-700 text-white border-forest-700'
+                        : 'bg-surface text-ink-700 border-ink-200 hover:bg-ink-100'
+                    }`}
+                  >
+                    {preset === 10 ? '10 (Test)' : preset}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-ink-400 text-center">
+                * Select 10 for instant testing of voice alerts when live AQI &gt; 10.
+              </p>
+            </div>
+
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setSavingLocationModal(null)}
+                className="rounded-xl border border-ink-200 bg-surface px-4 py-2.5 text-xs font-semibold text-ink-700 hover:bg-ink-50 transition-colors"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmSaveWithThreshold}
+                className="rounded-xl bg-forest-700 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-forest-800 transition-colors"
+              >
+                Save Location
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================
+          EDIT EXISTING LOCATION THRESHOLD MODAL
+      ===================================================== */}
+      {editingThresholdLocation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md scale-in rounded-2xl border border-ink-100 bg-surface p-6 shadow-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                <Sliders size={20} />
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-semibold text-ink-900">
+                  Edit Alert Threshold
+                </h3>
+                <p className="text-xs text-ink-500">
+                  {editingThresholdLocation.name}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-ink-600 leading-relaxed mb-4">
+              Update your trigger AQI for voice &amp; push notifications for {editingThresholdLocation.name}.
+            </p>
+
+            <div className="space-y-4 rounded-xl border border-ink-100 bg-ink-50/50 p-4">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-ink-700">
+                  Trigger AQI Threshold:
+                </label>
+                <span className="font-mono text-base font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                  {editingThresholdValue} AQI
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="10"
+                max="300"
+                step="5"
+                value={editingThresholdValue}
+                onChange={(e) => setEditingThresholdValue(Number(e.target.value))}
+                className="w-full accent-amber-600 cursor-pointer"
+              />
+
+              <div className="flex gap-2 pt-1">
+                {[10, 50, 100, 150, 200].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setEditingThresholdValue(preset)}
+                    className={`flex-1 py-1 text-[11px] font-semibold rounded-md border transition-all ${
+                      editingThresholdValue === preset
+                        ? 'bg-amber-600 text-white border-amber-600'
+                        : 'bg-surface text-ink-700 border-ink-200 hover:bg-ink-100'
+                    }`}
+                  >
+                    {preset === 10 ? '10 (Test)' : preset}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-ink-400 text-center">
+                * Select 10 for instant testing of voice alerts when live AQI &gt; 10.
+              </p>
+            </div>
+
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setEditingThresholdLocation(null)}
+                className="rounded-xl border border-ink-200 bg-surface px-4 py-2.5 text-xs font-semibold text-ink-700 hover:bg-ink-50 transition-colors"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmUpdateThreshold}
+                className="rounded-xl bg-amber-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-amber-700 transition-colors"
+              >
+                Update Threshold
               </button>
             </div>
           </div>

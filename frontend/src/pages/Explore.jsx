@@ -1,19 +1,125 @@
 import { useEffect, useState } from 'react'
-import { MapPin, Plus, Loader2, ArrowRight } from 'lucide-react'
+import { MapPin, Plus, Check, Loader2, ArrowRight, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import SearchBar from '../components/SearchBar'
 import RiskBadge from '../components/RiskBadge'
 import { EmptyState } from '../components/EmptyState'
 import { searchLocation } from '../services/location/locationApi'
 import { getAirQuality } from '../services/airQuality/airQualityApi'
+import { useAuth } from '../auth'
+import {
+  fetchSavedLocations,
+  saveLocationToDb,
+  removeSavedLocationFromDb,
+} from '../services/supabase/supabaseService'
 
 export default function Explore() {
   const navigate = useNavigate()
+  const { currentUser } = useAuth()
 
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [savedLocations, setSavedLocations] = useState([])
+  const [toast, setToast] = useState(null)
+  const [actionLoadingId, setActionLoadingId] = useState(null)
+
+  // Fetch user's saved locations from Supabase on mount/auth change
+  useEffect(() => {
+    if (!currentUser?.id) {
+      setSavedLocations([])
+      return
+    }
+    let isMounted = true
+    fetchSavedLocations(currentUser.id)
+      .then((locs) => {
+        if (isMounted) setSavedLocations(locs)
+      })
+      .catch((err) => console.error('Failed to fetch saved locations in Explore:', err))
+
+    return () => {
+      isMounted = false
+    }
+  }, [currentUser?.id])
+
+  // Auto-dismiss notification toast after 3.5 seconds
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3500)
+      return () => clearTimeout(timer)
+    }
+  }, [toast])
+
+  const isLocationSaved = (loc) => {
+    return savedLocations.some(
+      (saved) =>
+        (saved.id && String(saved.id) === String(loc.id)) ||
+        (saved.name && loc.name && saved.name.toLowerCase() === loc.name.toLowerCase() && saved.region === loc.region)
+    )
+  }
+
+  const handleToggleSaveLocation = async (e, location) => {
+    e.stopPropagation()
+
+    if (!currentUser?.id) {
+      setToast({ type: 'warning', text: 'Please log in to save locations and receive alerts.' })
+      setTimeout(() => navigate('/login'), 1500)
+      return
+    }
+
+    const locIdKey = location.id || `${location.name}-${location.latitude}`
+    setActionLoadingId(locIdKey)
+
+    const alreadySaved = isLocationSaved(location)
+
+    if (alreadySaved) {
+      // Find matching saved item to get DB id
+      const existingMatch = savedLocations.find(
+        (saved) =>
+          String(saved.id) === String(location.id) ||
+          (saved.name.toLowerCase() === location.name.toLowerCase() && saved.region === location.region)
+      )
+
+      if (!existingMatch?.id) {
+        setActionLoadingId(null)
+        return
+      }
+
+      try {
+        const success = await removeSavedLocationFromDb(currentUser.id, existingMatch.id)
+        if (success) {
+          setSavedLocations((prev) => prev.filter((item) => item.id !== existingMatch.id))
+          setToast({ type: 'success', text: `Removed "${location.name}" from My Locations.` })
+        } else {
+          setToast({ type: 'error', text: `Failed to remove "${location.name}". Please try again.` })
+        }
+      } catch (err) {
+        console.error('Error removing location:', err)
+        setToast({ type: 'error', text: `Failed to remove: ${err.message || 'Database error'}` })
+      } finally {
+        setActionLoadingId(null)
+      }
+    } else {
+      // Save location to Supabase
+      try {
+        const locToSave = {
+          ...location,
+          alertThreshold: 100,
+        }
+        const savedLoc = await saveLocationToDb(currentUser.id, locToSave)
+        if (savedLoc) {
+          setSavedLocations((prev) => [savedLoc, ...prev])
+          setToast({ type: 'success', text: `Added "${location.name}" to My Locations!` })
+        }
+      } catch (err) {
+        console.error('Error saving location:', err)
+        setToast({ type: 'error', text: `Failed to save: ${err.message || 'Database error'}` })
+      } finally {
+        setActionLoadingId(null)
+      }
+    }
+  }
 
   useEffect(() => {
     const trimmedQuery = query.trim()
@@ -105,7 +211,24 @@ export default function Explore() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 relative">
+      {/* NOTIFICATION TOAST */}
+      {toast && (
+        <div
+          className={`fixed top-20 right-6 z-50 flex items-center justify-between gap-3 rounded-2xl p-4 shadow-xl backdrop-blur-md transition-all animate-bounce-short text-xs font-semibold max-w-sm ${
+            toast.type === 'error'
+              ? 'bg-red-900/95 text-white border border-red-300'
+              : toast.type === 'warning'
+              ? 'bg-amber-900/95 text-white border border-amber-300'
+              : 'bg-forest-900/95 text-white border border-forest-300'
+          }`}
+        >
+          <span>{toast.text}</span>
+          <button type="button" onClick={() => setToast(null)} className="text-white/70 hover:text-white">
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {/* HEADER */}
       <div>
@@ -118,7 +241,6 @@ export default function Explore() {
         </p>
       </div>
 
-
       {/* SEARCH */}
       <SearchBar
         value={query}
@@ -126,7 +248,6 @@ export default function Explore() {
         placeholder="Search a city or region…"
         className="max-w-md"
       />
-
 
       {/* LOADING */}
       {loading && (
@@ -139,14 +260,12 @@ export default function Explore() {
         </div>
       )}
 
-
       {/* ERROR */}
       {!loading && error && (
         <p className="text-sm text-red-500">
           {error}
         </p>
       )}
-
 
       {/* NO RESULT */}
       {!loading &&
@@ -159,7 +278,6 @@ export default function Explore() {
             description={`We couldn't find a location matching "${query}". Try a different city or region name.`}
           />
         )}
-
 
       {/* RESULTS */}
       {!loading && results.length > 0 && (
@@ -196,17 +314,33 @@ export default function Explore() {
 
                 </div>
 
-
-                {/* SAVE / SELECT */}
-                <button
-                  type="button"
-                  onClick={() => selectLocation(loc)}
-                  className="text-ink-300 hover:text-forest-600 transition-colors p-1"
-                  aria-label={`Select ${loc.name}`}
-                  title={`Select ${loc.name}`}
-                >
-                  <Plus size={18} />
-                </button>
+                {/* SAVE / REMOVE TOGGLE BUTTON */}
+                {(() => {
+                  const saved = isLocationSaved(loc)
+                  const isActionLoading = actionLoadingId === (loc.id || `${loc.name}-${loc.latitude}`)
+                  return (
+                    <button
+                      type="button"
+                      onClick={(e) => handleToggleSaveLocation(e, loc)}
+                      disabled={isActionLoading}
+                      className={`inline-flex items-center justify-center rounded-xl p-2 transition-all ${
+                        saved
+                          ? 'bg-forest-50 text-forest-700 hover:bg-forest-100 border border-forest-200'
+                          : 'bg-ink-50 text-ink-500 hover:bg-forest-50 hover:text-forest-700 border border-ink-100'
+                      }`}
+                      aria-label={saved ? `Remove ${loc.name} from My Locations` : `Save ${loc.name} to My Locations`}
+                      title={saved ? `Remove ${loc.name} from My Locations` : `Save ${loc.name} to My Locations`}
+                    >
+                      {isActionLoading ? (
+                        <Loader2 size={16} className="animate-spin text-forest-700" />
+                      ) : saved ? (
+                        <Check size={16} className="text-forest-700" />
+                      ) : (
+                        <Plus size={16} />
+                      )}
+                    </button>
+                  )
+                })()}
 
               </div>
 

@@ -69,7 +69,7 @@ export async function fetchSavedLocations(userId) {
 
     if (error) {
       console.error('fetchSavedLocations error:', error)
-      return []
+      throw new Error(error.message || JSON.stringify(error))
     }
 
     return (data || []).map((item) => ({
@@ -86,25 +86,27 @@ export async function fetchSavedLocations(userId) {
     }))
   } catch (err) {
     console.error('fetchSavedLocations exception:', err)
-    return []
+    throw err
   }
 }
 
 export async function saveLocationToDb(userId, location) {
-  if (!userId) return null
+  if (!userId) {
+    console.error('saveLocationToDb failed: userId is missing/null')
+    throw new Error('User ID is missing. Please log in first.')
+  }
   try {
     const payload = {
       user_id: userId,
       name: location.name,
-      region: location.region || '',
-      country: location.country || '',
+      region: location.region || location.country || '',
       latitude: Number(location.latitude),
       longitude: Number(location.longitude),
-      type: location.type || 'Custom',
-      icon: location.icon || 'star',
-      alert_threshold: location.alertThreshold || 100,
+      alert_threshold: Number(location.alertThreshold || 100),
       updated_at: new Date().toISOString(),
     }
+
+    console.log('Executing Supabase INSERT on saved_locations:', payload)
 
     const { data, error } = await supabase
       .from('saved_locations')
@@ -113,28 +115,31 @@ export async function saveLocationToDb(userId, location) {
       .single()
 
     if (error) {
-      console.error('saveLocationToDb error:', error)
-      throw new Error(error.message)
+      console.error('saveLocationToDb Supabase error details:', error)
+      throw new Error(`[Supabase Error ${error.code || ''}] ${error.message} (${error.details || error.hint || ''})`)
     }
 
     return {
       id: data.id,
-      type: data.type,
-      icon: data.icon,
+      type: data.type || data.location_type || location.type || 'Custom',
+      icon: data.icon || location.icon || 'star',
       name: data.name,
-      region: data.region,
+      region: data.region || '',
       latitude: data.latitude,
       longitude: data.longitude,
       alertThreshold: data.alert_threshold,
     }
   } catch (err) {
-    console.error('saveLocationToDb exception:', err)
+    console.error('saveLocationToDb exception thrown:', err)
     throw err
   }
 }
 
 export async function removeSavedLocationFromDb(userId, locationId) {
-  if (!userId || !locationId) return false
+  if (!userId || !locationId) {
+    console.error('removeSavedLocationFromDb failed: missing arguments', { userId, locationId })
+    throw new Error('User ID or Location ID is missing.')
+  }
   try {
     const { error } = await supabase
       .from('saved_locations')
@@ -144,12 +149,36 @@ export async function removeSavedLocationFromDb(userId, locationId) {
 
     if (error) {
       console.error('removeSavedLocationFromDb error:', error)
-      return false
+      throw new Error(`[Supabase Error ${error.code || ''}] ${error.message}`)
     }
 
     return true
   } catch (err) {
     console.error('removeSavedLocationFromDb exception:', err)
+    throw err
+  }
+}
+
+export async function updateSavedLocationThreshold(userId, locationId, alertThreshold) {
+  if (!userId || !locationId) return false
+  try {
+    const { error } = await supabase
+      .from('saved_locations')
+      .update({
+        alert_threshold: Number(alertThreshold),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('user_id', userId)
+      .eq('id', locationId)
+
+    if (error) {
+      console.error('updateSavedLocationThreshold error:', error)
+      return false
+    }
+
+    return true
+  } catch (err) {
+    console.error('updateSavedLocationThreshold exception:', err)
     return false
   }
 }
@@ -164,8 +193,6 @@ export async function recordAirQualitySnapshot(userId, location, aqiData) {
     const payload = {
       user_id: userId || null,
       location_name: location?.name || 'Current Location',
-      latitude: location?.latitude ? Number(location.latitude) : null,
-      longitude: location?.longitude ? Number(location.longitude) : null,
       aqi: Number(aqiData.aqi),
       pm25: aqiData.pm25 !== null && aqiData.pm25 !== undefined ? Number(aqiData.pm25) : null,
       pm10: aqiData.pm10 !== null && aqiData.pm10 !== undefined ? Number(aqiData.pm10) : null,
@@ -194,7 +221,7 @@ export async function recordAirQualitySnapshot(userId, location, aqiData) {
   }
 }
 
-export async function fetchHistoricalSnapshots(userId, locationId, timeRange = '24h') {
+export async function fetchHistoricalSnapshots(userId, locationTarget, timeRange = '24h') {
   try {
     let query = supabase
       .from('air_quality_snapshots')
@@ -204,6 +231,19 @@ export async function fetchHistoricalSnapshots(userId, locationId, timeRange = '
     if (userId) {
       query = query.eq('user_id', userId)
     }
+
+    const locName = typeof locationTarget === 'object' && locationTarget !== null ? locationTarget.name : locationTarget
+    if (locName) {
+      query = query.ilike('location_name', `%${locName}%`)
+    }
+
+    // Time range filter
+    let hoursAgo = 24
+    if (timeRange === '7d') hoursAgo = 7 * 24
+    else if (timeRange === '30d') hoursAgo = 30 * 24
+
+    const startTime = new Date(Date.now() - hoursAgo * 60 * 60 * 1000).toISOString()
+    query = query.gte('recorded_at', startTime)
 
     const { data, error } = await query
 
@@ -221,19 +261,33 @@ export async function fetchHistoricalSnapshots(userId, locationId, timeRange = '
 
     const firstAqi = aqis[0]
     const lastAqi = aqis[aqis.length - 1]
-    const changePercent = Math.round(((lastAqi - firstAqi) / (firstAqi || 1)) * 100)
+
+    let changePercent = 0
+    if (validSnapshots.length > 1 && firstAqi > 0) {
+      const rawDiff = lastAqi - firstAqi
+      changePercent = Math.round((rawDiff / firstAqi) * 100)
+    }
 
     const trendDirection = lastAqi < firstAqi ? 'improving' : lastAqi > firstAqi ? 'worsening' : 'stable'
 
+    const formatLabel = (dateStr) => {
+      const d = new Date(dateStr)
+      if (timeRange === '24h') {
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+      return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
+    }
+
     return {
       snapshots: validSnapshots.map((s) => ({
-        label: new Date(s.recorded_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        aqi: s.aqi,
-        pm25: s.pm25,
-        pm10: s.pm10,
+        label: formatLabel(s.recorded_at),
+        aqi: Number(s.aqi),
+        pm25: s.pm25 !== null ? Number(s.pm25) : null,
+        pm10: s.pm10 !== null ? Number(s.pm10) : null,
       })),
       stats: { avg, best, worst, changePercent },
       trendDirection,
+      count: validSnapshots.length,
     }
   } catch (err) {
     console.error('fetchHistoricalSnapshots exception:', err)

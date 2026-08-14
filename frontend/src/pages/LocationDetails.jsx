@@ -32,7 +32,7 @@ import { getAirQuality, getWeather } from '../services/airQuality/airQualityApi'
 import { getAqiBand, formatPollutants } from '../data/aqiUtils'
 import { useLanguage } from '../i18n/index.jsx'
 import { useAuth } from '../auth'
-import { loadUserSavedLocations } from '../data/savedLocationsStore'
+import { fetchSavedLocations } from '../services/supabase/supabaseService'
 
 const HEALTH_PROFILES = [
   { key: 'general', labelKey: 'profile.general', defaultLabel: 'General', icon: User },

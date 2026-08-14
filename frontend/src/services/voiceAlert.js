@@ -88,6 +88,18 @@ export function isVoiceSupported() {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window
 }
 
+export function unlockVoiceEngine() {
+  if (!isVoiceSupported()) return
+  try {
+    const dummy = new SpeechSynthesisUtterance(' ')
+    dummy.volume = 0.01
+    dummy.rate = 10
+    window.speechSynthesis.speak(dummy)
+  } catch (e) {
+    console.warn('Voice engine unlock exception:', e)
+  }
+}
+
 export function getVoiceLanguages() {
   return LANGUAGE_OPTIONS
 }

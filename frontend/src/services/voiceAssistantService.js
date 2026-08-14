@@ -5,7 +5,7 @@ import {
   getPersonalizedGuidance,
   getActivityRecommendations,
 } from '../utils/riskEngine/riskEngine'
-import { loadUserSavedLocations } from '../data/savedLocationsStore'
+import { fetchSavedLocations } from './supabase/supabaseService'
 
 // Helper to remove punctuation and extra spaces
 function cleanText(text) {
@@ -122,7 +122,7 @@ export async function processVoiceAssistantQuery(userQuery, context = {}, userId
 
   // Check 1: SAVED LOCATIONS STATUS
   if (query.includes('saved location') || query.includes('saved places') || query.includes('saved') || query.includes('lugares guardados') || query.includes('lieux enregistrés')) {
-    const saved = loadUserSavedLocations(userId)
+    const saved = await fetchSavedLocations(userId)
     if (!saved || saved.length === 0) {
       const emptyMsg = currentLang === 'hi'
         ? "आपकी कोई सहेजी गई लोकेशन नहीं है। क्विक ट्रैकिंग के लिए आप डैशबोर्ड पर लोकेशन सेव कर सकते हैं।"

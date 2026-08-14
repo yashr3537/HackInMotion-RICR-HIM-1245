@@ -21,8 +21,14 @@ import RecommendationCard from '../components/RecommendationCard'
 import DominantPollutantCard from '../components/DominantPollutantCard'
 import TrendChart from '../components/TrendChart'
 import LocationCard from '../components/LocationCard'
-import { loadUserSavedLocations, removeUserSavedLocation } from '../data/savedLocationsStore'
-import { fetchUserAlerts, recordAirQualitySnapshot } from '../services/supabase/supabaseService'
+import {
+  fetchUserAlerts,
+  recordAirQualitySnapshot,
+  fetchSavedLocations,
+  removeSavedLocationFromDb,
+  updateSavedLocationThreshold,
+} from '../services/supabase/supabaseService'
+import { Sliders } from 'lucide-react'
 
 import { useAuth } from '../auth'
 import { useLanguage } from '../i18n/index.jsx'
@@ -41,9 +47,27 @@ export default function Dashboard() {
   const [userSavedLocations, setUserSavedLocations] = useState([])
   const [alerts, setAlerts] = useState([])
   const [removingLocation, setRemovingLocation] = useState(null)
+  const [editingThresholdLocation, setEditingThresholdLocation] = useState(null)
+  const [editingThresholdValue, setEditingThresholdValue] = useState(100)
 
   useEffect(() => {
-    setUserSavedLocations(loadUserSavedLocations(currentUser?.id))
+    if (!currentUser?.id) {
+      setUserSavedLocations([])
+      return
+    }
+
+    let isMounted = true
+    fetchSavedLocations(currentUser.id)
+      .then((locations) => {
+        if (isMounted) setUserSavedLocations(locations)
+      })
+      .catch((err) => {
+        console.error('Error fetching saved locations in Dashboard:', err)
+      })
+
+    return () => {
+      isMounted = false
+    }
   }, [currentUser?.id])
 
   useEffect(() => {
@@ -71,9 +95,46 @@ export default function Dashboard() {
 
   const handleRemoveRequest = (target) => {
     if (!target) return
-    const updated = removeUserSavedLocation(target, currentUser?.id)
-    setUserSavedLocations(updated)
-    setRemovingLocation(null)
+    setRemovingLocation(target)
+  }
+
+  const handleConfirmRemove = async () => {
+    if (!removingLocation || !currentUser?.id) return
+    const targetId = removingLocation.id
+    try {
+      const success = await removeSavedLocationFromDb(currentUser.id, targetId)
+      if (success) {
+        setUserSavedLocations((prev) => prev.filter((loc) => loc.id !== targetId))
+      }
+    } catch (err) {
+      console.error('Error removing location in Dashboard:', err)
+    } finally {
+      setRemovingLocation(null)
+    }
+  }
+
+  const handleEditThresholdRequest = (loc) => {
+    setEditingThresholdLocation(loc)
+    setEditingThresholdValue(loc.alertThreshold || 100)
+  }
+
+  const confirmUpdateThreshold = async () => {
+    if (!editingThresholdLocation || !currentUser?.id) return
+    const targetId = editingThresholdLocation.id
+    try {
+      const success = await updateSavedLocationThreshold(currentUser.id, targetId, editingThresholdValue)
+      if (success) {
+        setUserSavedLocations((prev) =>
+          prev.map((loc) =>
+            loc.id === targetId ? { ...loc, alertThreshold: editingThresholdValue } : loc
+          )
+        )
+      }
+    } catch (err) {
+      console.error('Failed to update threshold in Dashboard:', err)
+    } finally {
+      setEditingThresholdLocation(null)
+    }
   }
 
   const hour = new Date().getHours()
@@ -401,6 +462,7 @@ export default function Dashboard() {
               key={location.id}
               location={location}
               onRemove={(target) => handleRemoveRequest(target)}
+              onEditThreshold={(loc) => handleEditThresholdRequest(loc)}
             />
           ))}
         </div>
@@ -444,6 +506,90 @@ export default function Dashboard() {
                 className="rounded-xl bg-red-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-red-700 transition-colors"
               >
                 {t('common.remove', { defaultValue: 'Remove Location' })}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT EXISTING LOCATION THRESHOLD MODAL */}
+      {editingThresholdLocation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md scale-in rounded-2xl border border-ink-100 bg-surface p-6 shadow-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                <Sliders size={20} />
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-semibold text-ink-900">
+                  Edit Alert Threshold
+                </h3>
+                <p className="text-xs text-ink-500">
+                  {editingThresholdLocation.name}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-ink-600 leading-relaxed mb-4">
+              Update your trigger AQI for voice &amp; push notifications for {editingThresholdLocation.name}.
+            </p>
+
+            <div className="space-y-4 rounded-xl border border-ink-100 bg-ink-50/50 p-4">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-ink-700">
+                  Trigger AQI Threshold:
+                </label>
+                <span className="font-mono text-base font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                  {editingThresholdValue} AQI
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="10"
+                max="300"
+                step="5"
+                value={editingThresholdValue}
+                onChange={(e) => setEditingThresholdValue(Number(e.target.value))}
+                className="w-full accent-amber-600 cursor-pointer"
+              />
+
+              <div className="flex gap-2 pt-1">
+                {[10, 50, 100, 150, 200].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setEditingThresholdValue(preset)}
+                    className={`flex-1 py-1 text-[11px] font-semibold rounded-md border transition-all ${
+                      editingThresholdValue === preset
+                        ? 'bg-amber-600 text-white border-amber-600'
+                        : 'bg-surface text-ink-700 border-ink-200 hover:bg-ink-100'
+                    }`}
+                  >
+                    {preset === 10 ? '10 (Test)' : preset}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-ink-400 text-center">
+                * Select 10 for instant testing of voice alerts when live AQI &gt; 10.
+              </p>
+            </div>
+
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setEditingThresholdLocation(null)}
+                className="rounded-xl border border-ink-200 bg-surface px-4 py-2.5 text-xs font-semibold text-ink-700 hover:bg-ink-50 transition-colors"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmUpdateThreshold}
+                className="rounded-xl bg-amber-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-amber-700 transition-colors"
+              >
+                Update Threshold
               </button>
             </div>
           </div>

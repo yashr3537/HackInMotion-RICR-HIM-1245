@@ -10,6 +10,8 @@ import {
   Activity,
   ArrowUpRight,
   Trash2,
+  BellRing,
+  Sliders,
 } from 'lucide-react'
 import RiskBadge from './RiskBadge'
 import { getAirQuality } from '../services/airQuality/airQualityApi'
@@ -26,6 +28,7 @@ export default function LocationCard({
   onRemove,
   onMenu,
   onViewDetails,
+  onEditThreshold,
 }) {
   const navigate = useNavigate()
   const { t } = useLanguage()
@@ -132,7 +135,7 @@ export default function LocationCard({
                 }}
               />
 
-              <div className="absolute right-0 top-8 z-30 min-w-[170px] scale-in rounded-xl border border-ink-100 bg-surface p-1.5 shadow-card">
+              <div className="absolute right-0 top-8 z-30 min-w-[190px] scale-in rounded-xl border border-ink-100 bg-surface p-1.5 shadow-card">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -145,6 +148,21 @@ export default function LocationCard({
                   <ArrowUpRight size={14} className="text-forest-700" />
                   <span>{t('locations.viewLive', { defaultValue: 'View Live' })}</span>
                 </button>
+
+                {onEditThreshold && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setMenuOpen(false)
+                      onEditThreshold?.(location)
+                    }}
+                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 transition-colors"
+                  >
+                    <Sliders size={14} className="text-amber-600" />
+                    <span>Edit Alert Threshold</span>
+                  </button>
+                )}
 
                 {onRemove && (
                   <button
@@ -228,8 +246,8 @@ export default function LocationCard({
       ====================================================== */}
       <div className="relative z-10 flex items-center justify-between gap-3 border-t border-ink-100 pt-3">
         <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-ink-400">
-          <Star size={11} className="text-amber-500" />
-          Saved location
+          <BellRing size={11} className="text-amber-500" />
+          Alert: &gt;{location.alertThreshold || 100} AQI
         </div>
 
         <button

@@ -13,13 +13,38 @@ import {
   enqueueVoiceAlert,
   isVoiceSupported,
   getStoredVoiceLanguage,
+  unlockVoiceEngine,
 } from '../services/voiceAlert'
 
 export default function AppLayout() {
   const { currentUser } = useAuth()
   const [activeToast, setActiveToast] = useState(null)
+  const [voiceUnlocked, setVoiceUnlocked] = useState(() => {
+    return Boolean(sessionStorage.getItem('airguard-voice-unlocked'))
+  })
 
-  // 1. Background alert monitor for user's saved locations
+  // 1. One-time interaction listener to automatically unlock SpeechSynthesis engine for the session
+  useEffect(() => {
+    if (voiceUnlocked) return
+
+    const handleFirstInteraction = () => {
+      unlockVoiceEngine()
+      sessionStorage.setItem('airguard-voice-unlocked', 'true')
+      setVoiceUnlocked(true)
+    }
+
+    window.addEventListener('click', handleFirstInteraction, { once: true })
+    window.addEventListener('keydown', handleFirstInteraction, { once: true })
+    window.addEventListener('touchstart', handleFirstInteraction, { once: true })
+
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction)
+      window.removeEventListener('keydown', handleFirstInteraction)
+      window.removeEventListener('touchstart', handleFirstInteraction)
+    }
+  }, [voiceUnlocked])
+
+  // 2. Background alert monitor for user's saved locations
   useAlertMonitor(currentUser?.id)
 
   // Auto-hide toast after 7 seconds
@@ -164,6 +189,24 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
+      {!voiceUnlocked && currentUser && isVoiceSupported() && (
+        <div className="fixed bottom-24 right-6 z-40 animate-fade-in">
+          <button
+            type="button"
+            onClick={() => {
+              unlockVoiceEngine()
+              sessionStorage.setItem('airguard-voice-unlocked', 'true')
+              setVoiceUnlocked(true)
+            }}
+            className="inline-flex items-center gap-2 rounded-full border border-forest-400 bg-forest-900/90 text-white px-4 py-2 text-xs font-semibold shadow-xl backdrop-blur-md hover:bg-forest-900 transition-all hover:scale-105"
+            title="Click to enable voice alerts for this session"
+          >
+            <Volume2 size={15} className="animate-pulse text-amber-400" />
+            Enable Voice Alerts
+          </button>
+        </div>
+      )}
+
       <MobileNavigation />
       <VoiceAssistantTrigger />
     </div>

@@ -146,36 +146,68 @@ export default function Compare() {
     }
   }, [notice])
 
-  // Initialize locations list on mount
+  // Initialize locations list on mount (loading from localStorage if present)
   useEffect(() => {
     let isMounted = true
+
     async function loadInitialData() {
-      let baseList = DEFAULT_CITIES
-      if (currentUser?.id) {
-        const saved = await fetchSavedLocations(currentUser.id)
-        if (saved && saved.length > 0) {
-          baseList = saved.slice(0, 4)
+      let baseList = null
+
+      try {
+        const raw = localStorage.getItem('airguard-compare-list')
+        if (raw !== null) {
+          const parsed = JSON.parse(raw)
+          if (Array.isArray(parsed)) {
+            baseList = parsed
+          }
+        }
+      } catch (e) {
+        console.error('Failed to parse compare list from localStorage:', e)
+      }
+
+      // Default fallback if no saved compare list exists yet
+      if (baseList === null) {
+        baseList = DEFAULT_CITIES
+        if (currentUser?.id) {
+          try {
+            const saved = await fetchSavedLocations(currentUser.id)
+            if (saved && saved.length > 0) {
+              baseList = saved.slice(0, 4)
+            }
+          } catch (e) {}
         }
       }
 
-      // Fetch live AQI for initial list in parallel
+      if (baseList.length === 0) {
+        if (isMounted) {
+          setCompareList([])
+          setLoadingInitial(false)
+        }
+        return
+      }
+
+      // Fetch live AQI and weather data for compare list in parallel
       const updatedList = await Promise.all(
         baseList.map(async (city) => {
           if (city.latitude && city.longitude) {
-            const [aqData, weatherData] = await Promise.all([
-              getAirQuality(city.latitude, city.longitude),
-              getWeather(city.latitude, city.longitude),
-            ])
-            return {
-              ...city,
-              id: city.id || `loc-${city.name.toLowerCase()}`,
-              aqi: aqData?.aqi ?? null,
-              pm25: aqData?.pm25 ?? null,
-              pm10: aqData?.pm10 ?? null,
-              no2: aqData?.no2 ?? null,
-              temperature: weatherData?.temperature ?? null,
-              humidity: weatherData?.humidity ?? null,
-              loading: false,
+            try {
+              const [aqData, weatherData] = await Promise.all([
+                getAirQuality(city.latitude, city.longitude),
+                getWeather(city.latitude, city.longitude),
+              ])
+              return {
+                ...city,
+                id: city.id || `loc-${city.name.toLowerCase()}`,
+                aqi: aqData?.aqi ?? null,
+                pm25: aqData?.pm25 ?? null,
+                pm10: aqData?.pm10 ?? null,
+                no2: aqData?.no2 ?? null,
+                temperature: weatherData?.temperature ?? null,
+                humidity: weatherData?.humidity ?? null,
+                loading: false,
+              }
+            } catch (err) {
+              console.error(`Failed to fetch live data for ${city.name}:`, err)
             }
           }
           return { ...city, loading: false }
@@ -193,6 +225,23 @@ export default function Compare() {
       isMounted = false
     }
   }, [currentUser?.id])
+
+  // Sync compareList changes to localStorage
+  useEffect(() => {
+    if (loadingInitial) return
+    try {
+      const lightweightList = compareList.map((item) => ({
+        id: item.id,
+        name: item.name,
+        region: item.region || '',
+        latitude: item.latitude,
+        longitude: item.longitude,
+      }))
+      localStorage.setItem('airguard-compare-list', JSON.stringify(lightweightList))
+    } catch (e) {
+      console.error('Failed to persist compare list to localStorage:', e)
+    }
+  }, [compareList, loadingInitial])
 
   // Add location from search suggestions
   const handleSelectLocation = async (result) => {
