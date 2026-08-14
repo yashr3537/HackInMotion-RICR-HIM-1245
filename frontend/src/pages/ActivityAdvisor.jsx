@@ -11,7 +11,22 @@ import {
 
 import ActivityCard from '../components/ActivityCard'
 import RiskBadge from '../components/RiskBadge'
-import { activities, activityRiskData } from '../data/demoData'
+
+const activities = [
+  { key: 'walking', label: 'Walking', icon: 'walk' },
+  { key: 'running', label: 'Running', icon: 'run' },
+  { key: 'cycling', label: 'Cycling', icon: 'cycle' },
+  { key: 'outdoor-work', label: 'Outdoor work', icon: 'work' },
+  { key: 'jogging', label: 'Jogging', icon: 'run' },
+]
+
+const activityRiskData = {
+  walking: { risk: 'good', verdict: 'Suitable' },
+  running: { risk: 'moderate', verdict: 'Caution' },
+  cycling: { risk: 'moderate', verdict: 'Moderate' },
+  'outdoor-work': { risk: 'sensitive', verdict: 'Take care' },
+  jogging: { risk: 'sensitive', verdict: 'Careful' },
+}
 
 // These values are used only to reuse the existing RiskBadge
 // visual system in this UI/demo advisor.

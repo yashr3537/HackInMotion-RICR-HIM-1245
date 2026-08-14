@@ -9,7 +9,10 @@ import {
   Activity,
 } from 'lucide-react'
 
+import { useLanguage } from '../i18n/index.jsx'
+
 export default function RecommendationCard({ recommendation }) {
+  const { t } = useLanguage()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -49,12 +52,12 @@ export default function RecommendationCard({ recommendation }) {
               className="text-forest-200"
             />
 
-            Your Environmental Recommendation
+            {t('recommendation.header')}
           </div>
 
           <div className="hidden items-center gap-1.5 text-[10px] text-white/45 sm:flex">
             <span className="live-dot h-1.5 w-1.5 rounded-full bg-forest-300" />
-            Personalized
+            {t('recommendation.personalized')}
           </div>
         </div>
 
@@ -92,7 +95,7 @@ export default function RecommendationCard({ recommendation }) {
 
             <div>
               <div className="text-[9px] uppercase tracking-[0.12em] text-white/40">
-                Profile
+                {t('recommendation.profile')}
               </div>
 
               <div className="text-xs font-medium text-white/85">
@@ -112,7 +115,7 @@ export default function RecommendationCard({ recommendation }) {
 
             <div>
               <div className="text-[9px] uppercase tracking-[0.12em] text-white/40">
-                Activity
+                {t('recommendation.activity')}
               </div>
 
               <div className="text-xs font-medium text-white/85">
@@ -143,7 +146,7 @@ export default function RecommendationCard({ recommendation }) {
             />
 
             <span>
-              Based on current environmental conditions
+              {t('recommendation.basedOn')}
             </span>
           </div>
 
@@ -151,7 +154,7 @@ export default function RecommendationCard({ recommendation }) {
             to="/activity"
             className="btn-premium group/btn inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-forest-800 shadow-sm hover:bg-forest-50"
           >
-            Check Activity Risk
+            {t('recommendation.checkActivity')}
 
             <ArrowRight
               size={15}

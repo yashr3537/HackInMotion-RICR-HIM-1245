@@ -1,21 +1,23 @@
+import { useLanguage } from '../i18n/index.jsx'
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Compass, MapPin, History, Bell, User, Settings, Leaf, GitCompare, Footprints } from 'lucide-react'
-import { alerts } from '../data/demoData'
+import LanguageSelector from './LanguageSelector.jsx'
 
 const NAV = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/explore', label: 'Explore', icon: Compass },
-  { to: '/locations', label: 'My Locations', icon: MapPin },
-  { to: '/compare', label: 'Compare', icon: GitCompare },
-  { to: '/activity', label: 'Activity Risk', icon: Footprints },
-  { to: '/history', label: 'History', icon: History },
-  { to: '/alerts', label: 'Alerts', icon: Bell, badge: true },
-  { to: '/profile', label: 'Profile', icon: User },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
+  { to: '/explore', key: 'features', icon: Compass },
+  { to: '/locations', key: 'locations', icon: MapPin },
+  { to: '/compare', key: 'compare', icon: GitCompare },
+  { to: '/activity', key: 'activity', icon: Footprints },
+  { to: '/history', key: 'history', icon: History },
+  { to: '/alerts', key: 'alerts', icon: Bell, badge: true },
+  { to: '/profile', key: 'profile', icon: User },
+  { to: '/settings', key: 'settings', icon: Settings },
 ]
 
 export default function Sidebar() {
-  const unread = alerts.filter((a) => !a.read).length
+  const { t } = useLanguage()
+  const unread = 0
 
   return (
     <aside className="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 bg-forest-950 text-forest-100 px-4 py-6">
@@ -27,7 +29,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-1">
-        {NAV.map(({ to, label, icon: Icon, badge }) => (
+        {NAV.map(({ to, key, icon: Icon, badge }) => (
           <NavLink
             key={to}
             to={to}
@@ -39,7 +41,7 @@ export default function Sidebar() {
           >
             <span className="flex items-center gap-3">
               <Icon size={17} />
-              {label}
+              {t(`nav.${key}`)}
             </span>
             {badge && unread > 0 && (
               <span className="bg-forest-400 text-forest-950 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -50,11 +52,16 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="mt-auto pt-6 border-t border-forest-900/80 px-2">
+      <div className="mt-auto pt-6 border-t border-forest-900/80 px-2 space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-forest-200/70">{t('common.language')}</span>
+          <LanguageSelector compact />
+        </div>
         <p className="text-xs text-forest-300/70 leading-relaxed">
-          Air quality data refreshes automatically. Demo build — backend not yet connected.
+          {t('sidebar.footerNotice')}
         </p>
       </div>
     </aside>
   )
 }
+

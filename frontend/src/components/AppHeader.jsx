@@ -1,13 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Leaf } from 'lucide-react'
-import SearchBar from './SearchBar'
-import { alerts } from '../data/demoData'
 import { useAuth } from '../auth'
+import LanguageSelector from './LanguageSelector'
 
 export default function AppHeader() {
   const { currentUser, signOut } = useAuth()
   const navigate = useNavigate()
-  const unread = alerts.filter((a) => !a.read).length
+  const unread = 0
 
   function handleSignOut() {
     signOut()
@@ -23,9 +22,9 @@ export default function AppHeader() {
           </span>
         </div>
 
-        <SearchBar className="flex-1 max-w-md hidden sm:block" placeholder="Search location…" />
-
         <div className="flex items-center gap-3 ml-auto">
+          <LanguageSelector compact />
+
           <Link
             to="/alerts"
             className="relative w-9 h-9 rounded-lg bg-surface border border-ink-100 flex items-center justify-center text-ink-600 hover:text-forest-700 hover:border-forest-300 transition-colors"
@@ -49,9 +48,7 @@ export default function AppHeader() {
           </button>
         </div>
       </div>
-      <div className="sm:hidden px-5 pb-3">
-        <SearchBar placeholder="Search location…" />
-      </div>
     </header>
   )
 }
+

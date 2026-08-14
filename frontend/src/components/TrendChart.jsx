@@ -15,7 +15,6 @@ import {
   Activity,
   CalendarDays,
 } from 'lucide-react'
-import { trendData, trendDirection } from '../data/demoData'
 
 const RANGES = [
   { key: '24h', label: '24 Hours' },
@@ -67,8 +66,8 @@ export default function TrendChart({ compact = false }) {
   const [range, setRange] = useState('24h')
   const [visible, setVisible] = useState(false)
 
-  const data = trendData[range]
-  const meta = TREND_META[trendDirection]
+  const data = []
+  const meta = TREND_META.stable
   const TrendIcon = meta.icon
 
   const latestAqi = useMemo(() => {

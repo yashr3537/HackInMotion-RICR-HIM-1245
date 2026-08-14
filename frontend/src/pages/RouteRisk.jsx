@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 
 import RouteRiskMap from '../components/RouteRiskMap'
+import { useLanguage } from '../i18n/index.jsx'
 
 const SAMPLE_LOCATIONS = {
   home: {
@@ -121,31 +122,31 @@ const SAMPLE_ROUTES = {
       {
         label: 'Moderate exposure',
         point: [23.2408, 77.4203],
-        aqi: 109,
+        aqi: 112,
         color: '#D6A70C',
       },
       {
-        label: 'Lower exposure',
+        label: 'Moderate exposure',
         point: [23.2352, 77.4274],
-        aqi: 80,
-        color: '#22A85F',
+        aqi: 108,
+        color: '#D6A70C',
       },
     ],
   },
 }
 
-function getRiskMeta(aqi) {
+function getRiskMeta(aqi, t) {
   if (aqi <= 50) {
     return {
-      label: 'Good',
+      label: t ? t('aqi.good', { defaultValue: 'Good' }) : 'Good',
       color: '#22A85F',
-      bg: '#E6F7EC',
+      bg: '#EAF7EE',
     }
   }
 
   if (aqi <= 100) {
     return {
-      label: 'Moderate',
+      label: t ? t('aqi.moderate', { defaultValue: 'Moderate' }) : 'Moderate',
       color: '#D6A70C',
       bg: '#FBF3D9',
     }
@@ -153,7 +154,7 @@ function getRiskMeta(aqi) {
 
   if (aqi <= 150) {
     return {
-      label: 'Unhealthy for sensitive groups',
+      label: t ? t('aqi.sensitive', { defaultValue: 'Unhealthy for sensitive groups' }) : 'Unhealthy for sensitive groups',
       color: '#E5822A',
       bg: '#FCEADA',
     }
@@ -161,14 +162,14 @@ function getRiskMeta(aqi) {
 
   if (aqi <= 200) {
     return {
-      label: 'Unhealthy',
+      label: t ? t('aqi.unhealthy', { defaultValue: 'Unhealthy' }) : 'Unhealthy',
       color: '#D8492E',
       bg: '#FBE2DC',
     }
   }
 
   return {
-    label: 'Hazardous',
+    label: t ? t('aqi.hazardous', { defaultValue: 'Hazardous' }) : 'Hazardous',
     color: '#B92E3D',
     bg: '#F8DDE1',
   }
@@ -178,6 +179,7 @@ function RouteInput({
   label,
   value,
   onChange,
+  selectLabel,
 }) {
   return (
     <div className="group">
@@ -196,7 +198,7 @@ function RouteInput({
           onChange={(event) => onChange(event.target.value)}
           className="min-w-0 flex-1 bg-transparent text-sm font-medium text-ink-900 outline-none"
         >
-          <option value="">Select location</option>
+          <option value="">{selectLabel}</option>
 
           {Object.entries(SAMPLE_LOCATIONS).map(
             ([key, location]) => (
@@ -212,6 +214,7 @@ function RouteInput({
 }
 
 export default function RouteRisk() {
+  const { t } = useLanguage()
   const [from, setFrom] = useState('home')
   const [to, setTo] = useState('park')
   const [analyzed, setAnalyzed] = useState(false)
@@ -233,8 +236,8 @@ export default function RouteRisk() {
     : null
 
   const riskMeta = result
-    ? getRiskMeta(result.averageAqi)
-    : getRiskMeta(0)
+    ? getRiskMeta(result.averageAqi, t)
+    : getRiskMeta(0, t)
 
   function handleAnalyze() {
     if (!from || !to || from === to) return
@@ -249,36 +252,32 @@ export default function RouteRisk() {
 
   return (
     <div className="page-enter flex flex-col gap-7 pb-8 sm:gap-9">
-      {/* =====================================================
-          HEADER
-      ====================================================== */}
+      {/* HEADER */}
       <section className="fade-down">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-forest-100 bg-forest-50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-800">
           <Route size={12} />
-          Route environmental risk
+          {t('routeRisk.tag', { defaultValue: 'Route environmental risk' })}
         </div>
 
         <h1 className="max-w-3xl font-display text-2xl font-semibold tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
-          Check the air along your route.
+          {t('routeRisk.title', { defaultValue: 'Check the air along your route.' })}
         </h1>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-500 sm:text-base">
-          Understand environmental exposure before you start your commute,
-          walk, run or outdoor activity.
+          {t('routeRisk.subtitle', { defaultValue: 'Understand environmental exposure before you start your commute, walk, run or outdoor activity.' })}
         </p>
       </section>
 
-      {/* =====================================================
-          ROUTE INPUT PANEL
-      ====================================================== */}
+      {/* ROUTE INPUT PANEL */}
       <section className="fade-up">
         <div className="relative overflow-hidden rounded-[28px] border border-ink-100 bg-surface p-5 shadow-soft sm:p-6 lg:p-7">
           <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-forest-400/6 blur-3xl float-soft" />
 
           <div className="relative grid gap-5 lg:grid-cols-[1fr_auto_1fr] lg:items-end">
             <RouteInput
-              label="From"
+              label={t('routeRisk.from', { defaultValue: 'From' })}
               value={from}
+              selectLabel={t('routeRisk.selectLocation', { defaultValue: 'Select location' })}
               onChange={(value) => {
                 setFrom(value)
                 setAnalyzed(false)
@@ -289,7 +288,7 @@ export default function RouteRisk() {
               type="button"
               onClick={handleSwap}
               className="btn-premium mx-auto flex h-11 w-11 items-center justify-center rounded-xl border border-ink-200 bg-white text-ink-500 hover:border-forest-200 hover:text-forest-700"
-              aria-label="Swap route locations"
+              aria-label={t('routeRisk.swap', { defaultValue: 'Swap route locations' })}
             >
               <Navigation
                 size={17}
@@ -298,8 +297,9 @@ export default function RouteRisk() {
             </button>
 
             <RouteInput
-              label="To"
+              label={t('routeRisk.to', { defaultValue: 'To' })}
               value={to}
+              selectLabel={t('routeRisk.selectLocation', { defaultValue: 'Select location' })}
               onChange={(value) => {
                 setTo(value)
                 setAnalyzed(false)
@@ -310,7 +310,7 @@ export default function RouteRisk() {
           <div className="mt-5 flex flex-col gap-3 border-t border-ink-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2 text-xs text-ink-500">
               <Search size={13} />
-              Current demo data is used for route exposure visualization.
+              {t('routeRisk.demoNotice', { defaultValue: 'Current demo data is used for route exposure visualization.' })}
             </div>
 
             <button
@@ -319,22 +319,20 @@ export default function RouteRisk() {
               disabled={!from || !to || from === to}
               className="btn-premium inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-forest-800 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Analyze Route
+              {t('routeRisk.analyzeRoute', { defaultValue: 'Analyze Route' })}
               <ArrowRight size={15} />
             </button>
           </div>
 
           {from === to && from && (
             <p className="mt-3 text-xs font-medium text-red-600">
-              Start and destination must be different.
+              {t('routeRisk.sameLocationError', { defaultValue: 'Start and destination must be different.' })}
             </p>
           )}
         </div>
       </section>
 
-      {/* =====================================================
-          ROUTE RESULT
-      ====================================================== */}
+      {/* ROUTE RESULT */}
       {analyzed && result && fromLocation && toLocation && (
         <>
           <section className="scale-in">
@@ -369,7 +367,7 @@ export default function RouteRisk() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-ink-400">
-                        Route risk
+                        {t('routeRisk.cardTitle', { defaultValue: 'Route risk' })}
                       </p>
 
                       <h2 className="mt-1 font-display text-xl font-semibold text-ink-900">
@@ -392,7 +390,7 @@ export default function RouteRisk() {
                   <div className="mt-6 grid grid-cols-2 gap-3">
                     <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
                       <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-ink-400">
-                        Distance
+                        {t('routeRisk.distance', { defaultValue: 'Distance' })}
                       </p>
 
                       <p className="mt-1 font-mono text-xl font-bold text-ink-900">
@@ -402,7 +400,7 @@ export default function RouteRisk() {
 
                     <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
                       <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-ink-400">
-                        Duration
+                        {t('routeRisk.duration', { defaultValue: 'Duration' })}
                       </p>
 
                       <p className="mt-1 font-mono text-xl font-bold text-ink-900">
@@ -412,7 +410,7 @@ export default function RouteRisk() {
 
                     <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
                       <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-ink-400">
-                        Avg. AQI
+                        {t('routeRisk.averageAQI', { defaultValue: 'Avg. AQI' })}
                       </p>
 
                       <p
@@ -427,7 +425,7 @@ export default function RouteRisk() {
 
                     <div className="rounded-xl border border-ink-100 bg-white/70 p-4">
                       <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-ink-400">
-                        Peak risk
+                        {t('routeRisk.peakRisk', { defaultValue: 'Peak risk' })}
                       </p>
 
                       <p
@@ -464,7 +462,7 @@ export default function RouteRisk() {
                             color: riskMeta.color,
                           }}
                         >
-                          Highest-risk segment
+                          {t('routeRisk.highestRiskSegment', { defaultValue: 'Highest-risk segment' })}
                         </p>
 
                         <p className="mt-1 text-xs leading-5 text-ink-600">
@@ -481,7 +479,7 @@ export default function RouteRisk() {
 
                     <div>
                       <p className="text-xs font-semibold text-ink-900">
-                        Recommendation
+                        {t('routeRisk.recommendation', { defaultValue: 'Recommendation' })}
                       </p>
 
                       <p className="mt-1 text-xs leading-5 text-ink-500">
@@ -492,24 +490,22 @@ export default function RouteRisk() {
 
                   <div className="mt-5 flex items-center gap-2 border-t border-ink-100 pt-4 text-[10px] uppercase tracking-[0.12em] text-ink-400">
                     <Clock3 size={12} />
-                    Recheck conditions before departure
+                    {t('routeRisk.recheckNotice', { defaultValue: 'Recheck conditions before departure' })}
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* ===================================================
-              EXPOSURE BREAKDOWN
-          ==================================================== */}
+          {/* EXPOSURE BREAKDOWN */}
           <section className="fade-up">
             <div className="mb-4">
               <p className="text-[10px] font-semibold uppercase tracking-[0.17em] text-forest-700">
-                Exposure breakdown
+                {t('routeRisk.exposureBreakdown', { defaultValue: 'Exposure breakdown' })}
               </p>
 
               <h2 className="mt-1 font-display text-lg font-semibold text-ink-900">
-                Environmental conditions along your route
+                {t('routeRisk.breakdownTitle', { defaultValue: 'Environmental conditions along your route' })}
               </h2>
             </div>
 
@@ -520,7 +516,7 @@ export default function RouteRisk() {
                 </div>
 
                 <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-                  Average exposure
+                  {t('routeRisk.averageExposure', { defaultValue: 'Average exposure' })}
                 </p>
 
                 <p className="mt-1 text-lg font-semibold text-ink-900">
@@ -534,7 +530,7 @@ export default function RouteRisk() {
                 </div>
 
                 <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-                  Highest-risk zone
+                  {t('routeRisk.highestRiskZone', { defaultValue: 'Highest-risk zone' })}
                 </p>
 
                 <p className="mt-1 text-lg font-semibold text-ink-900">
@@ -548,11 +544,11 @@ export default function RouteRisk() {
                 </div>
 
                 <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-                  Decision support
+                  {t('routeRisk.decisionSupport', { defaultValue: 'Decision support' })}
                 </p>
 
                 <p className="mt-1 text-lg font-semibold text-ink-900">
-                  Check before leaving
+                  {t('routeRisk.checkBeforeLeaving', { defaultValue: 'Check before leaving' })}
                 </p>
               </div>
             </div>
@@ -573,12 +569,11 @@ export default function RouteRisk() {
 
               <div>
                 <p className="text-sm font-semibold text-ink-900">
-                  Ready to analyze your route
+                  {t('routeRisk.readyTitle', { defaultValue: 'Ready to analyze your route' })}
                 </p>
 
                 <p className="mt-1 text-xs leading-5 text-ink-500">
-                  Select a start point and destination, then analyze the
-                  environmental conditions along the route.
+                  {t('routeRisk.readySubtitle', { defaultValue: 'Select a start point and destination, then analyze the environmental conditions along the route.' })}
                 </p>
               </div>
             </div>
@@ -587,4 +582,4 @@ export default function RouteRisk() {
       )}
     </div>
   )
-}
+}

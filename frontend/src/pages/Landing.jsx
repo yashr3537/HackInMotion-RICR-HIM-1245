@@ -2,14 +2,39 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
   ArrowRight, Activity, Gauge, Compass as CompassIcon, TrendingUp, Bell, Footprints,
-  ShieldCheck, MapPin, Loader2,
+  ShieldCheck, MapPin, Loader2, Sparkles,
 } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import RiskBadge from '../components/RiskBadge'
 import AQIGauge from '../components/AQIGauge'
-import { features, howItWorks } from '../data/demoData'
 import { getAirQuality } from '../data/airQualityApi'
+import { useLanguage } from '../i18n/index.jsx'
+
+const features = [
+  { key: 'live', icon: 'activity', titleKey: 'features.live.title', descriptionKey: 'features.live.description', title: 'Live Air Quality', description: 'Monitor current conditions in real time.' },
+  { key: 'risk', icon: 'gauge', titleKey: 'features.risk.title', descriptionKey: 'features.risk.description', title: 'Risk Intelligence', description: 'Understand air-quality risk and what it means for you.' },
+  { key: 'guidance', icon: 'compass', titleKey: 'features.guidance.title', descriptionKey: 'features.guidance.description', title: 'Personalized Guidance', description: 'Get actionable recommendations based on your profile.' },
+  { key: 'alerts', icon: 'bell', titleKey: 'features.alerts.title', descriptionKey: 'features.alerts.description', title: 'Smart Alerts', description: 'Stay informed when conditions worsen.' },
+]
+
+const howItWorks = [
+  { step: 1, titleKey: 'howItWorks.step1.title', descriptionKey: 'howItWorks.step1.description', title: 'Choose location', description: 'Pick a city, saved place, or use your current location.' },
+  { step: 2, titleKey: 'howItWorks.step2.title', descriptionKey: 'howItWorks.step2.description', title: 'Get live data', description: 'Fetch the latest AQI and pollutant readings.' },
+  { step: 3, titleKey: 'howItWorks.step3.title', descriptionKey: 'howItWorks.step3.description', title: 'Understand risk', description: 'Translate current readings into clear air-quality risk.' },
+  { step: 4, titleKey: 'howItWorks.step4.title', descriptionKey: 'howItWorks.step4.description', title: 'Take action', description: 'Follow guidance based on your profile and activity.' },
+]
+
+const currentLocation = {
+  name: 'Current location',
+  region: 'Live data',
+  aqi: null,
+  pm25: null,
+  pm10: null,
+  riskLevel: 'moderate',
+  status: 'moderate',
+  recommendation: 'Live air-quality data is being fetched.',
+}
 
 const FEATURE_ICONS = {
   activity: Activity,
@@ -21,6 +46,7 @@ const FEATURE_ICONS = {
 }
 
 export default function Landing() {
+  const { t } = useLanguage()
   const [liveAQI, setLiveAQI] = useState(null)
   const [livePM25, setLivePM25] = useState(null)
   const [livePM10, setLivePM10] = useState(null)
@@ -46,61 +72,65 @@ export default function Landing() {
           setLivePM25(airQuality.pm25)
           setLivePM10(airQuality.pm10)
 
-          // Try to get the current city name
           try {
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
             )
-
-            if (response.ok) {
-              const locationData = await response.json()
-
-              const address = locationData.address || {}
-
-              const city =
-                address.city ||
-                address.town ||
-                address.village ||
-                address.municipality ||
-                'Your current location'
-
+            const data = await response.json()
+            const city =
+              data.address?.city ||
+              data.address?.town ||
+              data.address?.village ||
+              data.address?.suburb ||
+              data.address?.county
+            if (city) {
               setLocationName(city)
             }
-          } catch (locationError) {
-            console.warn('Could not determine city name:', locationError)
+          } catch (e) {
+            console.error('Failed to get location name:', e)
           }
-
-          setAqiError('')
-        } catch (error) {
-          console.error('Live AQI error:', error)
-          setAqiError('Unable to fetch live air quality.')
+        } catch (err) {
+          console.error('Failed to fetch live air quality:', err)
+          setAqiError('Unable to fetch live air-quality data right now. Please try again.')
         } finally {
           setLoadingAQI(false)
         }
       },
       (error) => {
-        console.error('Location permission error:', error)
-        setAqiError('Please allow location access to see live AQI.')
+        console.error('Geolocation error:', error)
+        setAqiError('Location access denied or unavailable. Please allow location access to load live data.')
         setLoadingAQI(false)
-      }
+      },
+      { timeout: 10000 }
     )
   }, [])
 
+  const effectiveAQI = liveAQI ?? currentLocation.aqi
+  const effectivePM25 = livePM25 ?? currentLocation.pm25
+  const effectivePM10 = livePM10 ?? currentLocation.pm10
+  const effectiveLocationName = locationName || currentLocation.name
+
   return (
-    <div className="bg-canvas">
+    <div className="min-h-screen bg-canvas text-ink-900 flex flex-col font-sans antialiased overflow-x-hidden">
       <Navbar />
 
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-10 left-[8%] w-2 h-2 rounded-full bg-forest-400/60 animate-drift" />
+      {/* HERO SECTION */}
+      <section className="relative overflow-hidden border-b border-ink-100/60 bg-gradient-to-b from-canvas via-surface/30 to-canvas">
+
+        {/* Ambient background blur elements */}
+        <div className="pointer-events-none absolute left-1/2 top-10 -z-10 h-72 w-[40rem] -translate-x-1/2 rounded-full bg-forest-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute right-10 top-40 -z-10 h-60 w-60 rounded-full bg-mist-400/20 blur-3xl animate-float-slow" />
+        <div className="pointer-events-none absolute left-10 top-72 -z-10 h-52 w-52 rounded-full bg-sage-400/15 blur-2xl animate-float-gentle" />
+
+        {/* Floating particles */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div
-            className="absolute top-32 left-[22%] w-1.5 h-1.5 rounded-full bg-mist-500/50 animate-drift"
-            style={{ animationDelay: '1.2s' }}
+            className="absolute top-20 left-[15%] w-2 h-2 rounded-full bg-forest-400/30 animate-drift"
+            style={{ animationDelay: '0s' }}
           />
           <div
-            className="absolute top-20 right-[18%] w-2.5 h-2.5 rounded-full bg-forest-300/50 animate-drift"
-            style={{ animationDelay: '2.1s' }}
+            className="absolute top-40 right-[20%] w-3 h-3 rounded-full bg-sage-400/20 animate-drift"
+            style={{ animationDelay: '1.2s' }}
           />
           <div
             className="absolute top-56 right-[30%] w-1.5 h-1.5 rounded-full bg-forest-400/40 animate-drift"
@@ -117,15 +147,21 @@ export default function Landing() {
           <div className="animate-rise">
             <div className="inline-flex items-center gap-2 bg-forest-100 text-forest-800 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               <ShieldCheck size={13} />
-              Real-time environmental intelligence
+              {t('landing.realtimeIntelligence')}
+              <Sparkles size={12} className="text-forest-600" />
             </div>
 
-            <h1 className="font-display font-semibold text-4xl sm:text-5xl lg:text-[3.4rem] leading-[1.08] text-ink-900 tracking-tight">
-              Know the air<br />around you.
+            <h1 className="text-reveal font-display text-4xl font-semibold leading-[1.06] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.6rem]">
+              {t('landing.heroTitlePart1')}
+              <br />
+              <span className="text-forest-700">{t('landing.heroTitlePart2')}</span>
             </h1>
 
-            <p className="text-ink-700 text-base sm:text-lg leading-relaxed mt-5 max-w-md">
-              Turn complex environmental data into clear, personalized actions.
+            <p
+              className="fade-up mt-5 max-w-md text-base leading-relaxed text-ink-700 sm:text-lg"
+              style={{ animationDelay: '160ms' }}
+            >
+              {t('landing.heroDescription')}
             </p>
 
             <div className="flex flex-wrap gap-3 mt-8">
@@ -133,7 +169,7 @@ export default function Landing() {
                 to="/dashboard"
                 className="inline-flex items-center gap-2 bg-forest-700 hover:bg-forest-800 text-white font-semibold text-sm px-5 py-3.5 rounded-lg transition-colors shadow-lift"
               >
-                Check Air Quality
+                {t('landing.checkAirQuality')}
                 <ArrowRight size={16} />
               </Link>
 
@@ -141,114 +177,104 @@ export default function Landing() {
                 href="#features"
                 className="inline-flex items-center gap-2 bg-surface border border-ink-200 hover:border-forest-400 text-ink-900 font-semibold text-sm px-5 py-3.5 rounded-lg transition-colors"
               >
-                Explore Features
+                {t('landing.exploreFeatures')}
+                <CompassIcon size={16} />
               </a>
+            </div>
+
+            {/* Quick stats highlight */}
+            <div className="mt-10 pt-6 border-t border-ink-100 flex items-center gap-8 text-xs text-ink-600">
+              <div>
+                <span className="block text-base font-semibold text-ink-900">100%</span>
+                {t('landing.statPersonalized')}
+              </div>
+              <div className="w-px h-8 bg-ink-200" />
+              <div>
+                <span className="block text-base font-semibold text-ink-900">24/7</span>
+                {t('landing.statMonitoring')}
+              </div>
+              <div className="w-px h-8 bg-ink-200" />
+              <div>
+                <span className="block text-base font-semibold text-ink-900">11</span>
+                {t('landing.statLanguages')}
+              </div>
             </div>
           </div>
 
-          {/* LIVE AQI CARD */}
-          <div className="animate-rise" style={{ animationDelay: '0.1s' }}>
-            <div className="bg-surface rounded-xl2 shadow-lift border border-ink-100 p-6 sm:p-8 max-w-md mx-auto relative">
+          {/* Hero AQI Card Preview */}
+          <div className="lg:pl-6">
+            <div className="card-hover bg-surface rounded-xl2 border border-ink-100 p-6 sm:p-8 shadow-card relative">
 
-              {!loadingAQI && liveAQI !== null && (
-                <div className="absolute top-6 right-6">
-                  <RiskBadge aqi={liveAQI} size="sm" />
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-ink-100">
+                <div className="flex items-center gap-2">
+                  <MapPin size={16} className="text-forest-700 shrink-0" />
+                  <span className="text-sm font-semibold text-ink-900 truncate">
+                    {effectiveLocationName}
+                  </span>
+                  {liveAQI !== null && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-forest-100 text-forest-800">
+                      <span className="w-1.5 h-1.5 rounded-full bg-forest-600 animate-pulse" />
+                      {t('common.live')}
+                    </span>
+                  )}
                 </div>
-              )}
 
-              <div className="flex items-center gap-1.5 text-sm text-ink-700 mb-4">
-                <MapPin size={15} className="text-forest-600" />
-                {locationName}
+                <RiskBadge level={currentLocation.riskLevel} />
               </div>
 
               {loadingAQI ? (
-                <div className="flex flex-col items-center justify-center py-16">
-                  <Loader2
-                    size={32}
-                    className="text-forest-600 animate-spin"
-                  />
-                  <p className="text-sm text-ink-500 mt-3">
-                    Getting live air quality...
-                  </p>
-                </div>
-              ) : aqiError ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <MapPin
-                    size={30}
-                    className="text-forest-600 mb-3"
-                  />
-
-                  <p className="font-semibold text-ink-800">
-                    Location required
-                  </p>
-
-                  <p className="text-sm text-ink-500 mt-1 max-w-xs">
-                    {aqiError}
-                  </p>
+                <div className="flex flex-col items-center justify-center py-10">
+                  <Loader2 size={32} className="text-forest-700 animate-spin mb-3" />
+                  <p className="text-xs text-ink-500 font-medium">Fetching live air quality data...</p>
                 </div>
               ) : (
                 <>
-                  <div className="flex justify-center py-2">
-                    <AQIGauge
-                      aqi={liveAQI}
-                      size={220}
-                    />
-                  </div>
+                  {aqiError && (
+                    <div className="mb-4 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+                      {aqiError}
+                    </div>
+                  )}
 
-                  <div className="grid grid-cols-2 gap-3 mt-4">
+                  {!aqiError && (
+                    <div className="py-2">
+                      <AQIGauge value={effectiveAQI} status={currentLocation.status} />
+                    </div>
+                  )}
 
-                    <div className="bg-forest-50 rounded-lg px-4 py-3">
-                      <p className="text-xs text-ink-500 font-medium">
-                        PM2.5
-                      </p>
-
-                      <p className="font-mono font-semibold text-lg text-ink-900">
-                        {livePM25 ?? '—'}{' '}
-                        <span className="text-xs font-normal text-ink-500">
-                          µg/m³
-                        </span>
-                      </p>
+                  <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-ink-100 text-xs">
+                    <div className="bg-canvas rounded-lg p-3 border border-ink-100">
+                      <span className="text-ink-500 block text-[11px] mb-0.5">PM2.5</span>
+                      <span className="font-semibold text-ink-900 text-sm">{effectivePM25} µg/m³</span>
                     </div>
 
-                    <div className="bg-forest-50 rounded-lg px-4 py-3">
-                      <p className="text-xs text-ink-500 font-medium">
-                        PM10
-                      </p>
-
-                      <p className="font-mono font-semibold text-lg text-ink-900">
-                        {livePM10 ?? '—'}{' '}
-                        <span className="text-xs font-normal text-ink-500">
-                          µg/m³
-                        </span>
-                      </p>
+                    <div className="bg-canvas rounded-lg p-3 border border-ink-100">
+                      <span className="text-ink-500 block text-[11px] mb-0.5">PM10</span>
+                      <span className="font-semibold text-ink-900 text-sm">{effectivePM10} µg/m³</span>
                     </div>
-
-                  </div>
-
-                  <div className="flex items-center gap-2 text-xs text-forest-700 mt-4">
-                    <span className="w-1.5 h-1.5 rounded-full bg-forest-600" />
-                    Live air quality data
                   </div>
                 </>
               )}
 
+              <div className="mt-5 p-3 rounded-lg bg-forest-50 border border-forest-100 text-xs text-forest-900 flex items-start gap-2.5">
+                <ShieldCheck size={16} className="text-forest-700 shrink-0 mt-0.5" />
+                <span>
+                  {currentLocation.recommendation}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section
-        id="features"
-        className="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24 scroll-mt-16"
-      >
-        <div className="max-w-xl mb-12">
+      {/* FEATURES SECTION */}
+      <section id="features" className="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24 scroll-mt-16">
+        <div className="max-w-xl mb-14">
           <p className="text-xs font-semibold uppercase tracking-wider text-forest-700 mb-3">
-            Features
+            {t('landing.featuresHeading')}
           </p>
 
           <h2 className="font-display font-semibold text-3xl sm:text-4xl text-ink-900 tracking-tight">
-            Everything you need to understand your air
+            {t('landing.featuresTitle')}
           </h2>
         </div>
 
@@ -265,12 +291,12 @@ export default function Landing() {
                   <Icon size={20} className="text-forest-700" />
                 </div>
 
-                <h3 className="font-display font-semibold text-ink-900 mb-1.5">
-                  {f.title}
+                <h3 className="font-display mb-1.5 font-semibold text-ink-900">
+                  {t(f.titleKey || 'features.' + f.key + '.title', { defaultValue: f.title })}
                 </h3>
 
-                <p className="text-sm text-ink-700 leading-relaxed">
-                  {f.description}
+                <p className="text-sm leading-relaxed text-ink-700">
+                  {t(f.descriptionKey || 'features.' + f.key + '.description', { defaultValue: f.description })}
                 </p>
               </div>
             )
@@ -287,11 +313,11 @@ export default function Landing() {
 
           <div className="max-w-xl mb-14">
             <p className="text-xs font-semibold uppercase tracking-wider text-forest-700 mb-3">
-              How It Works
+              {t('landing.howItWorksHeading')}
             </p>
 
             <h2 className="font-display font-semibold text-3xl sm:text-4xl text-ink-900 tracking-tight">
-              From location to action, in four steps
+              {t('landing.howItWorksTitle')}
             </h2>
           </div>
 
@@ -309,12 +335,12 @@ export default function Landing() {
                   )}
                 </div>
 
-                <h3 className="font-display font-semibold text-ink-900 mb-1.5">
-                  {s.title}
+                <h3 className="font-display mb-1.5 mt-4 font-semibold text-ink-900">
+                  {t(s.titleKey || ('howItWorks.step' + s.step + '.title'), { defaultValue: s.title })}
                 </h3>
 
-                <p className="text-sm text-ink-700 leading-relaxed">
-                  {s.description}
+                <p className="text-sm leading-relaxed text-ink-700">
+                  {t(s.descriptionKey || ('howItWorks.step' + s.step + '.description'), { defaultValue: s.description })}
                 </p>
 
               </div>
@@ -335,18 +361,18 @@ export default function Landing() {
           <div className="relative">
 
             <h2 className="font-display font-semibold text-3xl sm:text-4xl text-white tracking-tight max-w-xl mx-auto">
-              Built for people who breathe the same air every day.
+              {t('landing.ctaTitle')}
             </h2>
 
             <p className="text-forest-100/90 mt-4 max-w-md mx-auto leading-relaxed">
-              AirGuard was built as a hackathon project to make environmental risk personal, clear, and actionable.
+              {t('landing.ctaDescription')}
             </p>
 
             <Link
               to="/dashboard"
               className="inline-flex items-center gap-2 bg-white text-forest-800 font-semibold text-sm px-5 py-3.5 rounded-lg mt-8 hover:bg-forest-50 transition-colors"
             >
-              Check Air Quality
+              {t('landing.checkAirQuality')}
               <ArrowRight size={16} />
             </Link>
 

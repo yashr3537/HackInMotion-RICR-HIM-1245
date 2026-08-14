@@ -13,7 +13,18 @@ import { EmptyState } from '../components/EmptyState'
 
 import { searchLocation } from '../data/locationApi'
 import { getAirQuality } from '../data/airQualityApi'
-import { currentLocation } from '../data/demoData'
+
+const currentLocation = {
+  name: 'Current location',
+  region: 'Live air quality',
+  aqi: null,
+  pm25: null,
+  pm10: null,
+  no2: null,
+  o3: null,
+  so2: null,
+  co: null,
+}
 
 export default function MyLocations() {
   const navigate = useNavigate()

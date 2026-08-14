@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useLanguage } from '../i18n/index.jsx'
 import {
   Wind,
   CircleDot,
@@ -67,19 +68,11 @@ const getVisualPercent = (value) => {
   return Math.min((numericValue / 150) * 100, 100)
 }
 
-const getStatusLabel = (status) => {
-  const labels = {
-    good: 'Good',
-    moderate: 'Moderate',
-    sensitive: 'Sensitive',
-    unhealthy: 'Unhealthy',
-    hazardous: 'Hazardous',
-  }
+// status labels will be provided via translations inside the component
 
-  return labels[status] || 'Good'
-}
 
 export default function PollutantCard({ pollutant }) {
+  const { t } = useLanguage()
   const Icon = ICONS[pollutant.key] || Wind
   const tint = STATUS_COLORS[pollutant.status] || STATUS_COLORS.good
 
@@ -197,7 +190,7 @@ export default function PollutantCard({ pollutant }) {
             className="text-[10px] font-semibold uppercase tracking-[0.14em]"
             style={{ color: tint.color }}
           >
-            Live
+          {t('common.live')}
           </span>
         </div>
       </div>
@@ -234,7 +227,7 @@ export default function PollutantCard({ pollutant }) {
               border: `1px solid ${tint.border}`,
             }}
           >
-            {getStatusLabel(pollutant.status)}
+          {t(`aqi.${pollutant.status}`)}
           </div>
         </div>
       </div>
@@ -243,7 +236,7 @@ export default function PollutantCard({ pollutant }) {
       <div className="relative z-10">
         <div className="mb-2 flex items-center justify-between">
           <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-400">
-            Relative level
+          {t('pollutant.relativeLevel')}
           </span>
 
           <span
@@ -270,14 +263,14 @@ export default function PollutantCard({ pollutant }) {
       <div className="relative z-10 flex items-center justify-between border-t border-ink-100 pt-3">
         <div className="flex items-center gap-1.5 text-[10px] text-ink-400">
           <Activity size={11} />
-          Environmental metric
+        {t('pollutant.environmentalMetric')}
         </div>
 
         <span
           className="text-[10px] font-medium transition-transform duration-300 group-hover:translate-x-0.5"
           style={{ color: tint.color }}
         >
-          Monitoring
+        {t('common.monitoring')}
         </span>
       </div>
     </div>

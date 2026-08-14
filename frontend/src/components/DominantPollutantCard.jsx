@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLanguage } from '../i18n/index.jsx'
 import {
   CircleDot,
   AlertTriangle,
@@ -62,6 +63,8 @@ export default function DominantPollutantCard({ data }) {
 
   const status = getStatus()
 
+  const { t } = useLanguage()
+
   return (
     <div
       className={`card-hover card-glow group relative overflow-hidden rounded-xl2 border border-ink-100 bg-surface p-6 shadow-soft transition-all duration-700 ${
@@ -84,11 +87,11 @@ export default function DominantPollutantCard({ data }) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.17em] text-ink-500">
-              Main Pollutant Concern
+              {t('dominant.main')}
             </p>
 
             <p className="mt-1 text-xs text-ink-400">
-              Current dominant environmental metric
+              {t('dominant.currentMetric')}
             </p>
           </div>
 
@@ -135,7 +138,7 @@ export default function DominantPollutantCard({ data }) {
 
             <div className="mt-1 flex items-center gap-1.5 text-xs text-ink-500">
               <Activity size={11} />
-              Dominant pollutant
+              {t('dominant.dominantPollutant')}
             </div>
           </div>
         </div>
@@ -156,7 +159,7 @@ export default function DominantPollutantCard({ data }) {
           <div className="mb-2.5 flex items-end justify-between gap-3">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-ink-400">
-                Exposure relative to limit
+                {t('dominant.exposureRelative')}
               </p>
 
               <p
@@ -168,7 +171,7 @@ export default function DominantPollutantCard({ data }) {
             </div>
 
             <div className="text-right text-[10px] text-ink-400">
-              <div>Reference</div>
+              <div>{t('dominant.reference')}</div>
               <div className="mt-1 font-medium text-ink-600">
                 100%
               </div>
@@ -240,15 +243,14 @@ export default function DominantPollutantCard({ data }) {
           <div>
             <p className="text-xs font-semibold text-ink-800">
               {targetPercent >= 85
-                ? 'Higher attention recommended'
+                ? t('dominant.higherAttention')
                 : targetPercent >= 60
-                  ? 'Monitor current conditions'
-                  : 'Current level is within the expected range'}
+                  ? t('dominant.monitorConditions')
+                  : t('dominant.withinRange')}
             </p>
-
+ 
             <p className="mt-1 text-[11px] leading-5 text-ink-500">
-              This indicator is based on the current pollutant level and its
-              configured reference limit.
+              {t('dominant.indicatorInfo')}
             </p>
           </div>
         </div>
