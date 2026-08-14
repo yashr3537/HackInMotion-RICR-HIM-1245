@@ -1,5 +1,7 @@
-const GEOCODING_API =
-  'https://geocoding-api.open-meteo.com/v1/search'
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+const GEOCODING_API = BACKEND_URL
+  ? `${BACKEND_URL}/api/locations/search`
+  : 'https://geocoding-api.open-meteo.com/v1/search'
 
 export async function searchLocation(query) {
   const trimmedQuery = String(query || '').trim()

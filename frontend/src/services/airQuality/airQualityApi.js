@@ -1,5 +1,7 @@
-const AIR_QUALITY_API =
-  'https://air-quality-api.open-meteo.com/v1/air-quality'
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+const AIR_QUALITY_API = BACKEND_URL
+  ? `${BACKEND_URL}/api/air-quality`
+  : 'https://air-quality-api.open-meteo.com/v1/air-quality'
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast'
 
 export async function getAirQuality(latitude, longitude) {
