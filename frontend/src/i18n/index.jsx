@@ -15,7 +15,7 @@ function getInitialLanguage() {
   return DEFAULT
 }
 
-function languageToVoiceCode(lang) {
+export function languageToVoiceCode(lang) {
   // Map UI language codes to voice codes used by voiceAlert (regional codes)
   const map = {
     en: 'en-IN',
@@ -29,8 +29,14 @@ function languageToVoiceCode(lang) {
     ml: 'ml-IN',
     pa: 'pa-IN',
     ur: 'ur-IN',
+    es: 'es-ES',
+    fr: 'fr-FR',
+    de: 'de-DE',
   }
-  return map[lang] || 'en-IN'
+  if (!lang) return 'en-IN'
+  if (map[lang]) return map[lang]
+  if (lang.includes('-')) return lang
+  return `${lang}-${lang.toUpperCase()}`
 }
 
 export function I18nProvider({ children }) {
@@ -45,14 +51,10 @@ export function I18nProvider({ children }) {
     document.documentElement.lang = language
     document.documentElement.dir = language === 'ur' ? 'rtl' : 'ltr'
 
-    // If voice language is default, suggest matching voice language
+    // Automatically sync voice language whenever website language changes
     try {
-      const storedVoice = getStoredVoiceLanguage()
-      const defaultVoice = 'en-IN'
       const desired = languageToVoiceCode(language)
-      if (!storedVoice || storedVoice === defaultVoice) {
-        setVoiceLanguage(desired)
-      }
+      setVoiceLanguage(desired)
     } catch (e) {}
   }, [language])
 

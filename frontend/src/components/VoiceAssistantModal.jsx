@@ -17,9 +17,12 @@ import {
 import { processVoiceAssistantQuery } from '../services/voiceAssistantService'
 import { speakText, stopVoiceAlert, isVoiceSupported } from '../services/voiceAlert'
 import { useAuth } from '../auth'
+import { useLanguage, languageToVoiceCode } from '../i18n/index.jsx'
 
 export default function VoiceAssistantModal({ isOpen, onClose }) {
   const { currentUser } = useAuth()
+  const { language } = useLanguage()
+
   const [messages, setMessages] = useState([
     {
       id: 'welcome',
@@ -40,6 +43,14 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
   const recognitionRef = useRef(null)
   const chatBottomRef = useRef(null)
 
+  // Sync speech recognition language whenever website language changes
+  useEffect(() => {
+    if (recognitionRef.current) {
+      const voiceLangCode = languageToVoiceCode(language)
+      recognitionRef.current.lang = voiceLangCode
+    }
+  }, [language])
+
   // Auto scroll chat to bottom when messages update
   useEffect(() => {
     if (chatBottomRef.current) {
@@ -55,7 +66,7 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
         const recognition = new SpeechRecognition()
         recognition.continuous = false
         recognition.interimResults = true
-        recognition.lang = 'en-IN'
+        recognition.lang = languageToVoiceCode(language)
 
         recognition.onstart = () => {
           setIsListening(true)
@@ -135,12 +146,19 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
     }
 
     try {
+      // Ensure speech recognition uses the website language
+      recognitionRef.current.lang = languageToVoiceCode(language)
       recognitionRef.current.start()
     } catch (e) {
       console.warn('Recognition start failed:', e)
       try {
         recognitionRef.current.stop()
-        setTimeout(() => recognitionRef.current.start(), 200)
+        setTimeout(() => {
+          if (recognitionRef.current) {
+            recognitionRef.current.lang = languageToVoiceCode(language)
+            recognitionRef.current.start()
+          }
+        }, 200)
       } catch (err) {
         setErrorMessage('Unable to activate microphone. Please try typing your request.')
       }
@@ -181,7 +199,8 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
     setIsProcessing(true)
 
     try {
-      const response = await processVoiceAssistantQuery(trimmed, sessionContext, currentUser?.id)
+      // Pass active website language to query processor
+      const response = await processVoiceAssistantQuery(trimmed, sessionContext, currentUser?.id, language)
       
       const assistantMsg = {
         id: `assistant-${Date.now()}`,
@@ -196,7 +215,8 @@ export default function VoiceAssistantModal({ isOpen, onClose }) {
 
       if (autoSpeak && isVoiceSupported()) {
         setIsSpeaking(true)
-        speakText(response.text).then(() => {
+        // Speak using website language voice code
+        speakText(response.text, { language: languageToVoiceCode(language) }).then(() => {
           setIsSpeaking(false)
         })
       }
