@@ -12,6 +12,7 @@ import {
   Navigation,
   Loader2,
   Trash2,
+  AlertOctagon,
 } from 'lucide-react'
 
 import AQICard from '../components/AQICard'
@@ -142,6 +143,14 @@ export default function Dashboard() {
             >
               <BellRing size={15} />
               {t('nav.alerts')}
+            </Link>
+
+            <Link
+              to="/report"
+              className="btn-premium inline-flex items-center gap-2 rounded-xl bg-amber-600 dark:bg-amber-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 dark:hover:bg-amber-800"
+            >
+              <AlertOctagon size={15} />
+              {t('nav.reportIssue')}
             </Link>
 
             <Link

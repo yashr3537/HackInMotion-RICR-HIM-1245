@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Compass, MapPin, Bell, User } from 'lucide-react'
+import { LayoutDashboard, Compass, MapPin, Bell, User, AlertOctagon } from 'lucide-react'
 import { alerts } from '../data/demoData'
 
 const NAV = [
   { to: '/dashboard', label: 'Home', icon: LayoutDashboard },
+  { to: '/report', label: 'Report', icon: AlertOctagon },
   { to: '/explore', label: 'Explore', icon: Compass },
   { to: '/locations', label: 'Places', icon: MapPin },
   { to: '/alerts', label: 'Alerts', icon: Bell, badge: true },
-  { to: '/profile', label: 'Profile', icon: User },
 ]
 
 export default function MobileNavigation() {

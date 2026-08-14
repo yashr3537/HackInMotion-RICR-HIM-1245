@@ -17,6 +17,9 @@ import ActivityAdvisor from './pages/ActivityAdvisor'
 import Compare from './pages/Compare'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
+import ReportIssue from './pages/ReportIssue'
+import MyReports from './pages/MyReports'
+import ReportDetails from './pages/ReportDetails'
 import NotFound from './pages/NotFound'
 import RouteRisk from './pages/RouteRisk'
 
@@ -106,6 +109,22 @@ export default function App() {
           <Route
             path="/settings"
             element={<Settings />}
+          />
+
+          {/* Pollution Reporting */}
+          <Route
+            path="/report"
+            element={<ReportIssue />}
+          />
+
+          <Route
+            path="/my-reports"
+            element={<MyReports />}
+          />
+
+          <Route
+            path="/my-reports/:reportId"
+            element={<ReportDetails />}
           />
 
         </Route>

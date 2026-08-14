@@ -1,12 +1,14 @@
 import { useLanguage } from '../i18n/index.jsx'
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Compass, MapPin, History, Bell, User, Settings, Leaf, GitCompare, Footprints } from 'lucide-react'
+import { LayoutDashboard, Compass, MapPin, History, Bell, User, Settings, Leaf, GitCompare, Footprints, AlertOctagon, FileText } from 'lucide-react'
 import { alerts } from '../data/demoData'
 import LanguageSelector from './LanguageSelector.jsx'
 
 const NAV = [
   { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
-  { to: '/explore', key: 'features', icon: Compass },
+  { to: '/report', key: 'reportIssue', icon: AlertOctagon },
+  { to: '/my-reports', key: 'myReports', icon: FileText },
+  { to: '/explore', key: 'explore', icon: Compass },
   { to: '/locations', key: 'locations', icon: MapPin },
   { to: '/compare', key: 'compare', icon: GitCompare },
   { to: '/activity', key: 'activity', icon: Footprints },
