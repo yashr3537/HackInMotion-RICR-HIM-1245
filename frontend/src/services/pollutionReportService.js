@@ -93,7 +93,7 @@ export async function createPollutionReport(reportData, user) {
   }
 
   const { data, error } = await supabase
-    .from('pollution_reports')
+    .from('community_reports')
     .insert([payload])
     .select()
     .single()
@@ -113,7 +113,7 @@ export async function getUserPollutionReports(userId) {
   if (!userId) return []
 
   const { data, error } = await supabase
-    .from('pollution_reports')
+    .from('community_reports')
     .select('*')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
@@ -132,7 +132,7 @@ export async function getUserPollutionReports(userId) {
 export async function getPollutionReportById(reportId, userId) {
   if (!reportId) return null
 
-  let query = supabase.from('pollution_reports').select('*')
+  let query = supabase.from('community_reports').select('*')
   
   if (reportId.includes('-')) {
     query = query.eq('report_id', reportId)
