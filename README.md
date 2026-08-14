@@ -1,4 +1,4 @@
-# README.md (Part 1 of 3)
+# README.md 
 
 # 🌿 AirGuard – AI Powered Environmental Risk & Air Quality Monitoring Platform
 
