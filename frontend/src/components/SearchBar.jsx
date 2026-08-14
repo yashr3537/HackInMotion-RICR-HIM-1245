@@ -6,6 +6,8 @@ import {
   Navigation,
   Loader2,
 } from 'lucide-react'
+import VoiceSearchButton from './VoiceSearchButton'
+import VoiceAssistantModal from './VoiceAssistantModal'
 
 export default function SearchBar({
   placeholder = 'Search location…',
@@ -15,6 +17,7 @@ export default function SearchBar({
 }) {
   const [focused, setFocused] = useState(false)
   const [locating, setLocating] = useState(false)
+  const [voiceModalOpen, setVoiceModalOpen] = useState(false)
   const inputRef = useRef(null)
 
   const handleClear = () => {
@@ -130,6 +133,11 @@ export default function SearchBar({
             </button>
           )}
 
+          {/* Voice Search Button */}
+          <div onMouseDown={(event) => event.preventDefault()}>
+            <VoiceSearchButton onClick={() => setVoiceModalOpen(true)} />
+          </div>
+
           {/* Current location */}
           <button
             type="button"
@@ -178,6 +186,12 @@ export default function SearchBar({
           </kbd>
         </div>
       </div>
+
+      {/* Voice Assistant Modal */}
+      <VoiceAssistantModal 
+        isOpen={voiceModalOpen} 
+        onClose={() => setVoiceModalOpen(false)} 
+      />
     </div>
   )
 }
