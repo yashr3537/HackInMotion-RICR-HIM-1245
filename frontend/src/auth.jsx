@@ -90,18 +90,34 @@ export async function signInUser({ email, password }) {
     throw new Error("Please enter your password.");
   }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: normalizedEmail,
-    password: String(password),
-  });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password: String(password),
+    });
 
-  if (error) {
-    throw new Error(error.message);
+    if (error) {
+      const msg = error.message || "";
+      if (msg.includes("Invalid login credentials")) {
+        throw new Error("Invalid email or password. Please check your credentials and try again.");
+      }
+      if (msg.includes("Email not confirmed")) {
+        throw new Error("Your email address is not verified yet. Please check your inbox for the verification link.");
+      }
+      if (msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
+        throw new Error("Unable to connect to the server. Please check your internet connection and try again.");
+      }
+      throw new Error(msg || "Unable to sign in. Please try again later.");
+    }
+
+    const profile = await getProfile(data.user.id);
+    return mapUser(data.user, profile);
+  } catch (err) {
+    if (err.message && (err.message.includes("Failed to fetch") || err.message.includes("NetworkError"))) {
+      throw new Error("Unable to connect to the server. Please check your internet connection and try again.");
+    }
+    throw err;
   }
-
-  const profile = await getProfile(data.user.id);
-
-  return mapUser(data.user, profile);
 }
 
 export async function registerUser({ name, email, password }) {
@@ -120,35 +136,58 @@ export async function registerUser({ name, email, password }) {
     throw new Error("Password must be at least 6 characters long.");
   }
 
-  const { data, error } = await supabase.auth.signUp({
-    email: normalizedEmail,
-    password: String(password),
-    options: {
-      data: {
-        name: fullName.split(" ")[0],
-        full_name: fullName,
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: normalizedEmail,
+      password: String(password),
+      options: {
+        data: {
+          name: fullName.split(" ")[0],
+          full_name: fullName,
+        },
       },
-    },
-  });
+    });
 
-  if (error) {
-    throw new Error(error.message);
+    if (error) {
+      const msg = error.message || "";
+      if (
+        msg.includes("User already registered") ||
+        msg.includes("already exists") ||
+        error.code === "user_already_exists"
+      ) {
+        throw new Error("An account with this email already exists. Please log in instead.");
+      }
+      if (msg.includes("valid email") || msg.includes("invalid email")) {
+        throw new Error("Please enter a valid email address.");
+      }
+      if (msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("network")) {
+        throw new Error("Unable to connect to the server. Please check your internet connection and try again.");
+      }
+      throw new Error(msg || "We couldn't send the verification email right now. Please try again later.");
+    }
+
+    if (!data || !data.user) {
+      throw new Error("Something went wrong while creating your account. Please try again later.");
+    }
+
+    let profile = await getProfile(data.user.id);
+
+    if (!profile && data.session) {
+      profile = await createProfile(data.user, fullName);
+    }
+
+    return {
+      user: mapUser(data.user, profile),
+      session: data.session,
+      needsVerification: !data.session,
+      email: normalizedEmail,
+    };
+  } catch (err) {
+    if (err.message && (err.message.includes("Failed to fetch") || err.message.includes("NetworkError"))) {
+      throw new Error("Unable to connect to the server. Please check your internet connection and try again.");
+    }
+    throw err;
   }
-
-  if (!data.user) {
-    throw new Error("Unable to create account. Please try again.");
-  }
-
-  let profile = await getProfile(data.user.id);
-
-  if (!profile && data.session) {
-    profile = await createProfile(data.user, fullName);
-  }
-
-  return {
-    user: mapUser(data.user, profile),
-    session: data.session,
-  };
 }
 
 export function AuthProvider({ children }) {
