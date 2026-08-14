@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { currentUser as defaultUser } from './data/demoData'
 
 const STORAGE_KEYS = {
   users: 'airguard_users',
@@ -81,24 +80,6 @@ function saveStoredUser(user) {
 }
 
 export async function ensureDemoAccount() {
-  const users = getStoredUsers()
-  const normalizedEmail = normalizeEmail(defaultUser.email)
-
-  if (users.some((user) => normalizeEmail(user.email) === normalizedEmail)) {
-    return users
-  }
-
-  const demoUser = {
-    id: 'demo-user',
-    name: defaultUser.name,
-    fullName: defaultUser.fullName,
-    email: defaultUser.email,
-    profileType: defaultUser.profileType,
-    alertThreshold: defaultUser.alertThreshold,
-    passwordHash: await hashPassword('airguard123'),
-  }
-
-  saveStoredUsers([...users, demoUser])
   return getStoredUsers()
 }
 
@@ -175,7 +156,7 @@ export function AuthProvider({ children }) {
   }, [currentUser])
 
   const value = useMemo(() => ({
-    currentUser: currentUser || defaultUser,
+    currentUser,
     isAuthenticated: Boolean(currentUser),
     signIn: async (credentials) => {
       const user = await signInUser(credentials)
@@ -189,9 +170,10 @@ export function AuthProvider({ children }) {
     },
     updateCurrentUser: (updates) => {
       setCurrentUser((previousUser) => {
+        const baseUser = previousUser || {}
         const nextUser = typeof updates === 'function'
-          ? updates(previousUser || defaultUser)
-          : { ...(previousUser || defaultUser), ...updates }
+          ? updates(baseUser)
+          : { ...baseUser, ...updates }
 
         saveStoredUser(nextUser)
         return nextUser

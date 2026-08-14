@@ -12,7 +12,8 @@ import {
 
 import AlertCard from '../components/AlertCard'
 import { EmptyState } from '../components/EmptyState'
-import { alerts as initialAlerts } from '../data/demoData'
+
+const initialAlerts = []
 
 const FILTERS = [
   { key: 'all', label: 'All' },

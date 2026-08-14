@@ -30,7 +30,7 @@ export default {
   },
 
   sidebar: {
-    footerNotice: 'Air quality data refreshes automatically. Demo build — backend not yet connected.'
+    footerNotice: 'Air quality data refreshes automatically with the latest conditions.'
   },
 
   dashboard: {

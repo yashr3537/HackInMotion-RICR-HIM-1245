@@ -161,9 +161,9 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-forest-400/70">
-            <span>Demo build</span>
+            <span>Live data</span>
             <span className="h-1 w-1 rounded-full bg-forest-500/60" />
-            <span>Illustrative data</span>
+            <span>AirGuard</span>
           </div>
         </div>
       </div>

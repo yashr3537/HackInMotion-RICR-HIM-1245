@@ -8,9 +8,33 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import RiskBadge from '../components/RiskBadge'
 import AQIGauge from '../components/AQIGauge'
-import { features, howItWorks, currentLocation } from '../data/demoData'
 import { getAirQuality } from '../data/airQualityApi'
 import { useLanguage } from '../i18n/index.jsx'
+
+const features = [
+  { key: 'live', icon: 'activity', titleKey: 'features.live.title', descriptionKey: 'features.live.description', title: 'Live Air Quality', description: 'Monitor current conditions in real time.' },
+  { key: 'risk', icon: 'gauge', titleKey: 'features.risk.title', descriptionKey: 'features.risk.description', title: 'Risk Intelligence', description: 'Understand air-quality risk and what it means for you.' },
+  { key: 'guidance', icon: 'compass', titleKey: 'features.guidance.title', descriptionKey: 'features.guidance.description', title: 'Personalized Guidance', description: 'Get actionable recommendations based on your profile.' },
+  { key: 'alerts', icon: 'bell', titleKey: 'features.alerts.title', descriptionKey: 'features.alerts.description', title: 'Smart Alerts', description: 'Stay informed when conditions worsen.' },
+]
+
+const howItWorks = [
+  { step: 1, titleKey: 'howItWorks.step1.title', descriptionKey: 'howItWorks.step1.description', title: 'Choose location', description: 'Pick a city, saved place, or use your current location.' },
+  { step: 2, titleKey: 'howItWorks.step2.title', descriptionKey: 'howItWorks.step2.description', title: 'Get live data', description: 'Fetch the latest AQI and pollutant readings.' },
+  { step: 3, titleKey: 'howItWorks.step3.title', descriptionKey: 'howItWorks.step3.description', title: 'Understand risk', description: 'Translate current readings into clear air-quality risk.' },
+  { step: 4, titleKey: 'howItWorks.step4.title', descriptionKey: 'howItWorks.step4.description', title: 'Take action', description: 'Follow guidance based on your profile and activity.' },
+]
+
+const currentLocation = {
+  name: 'Current location',
+  region: 'Live data',
+  aqi: null,
+  pm25: null,
+  pm10: null,
+  riskLevel: 'moderate',
+  status: 'moderate',
+  recommendation: 'Live air-quality data is being fetched.',
+}
 
 const FEATURE_ICONS = {
   activity: Activity,
@@ -48,7 +72,6 @@ export default function Landing() {
           setLivePM25(airQuality.pm25)
           setLivePM10(airQuality.pm10)
 
-          // Try to get the current city name
           try {
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
@@ -68,24 +91,24 @@ export default function Landing() {
           }
         } catch (err) {
           console.error('Failed to fetch live air quality:', err)
-          setAqiError('Could not fetch live AQI data for your location.')
+          setAqiError('Unable to fetch live air-quality data right now. Please try again.')
         } finally {
           setLoadingAQI(false)
         }
       },
       (error) => {
         console.error('Geolocation error:', error)
-        setAqiError('Location access denied or unavailable.')
+        setAqiError('Location access denied or unavailable. Please allow location access to load live data.')
         setLoadingAQI(false)
       },
       { timeout: 10000 }
     )
   }, [])
 
-  const effectiveAQI = liveAQI !== null ? liveAQI : currentLocation.aqi
-  const effectivePM25 = livePM25 !== null ? livePM25 : currentLocation.pm25
-  const effectivePM10 = livePM10 !== null ? livePM10 : currentLocation.pm10
-  const effectiveLocationName = liveAQI !== null ? locationName : currentLocation.name
+  const effectiveAQI = liveAQI ?? currentLocation.aqi
+  const effectivePM25 = livePM25 ?? currentLocation.pm25
+  const effectivePM10 = livePM10 ?? currentLocation.pm10
+  const effectiveLocationName = locationName || currentLocation.name
 
   return (
     <div className="min-h-screen bg-canvas text-ink-900 flex flex-col font-sans antialiased overflow-x-hidden">
@@ -208,14 +231,15 @@ export default function Landing() {
                 <>
                   {aqiError && (
                     <div className="mb-4 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-                      {aqiError} — Showing sample data for {currentLocation.name}.
+                      {aqiError}
                     </div>
                   )}
 
-                  {/* AQI Gauge Display */}
-                  <div className="py-2">
-                    <AQIGauge value={effectiveAQI} status={currentLocation.status} />
-                  </div>
+                  {!aqiError && (
+                    <div className="py-2">
+                      <AQIGauge value={effectiveAQI} status={currentLocation.status} />
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-ink-100 text-xs">
                     <div className="bg-canvas rounded-lg p-3 border border-ink-100">

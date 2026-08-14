@@ -13,8 +13,9 @@ import {
 } from 'lucide-react'
 
 import RiskBadge from '../components/RiskBadge'
-import { compareLocations } from '../data/demoData'
 import { useLanguage } from '../i18n/index.jsx'
+
+const compareLocations = []
 
 const getRiskMeta = (aqi, t) => {
   if (aqi <= 50) {

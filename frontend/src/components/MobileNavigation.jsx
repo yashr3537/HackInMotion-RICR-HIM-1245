@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Compass, MapPin, Bell, User } from 'lucide-react'
-import { alerts } from '../data/demoData'
 
 const NAV = [
   { to: '/dashboard', label: 'Home', icon: LayoutDashboard },
@@ -11,7 +10,7 @@ const NAV = [
 ]
 
 export default function MobileNavigation() {
-  const unread = alerts.filter((a) => !a.read).length
+  const unread = 0
 
   return (
     <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface/95 backdrop-blur-md border-t border-ink-100 px-2 pb-[env(safe-area-inset-bottom)]">

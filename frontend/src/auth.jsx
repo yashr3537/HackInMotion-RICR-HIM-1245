@@ -7,7 +7,6 @@ import React, {
 } from "react";
 
 import { supabase } from "./lib/supabaseClient";
-import { currentUser as defaultUser } from "./data/demoData";
 
 const AuthContext = createContext(null);
 
@@ -196,7 +195,7 @@ export function AuthProvider({ children }) {
 
   const value = useMemo(
     () => ({
-      currentUser: currentUser || defaultUser,
+      currentUser,
       isAuthenticated: Boolean(currentUser),
       loading,
 

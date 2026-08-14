@@ -1,7 +1,6 @@
 import { useLanguage } from '../i18n/index.jsx'
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Compass, MapPin, History, Bell, User, Settings, Leaf, GitCompare, Footprints } from 'lucide-react'
-import { alerts } from '../data/demoData'
 import LanguageSelector from './LanguageSelector.jsx'
 
 const NAV = [
@@ -18,7 +17,7 @@ const NAV = [
 
 export default function Sidebar() {
   const { t } = useLanguage()
-  const unread = alerts.filter((a) => !a.read).length
+  const unread = 0
 
   return (
     <aside className="hidden lg:flex flex-col w-64 shrink-0 h-screen sticky top-0 bg-forest-950 text-forest-100 px-4 py-6">

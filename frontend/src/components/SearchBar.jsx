@@ -7,6 +7,9 @@ import {
   Loader2,
 } from 'lucide-react'
 
+import VoiceAssistant from './VoiceAssistant'
+import VoiceSearchButton from './VoiceSearchButton'
+
 export default function SearchBar({
   placeholder = 'Search location…',
   value,
@@ -15,6 +18,7 @@ export default function SearchBar({
 }) {
   const [focused, setFocused] = useState(false)
   const [locating, setLocating] = useState(false)
+  const [voiceOpen, setVoiceOpen] = useState(false)
   const inputRef = useRef(null)
 
   const handleClear = () => {
@@ -117,6 +121,8 @@ export default function SearchBar({
 
         {/* Right actions */}
         <div className="absolute right-2 flex items-center gap-1">
+          <VoiceSearchButton onClick={() => setVoiceOpen(true)} />
+
           {/* Clear */}
           {value && (
             <button
@@ -154,6 +160,15 @@ export default function SearchBar({
           </button>
         </div>
       </div>
+
+      <VoiceAssistant
+        open={voiceOpen}
+        onClose={() => setVoiceOpen(false)}
+        onTranscript={(transcript) => {
+          onChange?.(transcript)
+          setVoiceOpen(false)
+        }}
+      />
 
       {/* Premium helper footer */}
       <div className="mt-2 flex items-center justify-between px-1">

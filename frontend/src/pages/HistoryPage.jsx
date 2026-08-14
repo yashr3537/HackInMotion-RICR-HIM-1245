@@ -19,7 +19,9 @@ import {
 } from 'lucide-react'
 
 import StatCard from '../components/StatCard'
-import { trendData, trendStats } from '../data/demoData'
+
+const trendData = { '24h': [], '7d': [], '30d': [] }
+const trendStats = { avgAqi: 0, peakAqi: 0, cleanestWindow: 'No data yet' }
 
 const RANGES = [
   { key: '24h', label: '24 Hours' },

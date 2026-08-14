@@ -1,13 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Leaf } from 'lucide-react'
-import { alerts } from '../data/demoData'
 import { useAuth } from '../auth'
 import LanguageSelector from './LanguageSelector'
 
 export default function AppHeader() {
   const { currentUser, signOut } = useAuth()
   const navigate = useNavigate()
-  const unread = alerts.filter((a) => !a.read).length
+  const unread = 0
 
   function handleSignOut() {
     signOut()
