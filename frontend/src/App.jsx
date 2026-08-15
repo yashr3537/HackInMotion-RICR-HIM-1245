@@ -1,3 +1,4 @@
+import { Loader2 } from 'lucide-react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import AppLayout from './components/AppLayout'
@@ -26,7 +27,18 @@ import RouteRisk from './pages/RouteRisk'
 import { AuthProvider, useAuth } from './auth'
 
 function ProtectedRoute() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-surface">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-forest-600" />
+          <span className="text-sm font-medium text-ink-500">Loading AirGuard...</span>
+        </div>
+      </div>
+    )
+  }
 
   return isAuthenticated ? <AppLayout /> : <Navigate to="/login" replace />
 }

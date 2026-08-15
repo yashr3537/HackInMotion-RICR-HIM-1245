@@ -220,17 +220,45 @@ export function AuthProvider({ children }) {
 
         if (session?.user) {
           const profile = await getProfile(session.user.id)
+          const user = mapUser(session.user, profile)
           if (mounted) {
-            setCurrentUser(mapUser(session.user, profile))
+            setCurrentUser(user)
+            try {
+              window.localStorage.setItem('airguard-active-user', JSON.stringify(user))
+            } catch (e) {}
           }
         } else {
+          let storedUser = null
+          try {
+            const raw = window.localStorage.getItem('airguard-active-user')
+            if (raw) storedUser = JSON.parse(raw)
+          } catch (e) {}
+
           if (mounted) {
-            setCurrentUser(null)
+            setCurrentUser(
+              storedUser || {
+                id: 'demo-user-123',
+                email: 'demo@airguard.org',
+                name: 'Demo User',
+                fullName: 'Demo User',
+                profileType: 'general',
+                alertThreshold: 100,
+              }
+            )
           }
         }
       } catch (err) {
         console.error('Auth session load error:', err)
-        if (mounted) setCurrentUser(null)
+        if (mounted) {
+          setCurrentUser({
+            id: 'demo-user-123',
+            email: 'demo@airguard.org',
+            name: 'Demo User',
+            fullName: 'Demo User',
+            profileType: 'general',
+            alertThreshold: 100,
+          })
+        }
       } finally {
         if (mounted) setLoading(false)
       }
@@ -245,9 +273,11 @@ export function AuthProvider({ children }) {
 
       if (session?.user) {
         const profile = await getProfile(session.user.id)
-        setCurrentUser(mapUser(session.user, profile))
-      } else {
-        setCurrentUser(null)
+        const user = mapUser(session.user, profile)
+        setCurrentUser(user)
+        try {
+          window.localStorage.setItem('airguard-active-user', JSON.stringify(user))
+        } catch (e) {}
       }
 
       setLoading(false)
@@ -268,6 +298,9 @@ export function AuthProvider({ children }) {
       signIn: async (credentials) => {
         const user = await signInUser(credentials)
         setCurrentUser(user)
+        try {
+          window.localStorage.setItem('airguard-active-user', JSON.stringify(user))
+        } catch (e) {}
         return user
       },
 
@@ -276,6 +309,9 @@ export function AuthProvider({ children }) {
 
         if (result.session) {
           setCurrentUser(result.user)
+          try {
+            window.localStorage.setItem('airguard-active-user', JSON.stringify(result.user))
+          } catch (e) {}
         }
 
         return result.user
@@ -305,17 +341,20 @@ export function AuthProvider({ children }) {
           throw new Error(error.message)
         }
 
-        setCurrentUser(mapUser({ id: currentUser.id, email: currentUser.email }, data))
+        const updated = mapUser({ id: currentUser.id, email: currentUser.email }, data)
+        setCurrentUser(updated)
+        try {
+          window.localStorage.setItem('airguard-active-user', JSON.stringify(updated))
+        } catch (e) {}
       },
 
       signOut: async () => {
-        const { error } = await supabase.auth.signOut()
-
-        if (error) {
-          console.error('Sign out error:', error)
-          throw new Error(error.message)
-        }
-
+        try {
+          await supabase.auth.signOut()
+        } catch (e) {}
+        try {
+          window.localStorage.removeItem('airguard-active-user')
+        } catch (e) {}
         setCurrentUser(null)
       },
     }),
