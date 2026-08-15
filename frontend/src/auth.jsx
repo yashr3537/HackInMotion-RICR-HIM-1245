@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { supabase } from './services/supabase/supabaseClient'
 
@@ -225,14 +225,14 @@ export function AuthProvider({ children }) {
             setCurrentUser(user)
             try {
               window.localStorage.setItem('airguard-active-user', JSON.stringify(user))
-            } catch (e) {}
+            } catch  {}
           }
         } else {
           let storedUser = null
           try {
             const raw = window.localStorage.getItem('airguard-active-user')
             if (raw) storedUser = JSON.parse(raw)
-          } catch (e) {}
+          } catch  {}
 
           if (mounted) {
             setCurrentUser(
@@ -277,7 +277,7 @@ export function AuthProvider({ children }) {
         setCurrentUser(user)
         try {
           window.localStorage.setItem('airguard-active-user', JSON.stringify(user))
-        } catch (e) {}
+        } catch  {}
       }
 
       setLoading(false)
@@ -300,7 +300,7 @@ export function AuthProvider({ children }) {
         setCurrentUser(user)
         try {
           window.localStorage.setItem('airguard-active-user', JSON.stringify(user))
-        } catch (e) {}
+        } catch  {}
         return user
       },
 
@@ -311,7 +311,7 @@ export function AuthProvider({ children }) {
           setCurrentUser(result.user)
           try {
             window.localStorage.setItem('airguard-active-user', JSON.stringify(result.user))
-          } catch (e) {}
+          } catch {}
         }
 
         return result.user
@@ -345,16 +345,16 @@ export function AuthProvider({ children }) {
         setCurrentUser(updated)
         try {
           window.localStorage.setItem('airguard-active-user', JSON.stringify(updated))
-        } catch (e) {}
+        } catch  {}
       },
 
       signOut: async () => {
         try {
           await supabase.auth.signOut()
-        } catch (e) {}
+        } catch  {}
         try {
           window.localStorage.removeItem('airguard-active-user')
-        } catch (e) {}
+        } catch {}
         setCurrentUser(null)
       },
     }),
